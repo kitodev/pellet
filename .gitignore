@@ -33,3 +33,6 @@ dist-ssr
 
 # Uploaded product images
 uploads/
+
+# Vercel build output
+.vercel
