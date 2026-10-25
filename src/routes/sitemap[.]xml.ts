@@ -8,7 +8,7 @@ export const Route = createFileRoute('/sitemap.xml')({
     handlers: {
       GET: async ({ request }) => {
         const origin = process.env['SITE_URL']?.replace(/\/+$/, '') || new URL(request.url).origin;
-        const [products, posts] = await Promise.all([listProducts({ publishedOnly: true }), listPublishedPosts()]);
+        const [products, posts] = await Promise.all([listProducts({ publishedOnly: true }), listPublishedPosts()]).catch((error: unknown) => { console.error('[pellet] sitemap: adatbázis nem elérhető', error); return [[], []] as [Awaited<ReturnType<typeof listProducts>>, Awaited<ReturnType<typeof listPublishedPosts>>]; });
         const urls: { loc: string; lastmod?: string }[] = [
           ...['/', '/szolgaltatasok', '/blog', '/rolunk', '/kapcsolat', '/arajanlat', '/kalkulator'].map(loc => ({ loc })),
           ...Object.values(areas).flatMap(a => [{ loc: `/${a.key}` }, ...a.categories.map(c => ({ loc: `/${a.key}/${c.slug}` }))]),

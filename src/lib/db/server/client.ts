@@ -9,6 +9,7 @@ export function db(): mysql.Pool {
     globalForDb.pelletPool = mysql.createPool({
       uri: serverEnv().databaseUrl,
       connectionLimit: 10,
+      connectTimeout: 5000,
       charset: 'utf8mb4',
       timezone: 'Z',
       dateStrings: false,

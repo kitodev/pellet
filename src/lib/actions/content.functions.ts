@@ -15,22 +15,40 @@ const adminOnly = createMiddleware({ type: 'function' }).server(async ({ next })
   return next({ context: { user } });
 });
 
-/** Everything the public pages need: texts, published products and reviews. */
+/**
+ * Everything the public pages need: texts, published products and reviews.
+ * If the database is unreachable the site still renders (default texts, no products)
+ * instead of failing with a 500 – the error is logged on the server.
+ */
 export const readPublicContent = createServerFn({ method: 'GET' }).handler(async () => {
   try {
     const [texts, products, reviews] = await Promise.all([listTexts(), listProducts({ publishedOnly: true }), listReviews({ publishedOnly: true })]);
-    return { texts, products, reviews };
+    return { texts, products, reviews, offline: false };
   } catch (error) {
-    console.error(error);
-    throw new Error('A tartalom betöltése sikertelen.');
+    console.error('[pellet] Adatbázis nem elérhető (DATABASE_URL?):', error);
+    return { texts: [], products: [], reviews: [], offline: true };
   }
 });
 
-export const listPosts = createServerFn({ method: 'GET' }).handler(() => listPublishedPosts());
+export const listPosts = createServerFn({ method: 'GET' }).handler(async () => {
+  try {
+    return await listPublishedPosts();
+  } catch (error) {
+    console.error('[pellet] Cikkek betöltése sikertelen:', error);
+    return [];
+  }
+});
 
 export const readPost = createServerFn({ method: 'GET' })
   .inputValidator((input) => z.object({ slug: z.string().min(1).max(191) }).parse(input))
-  .handler(({ data }) => getPublishedPost(data.slug));
+  .handler(async ({ data }) => {
+    try {
+      return await getPublishedPost(data.slug);
+    } catch (error) {
+      console.error('[pellet] Cikk betöltése sikertelen:', error);
+      return null;
+    }
+  });
 
 // ---- simple built-in admin (/backend). The full editor is the Next.js admin (admin/). ----
 export const readAdminContent = createServerFn({ method: 'POST' }).middleware([adminOnly]).handler(async () => {

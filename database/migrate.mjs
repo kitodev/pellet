@@ -12,9 +12,14 @@ const dir = path.join(path.dirname(fileURLToPath(import.meta.url)), 'migrations'
 const url = new URL(DATABASE_URL);
 const dbName = decodeURIComponent(url.pathname.replace(/^\//, '')) || 'pellet';
 const server = new URL(DATABASE_URL); server.pathname = '/';
-const admin = await mysql.createConnection(server.toString());
-await admin.query(`CREATE DATABASE IF NOT EXISTS \`${dbName.replace(/`/g, '')}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`);
-await admin.end();
+// (Hosted databases often create it for you and don't allow this – then we just continue.)
+try {
+  const admin = await mysql.createConnection(server.toString());
+  await admin.query(`CREATE DATABASE IF NOT EXISTS \`${dbName.replace(/`/g, '')}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`);
+  await admin.end();
+} catch (error) {
+  console.warn(`(Az adatbázist nem tudtam létrehozni – feltételezem, hogy már létezik: ${error.message})`);
+}
 
 const db = await mysql.createConnection({ uri: DATABASE_URL, multipleStatements: true, charset: 'utf8mb4' });
 try {
