@@ -3,8 +3,8 @@
 @import "tw-animate-css";
 @custom-variant dark (&:is(.dark *));
 @theme inline {
- --font-sans: 'Manrope', sans-serif;
- --font-display: 'Barlow Condensed', sans-serif;
+ --font-sans: 'Catamaran', sans-serif;
+ --font-display: 'Dosis', sans-serif;
  --color-offer: var(--offer); --color-offer-foreground: var(--primary-foreground);
  --color-on-dark: var(--on-dark);
  --color-background: var(--background); --color-foreground: var(--foreground);
@@ -23,7 +23,7 @@
  --secondary: #f5f5f5; --muted: #414141;
  --muted-foreground: #d0d0d0; --accent: #45483a;
  --border: #585858; --card: #ffffff; --destructive: oklch(.57 .2 27);
- --highlight: #a2c65b; --offer: #4b7b0a; --display-font: 'Barlow Condensed', sans-serif; --script-font: 'Caveat', cursive; --hero-ink: #2b2b2b;
+ --highlight: #a2c65b; --offer: #4b7b0a; --display-font: 'Dosis', sans-serif; --script-font: 'Caveat', cursive; --hero-ink: #2b2b2b;
  --on-dark: #ffffff; --on-dark-muted: #dddddd; --shadow: 0 12px 40px rgb(0 0 0 / .12);
  --light-foreground: #333333; --light-muted: #626262; --light-border: #dddddd; --light-accent: #e9edcf; --light-primary: #4b7b0a;
  --hero-overlay: linear-gradient(90deg, transparent 30%, rgb(51 51 51 / .3) 44%, #333333 55%);
@@ -31,7 +31,7 @@
 }
 * { box-sizing: border-box; border-color: var(--border); }
 html { scroll-behavior: smooth; scroll-padding-top: 90px; }
-body { margin: 0; color: var(--foreground); background: var(--background); font-family: 'Manrope',sans-serif; font-size: 14px; -webkit-font-smoothing: antialiased; letter-spacing: 0; }
+body { margin: 0; color: var(--foreground); background: var(--background); font-family: 'Catamaran',sans-serif; font-size: 16px; font-weight: 500; -webkit-font-smoothing: antialiased; letter-spacing: 0; }
 a { text-decoration: none; } button,input,select,textarea { font: inherit; } button,a,input,select,textarea { -webkit-tap-highlight-color: transparent; }
 .container { width: min(1160px, calc(100% - 80px)); margin-inline: auto; }
 .topbar { background: var(--hero-ink); color: var(--on-dark-muted); height: 35px; font-size: 11px; }
@@ -345,3 +345,50 @@ input[type=range] { width:100%; accent-color:var(--primary); cursor:pointer; } .
 /* White cards keep dark text on dark sections too */
 .product-card,.post-card,.service-card,.category-card,.area-tile,.about-block,.reason-card { --foreground:var(--light-foreground); --muted-foreground:var(--light-muted); --border:var(--light-border); color:var(--foreground); }
 .product-card .product-footer { border-color:var(--light-border); }
+
+/* ===== Typography – same fonts and sizes as ecocomfort.hu =====
+   Body / menu / buttons: Catamaran · headings: Dosis (Google Fonts, loaded in routes/__root.tsx) */
+body { line-height:1.5; }
+h1,h2,h3,h4,h5,h6 { font-family:'Dosis',sans-serif; font-weight:700; }
+h1,.page-hero h1 { font-size:60px; line-height:1; font-weight:700; }
+.product-info h1,.article-header h1 { font-size:48px; line-height:1.05; font-weight:700; }
+.offer-heading h1 { font-weight:700; font-size:64px; }
+.offer-price strong { font-weight:700; font-size:44px; }
+h2 { font-size:32px; font-weight:700; line-height:1.2; text-transform:uppercase; }
+.prose-article h2 { font-size:28px; text-transform:none; }
+.product-description h2,.spec-table caption { font-size:24px; text-transform:none; font-family:'Dosis',sans-serif; font-weight:700; }
+.service-card h2,.about-block h2,.post-card h2,.empty-state h2 { font-size:22px; text-transform:none; line-height:1.25; }
+h3,.reason-card h3,.product-body h3 { font-size:18px; font-weight:700; line-height:1.4; }
+.area-tile h3,.category-card h3,.choice-card h3 { font-size:24px; font-weight:700; }
+.group-title { font-size:28px; font-weight:700; text-transform:uppercase; }
+.brand-name { font-weight:700; }
+
+/* Text: 18px paragraphs, 16px in cards */
+.section-copy,.page-hero p,.product-info .lead,.article-header .lead,.prose-article,.about-block p,.delivery p,.cta-band p,.product-description p { font-size:18px; line-height:1.6; }
+.product-body p,.category-card p,.choice-card p,.post-card p,.service-card p,.reason-card p,.review-card blockquote,.area-tile ul,.spec-table,.contact-points strong,.trust-item strong { font-size:16px; line-height:1.6; }
+.contact-points span,.trust-item span,.review-card figcaption,.post-card time,.article-meta,.product-footer,.footer-brand p { font-size:14px!important; }
+.eyebrow,.product-category,.dropdown-title { font-size:13px; font-weight:700; }
+.breadcrumbs ol,.topbar,.header-search,.footer .footer-bottom { font-size:13px; }
+.footer-grid>div { font-size:15px; } .footer h3 { font-family:'Dosis',sans-serif; font-size:18px; font-weight:700; }
+.choice-cta { font-size:14px; font-weight:700; text-transform:uppercase; }
+.price-tag { font-size:18px; } .price-tag.large { font-size:32px; }
+
+/* Main menu: Catamaran 14px / 600 / uppercase */
+.main-nav a { font-family:'Catamaran',sans-serif; font-size:14px; font-weight:600; text-transform:uppercase; }
+.main-nav .mega-menu a { font-size:15px; text-transform:none; }
+.mobile-nav a { font-size:16px; font-weight:600; }
+
+/* Buttons: Catamaran, uppercase, bold */
+.btn-ui { font-family:'Catamaran',sans-serif; text-transform:uppercase; font-weight:700; font-size:16px!important; letter-spacing:.01em; }
+.btn-ui:not(.w-9) { min-height:44px; padding-left:22px; padding-right:22px; }
+.subtabs a { font-size:14px; font-weight:600; }
+
+/* Forms */
+.quote-form label { font-size:14px; } .quote-form input,.quote-form select,.quote-form textarea { font-size:16px; } .form-info { font-size:13px; }
+
+@media(max-width:1000px) { h1,.page-hero h1 { font-size:48px; } }
+@media(max-width:700px) {
+  h1,.page-hero h1 { font-size:38px; } .product-info h1,.article-header h1 { font-size:34px; }
+  h2 { font-size:26px; } .offer-heading h1 { font-size:44px; } .offer-price strong { font-size:36px; }
+  .section-copy,.page-hero p,.product-info .lead,.prose-article,.about-block p,.delivery p,.cta-band p { font-size:17px; }
+}
