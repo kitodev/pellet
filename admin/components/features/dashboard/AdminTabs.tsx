@@ -25,7 +25,13 @@ export function AdminTabs({ products, reviews, posts, texts }: Props) {
     <>
       <nav className="admin-tabs" role="tablist">
         {tabs.map((t) => (
-          <Button key={t.key} role="tab" aria-selected={tab === t.key} variant={tab === t.key ? "primary" : "ghost"} onClick={() => setTab(t.key)}>
+          <Button
+            key={t.key}
+            role="tab"
+            aria-selected={tab === t.key}
+            variant={tab === t.key ? "primary" : "ghost"}
+            onClick={() => setTab(t.key)}
+          >
             <t.icon size={16} /> {t.label}
           </Button>
         ))}

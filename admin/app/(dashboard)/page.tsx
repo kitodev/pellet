@@ -8,6 +8,11 @@ import { AdminTabs } from "@/components/features/dashboard/AdminTabs";
 export default async function DashboardPage() {
   const { isAdmin } = await requireUser();
   if (!isAdmin) return null;
-  const [products, reviews, posts, texts] = await Promise.all([listProducts(), listReviews(), listPosts(), listTexts()]);
+  const [products, reviews, posts, texts] = await Promise.all([
+    listProducts(),
+    listReviews(),
+    listPosts(),
+    listTexts(),
+  ]);
   return <AdminTabs products={products} reviews={reviews} posts={posts} texts={texts} />;
 }

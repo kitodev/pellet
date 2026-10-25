@@ -51,11 +51,11 @@ export type BlogPost = {
   body: string;
   cover_path: string;
   meta_description: string;
-  status: 'draft' | 'published';
+  status: "draft" | "published";
   published_at: string | null;
   updated_at: string | null;
   created_at: string;
 };
 
 export type User = { id: string; email: string; created_at: string };
-export type AppRole = 'admin';
+export type AppRole = "admin";

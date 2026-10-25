@@ -1,14 +1,18 @@
-const huf = new Intl.NumberFormat('hu-HU', { maximumFractionDigits: 0 });
+const huf = new Intl.NumberFormat("hu-HU", { maximumFractionDigits: 0 });
 
 /** 12500 → "12 500 Ft" (+ unit: "12 500 Ft/zsák") */
-export function formatPrice(value: number, unit = '') {
+export function formatPrice(value: number, unit = "") {
   const u = unit.trim();
-  return `${huf.format(value)} ${u ? (u.startsWith('Ft') ? u : `Ft/${u}`) : 'Ft'}`;
+  return `${huf.format(value)} ${u ? (u.startsWith("Ft") ? u : `Ft/${u}`) : "Ft"}`;
 }
 
 export function formatDate(iso: string | null | undefined) {
-  if (!iso) return '';
-  return new Date(iso).toLocaleDateString('hu-HU', { year: 'numeric', month: 'long', day: 'numeric' });
+  if (!iso) return "";
+  return new Date(iso).toLocaleDateString("hu-HU", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 }
 
 /** Reading time in minutes for a markdown body. */

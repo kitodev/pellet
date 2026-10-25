@@ -1,5 +1,15 @@
 /** Labelled form field wrapper with an optional hint. */
-export function Field({ label, hint, children, wide = false }: { label: string; hint?: string; children: React.ReactNode; wide?: boolean }) {
+export function Field({
+  label,
+  hint,
+  children,
+  wide = false,
+}: {
+  label: string;
+  hint?: string;
+  children: React.ReactNode;
+  wide?: boolean;
+}) {
   return (
     <label className={wide ? "field wide" : "field"}>
       <span>{label}</span>

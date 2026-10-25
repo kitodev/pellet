@@ -6,5 +6,9 @@ export const dynamic = "force-dynamic";
 
 export default async function DashboardGroupLayout({ children }: { children: React.ReactNode }) {
   const { user, isAdmin } = await requireUser();
-  return <DashboardLayout email={user.email ?? ""}>{isAdmin ? children : <AccessDenied />}</DashboardLayout>;
+  return (
+    <DashboardLayout email={user.email ?? ""}>
+      {isAdmin ? children : <AccessDenied />}
+    </DashboardLayout>
+  );
 }

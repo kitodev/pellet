@@ -13,8 +13,8 @@ import { type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { SiteFooter, SiteHeader } from "@/components/layouts/SiteChrome";
-import { contentOptions } from '@/lib/content/queries';
-import { ContentProvider } from '@/components/features/content/ContentProvider';
+import { contentOptions } from "@/lib/content/queries";
+import { ContentProvider } from "@/components/features/content/ContentProvider";
 
 function NotFoundComponent() {
   return (
@@ -80,7 +80,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Pellet Centrum Kft. – Pellet, takarmány, kályhák és kandallók" },
-      { name: "description", content: "Fűtőanyagok, takarmányok, kályhák, kandallók és kiegészítők – szállítással, telepítéssel és szervizzel." },
+      {
+        name: "description",
+        content:
+          "Fűtőanyagok, takarmányok, kályhák, kandallók és kiegészítők – szállítással, telepítéssel és szervizzel.",
+      },
       { property: "og:title", content: "Pellet Centrum Kft." },
       { property: "og:description", content: "Természetes energia. Megbízható meleg." },
       { property: "og:type", content: "website" },
@@ -97,7 +101,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Catamaran:wght@300;400;500;600;700;800&family=Dosis:wght@500;600;700;800&family=Caveat:wght@500;600&display=swap" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Catamaran:wght@300;400;500;600;700;800&family=Dosis:wght@500;600;700;800&family=Caveat:wght@500;600&display=swap",
+      },
     ],
   }),
   shellComponent: RootShell,
@@ -124,16 +131,16 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const { data } = useSuspenseQuery(contentOptions, queryClient);
   const path = useLocation().pathname;
-  const administration = path === '/auth' || path === '/backend';
+  const administration = path === "/auth" || path === "/backend";
   return (
     <QueryClientProvider client={queryClient}>
       <ContentProvider data={data}>
-      {!administration && <SiteHeader />}
-      <main>
-        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-        <Outlet />
-      </main>
-      {!administration && <SiteFooter />}
+        {!administration && <SiteHeader />}
+        <main>
+          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+          <Outlet />
+        </main>
+        {!administration && <SiteFooter />}
       </ContentProvider>
     </QueryClientProvider>
   );

@@ -5,13 +5,20 @@ const optionalPrice = z
   .string()
   .trim()
   .transform((v) => v.replace(/\s/g, "").replace(",", "."))
-  .refine((v) => v === "" || (/^\d+(\.\d+)?$/.test(v) && Number(v) <= 100_000_000), "Az ár egész szám legyen (Ft).")
+  .refine(
+    (v) => v === "" || (/^\d+(\.\d+)?$/.test(v) && Number(v) <= 100_000_000),
+    "Az ár egész szám legyen (Ft).",
+  )
   .transform((v) => (v === "" ? null : Math.round(Number(v))));
 
 export const productSchema = z
   .object({
     id: z.string().uuid().optional(),
-    slug: z.string().trim().max(120).regex(/^[a-z0-9-]*$/, "Az URL csak kisbetűt, számot és kötőjelet tartalmazhat."),
+    slug: z
+      .string()
+      .trim()
+      .max(120)
+      .regex(/^[a-z0-9-]*$/, "Az URL csak kisbetűt, számot és kötőjelet tartalmazhat."),
     area: z.enum(areaKeys as [string, ...string[]]),
     category: z.string().min(1).max(80),
     name: z.string().trim().min(1, "Adjon meg terméknevet.").max(200),
@@ -28,8 +35,14 @@ export const productSchema = z
     datasheet_path: z.string().max(191),
     remove_images: z.array(z.string().max(191)),
   })
-  .refine((p) => isAreaKey(p.area) && areas[p.area].categories.some((c) => c.slug === p.category), { message: "Ismeretlen kategória.", path: ["category"] })
-  .refine((p) => p.sale_price === null || p.price === null || p.sale_price < p.price, { message: "Az akciós ár legyen kisebb, mint a normál ár.", path: ["sale_price"] });
+  .refine((p) => isAreaKey(p.area) && areas[p.area].categories.some((c) => c.slug === p.category), {
+    message: "Ismeretlen kategória.",
+    path: ["category"],
+  })
+  .refine((p) => p.sale_price === null || p.price === null || p.sale_price < p.price, {
+    message: "Az akciós ár legyen kisebb, mint a normál ár.",
+    path: ["sale_price"],
+  });
 
 export const productIdSchema = z.object({ id: z.string().uuid() });
 
@@ -52,14 +65,27 @@ export function parseProductForm(form: FormData) {
   };
   const area = str("area");
   const specKeys = isAreaKey(area) ? areas[area].specFields.map((f) => f.key) : [];
-  const specs = Object.fromEntries(specKeys.map((k) => [k, str(`spec.${k}`).trim()]).filter(([, v]) => v));
+  const specs = Object.fromEntries(
+    specKeys.map((k) => [k, str(`spec.${k}`).trim()]).filter(([, v]) => v),
+  );
   const id = str("id");
   const product = productSchema.parse({
     ...(id ? { id } : {}),
-    slug: str("slug"), area, category: str("category"), name: str("name"), short_description: str("short_description"), description: str("description"),
-    price: str("price"), sale_price: str("sale_price"), price_unit: str("price_unit"), specs,
-    featured: str("featured") === "on", published: str("published") === "on", sort_order: str("sort_order") || "0",
-    image_path: str("image_path"), datasheet_path: str("datasheet_path"),
+    slug: str("slug"),
+    area,
+    category: str("category"),
+    name: str("name"),
+    short_description: str("short_description"),
+    description: str("description"),
+    price: str("price"),
+    sale_price: str("sale_price"),
+    price_unit: str("price_unit"),
+    specs,
+    featured: str("featured") === "on",
+    published: str("published") === "on",
+    sort_order: str("sort_order") || "0",
+    image_path: str("image_path"),
+    datasheet_path: str("datasheet_path"),
     remove_images: form.getAll("remove_images").filter((v): v is string => typeof v === "string"),
   });
   const gallery = form.getAll("gallery").filter((v): v is File => v instanceof File && v.size > 0);

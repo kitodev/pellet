@@ -10,19 +10,25 @@ import { toActionResult } from "@/lib/utils/action";
 import type { ActionResult } from "@/types";
 
 /** FormData: id?, slug, title, excerpt, meta_description, body, status, cover_path; file: cover. */
-export async function savePost(form: FormData): Promise<ActionResult<{ id: string; slug: string }>> {
+export async function savePost(
+  form: FormData,
+): Promise<ActionResult<{ id: string; slug: string }>> {
   return toActionResult(async () => {
     await requireAdmin();
     const { post, cover } = parsePostForm(form);
     const previous = post.id ? await getPost(post.id) : null;
     if (post.id && !previous) throw new Error("A cikk nem található.");
-    if (post.status === "published" && post.body.trim().length < 50) throw new Error("A közzétételhez írjon legalább néhány mondatot.");
+    if (post.status === "published" && post.body.trim().length < 50)
+      throw new Error("A közzétételhez írjon legalább néhány mondatot.");
     const newCover = cover ? await saveUpload("blog", cover) : null;
     try {
-      const cover_path = newCover ?? (post.cover_path && post.cover_path === previous?.cover_path ? previous.cover_path : "");
+      const cover_path =
+        newCover ??
+        (post.cover_path && post.cover_path === previous?.cover_path ? previous.cover_path : "");
       const slug = await uniqueSlug("blog_posts", post.slug || post.title, post.id);
       const id = await upsertPost({ ...post, slug, cover_path });
-      if (previous?.cover_path && previous.cover_path !== cover_path) await deleteUpload("blog", previous.cover_path);
+      if (previous?.cover_path && previous.cover_path !== cover_path)
+        await deleteUpload("blog", previous.cover_path);
       revalidatePath("/");
       return { id, slug };
     } catch (error) {

@@ -1,5 +1,5 @@
-import mysql from 'mysql2/promise';
-import { serverEnv } from './env';
+import mysql from "mysql2/promise";
+import { serverEnv } from "./env";
 
 const globalForDb = globalThis as unknown as { pelletPool?: mysql.Pool };
 
@@ -10,8 +10,8 @@ export function db(): mysql.Pool {
       uri: serverEnv().databaseUrl,
       connectionLimit: 10,
       connectTimeout: 5000,
-      charset: 'utf8mb4',
-      timezone: 'Z',
+      charset: "utf8mb4",
+      timezone: "Z",
       dateStrings: false,
     });
   }

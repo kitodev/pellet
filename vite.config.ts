@@ -28,7 +28,14 @@ export default defineConfig(({ command }) => ({
     //  - on Vercel (VERCEL=1 is set automatically) → .vercel/output (serverless functions + static files)
     //  - everywhere else → a plain Node server in .output/ (pnpm start)
     //  - NITRO_PRESET overrides both (e.g. "netlify", "cloudflare-module")
-    ...(command === "build" ? [nitro({ preset: process.env['NITRO_PRESET'] || (process.env['VERCEL'] ? "vercel" : "node-server") })] : []),
+    ...(command === "build"
+      ? [
+          nitro({
+            preset:
+              process.env["NITRO_PRESET"] || (process.env["VERCEL"] ? "vercel" : "node-server"),
+          }),
+        ]
+      : []),
     viteReact(),
   ],
 }));
