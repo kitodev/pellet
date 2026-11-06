@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
-import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, type LucideIcon } from "lucide-react";
 import { useSlides, useText } from "@/hooks/useContent";
 import { uploadUrl } from "@/lib/utils/urls";
 import type { Slide } from "@/types";
@@ -34,9 +34,14 @@ function SlideLink({
  * the admin can hide it (text key `slides.<page>.hideFirst` = "1").
  * With a single slide it is shown without arrows and dots.
  */
-/** A slide to show: from the admin (uploads/slides) or a built-in default (`src` = asset URL). */
+/**
+ * A slide to show: uploaded in the admin (uploads/slides) or a built-in default.
+ * Built-in slides either have a photo (`src`) or are a graphic slide (`graphic`: coloured
+ * background with a big icon) – used where there is no photo yet.
+ */
 export type ShownSlide = Omit<Slide, "page" | "published" | "sort_order" | "image_path"> & {
-  src: string;
+  src?: string;
+  graphic?: { icon: LucideIcon; tone: "green" | "dark" };
 };
 
 export function SlideShow({
@@ -111,18 +116,21 @@ export function SlideShow({
             return (
               <div
                 key={s.id}
-                className="slide"
+                className={s.graphic ? `slide slide-graphic ${s.graphic.tone}` : "slide"}
                 role="group"
                 aria-roledescription="slide"
                 aria-label={`${i + 1} / ${total}`}
               >
-                <img
-                  src={s.src}
-                  alt={s.title}
-                  className="slide-image"
-                  loading={i === 0 ? "eager" : "lazy"}
-                  fetchPriority={i === 0 ? "high" : "auto"}
-                />
+                {s.src && (
+                  <img
+                    src={s.src}
+                    alt={s.title}
+                    className="slide-image"
+                    loading={i === 0 ? "eager" : "lazy"}
+                    fetchPriority={i === 0 ? "high" : "auto"}
+                  />
+                )}
+                {s.graphic && <s.graphic.icon className="slide-graphic-icon" aria-hidden />}
                 {(s.title || s.subtitle || (s.button_label && s.link_url)) && (
                   <div className="container slide-content">
                     <div className="slide-panel">

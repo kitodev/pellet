@@ -2979,3 +2979,48 @@ body {
   height: auto;
   min-height: clamp(320px, 42vw, 560px);
 }
+
+/* built-in graphic slides (no photo): coloured background + big icon */
+.slide-graphic {
+  overflow: hidden;
+}
+.slide-graphic.green {
+  background:
+    radial-gradient(circle at 78% 50%, rgb(162 198 91 / 0.35), transparent 45%),
+    linear-gradient(120deg, #3d6608 0%, #4b7b0a 55%, #5d8f1a 100%);
+}
+.slide-graphic.dark {
+  background:
+    radial-gradient(circle at 78% 50%, rgb(75 123 10 / 0.45), transparent 45%),
+    linear-gradient(120deg, #232323 0%, #333333 60%, #3b3f33 100%);
+}
+.slide-graphic-icon {
+  position: absolute;
+  right: 12%;
+  top: 50%;
+  translate: 0 -50%;
+  width: clamp(140px, 22vw, 320px);
+  height: clamp(140px, 22vw, 320px);
+  color: rgb(255 255 255 / 0.18);
+  stroke-width: 1.2;
+}
+.slide-graphic .slide-panel {
+  background: transparent;
+  border-left-color: #ffffff;
+  max-width: 620px;
+}
+.slide-graphic .slide-panel h1,
+.slide-graphic .slide-panel h2 {
+  font-size: clamp(30px, 3.6vw, 52px);
+}
+.slide-graphic.green .slide-button {
+  background: #ffffff;
+  color: #3d6608;
+}
+@media (max-width: 700px) {
+  .slide-graphic-icon {
+    top: 28%;
+    right: 50%;
+    translate: 50% -50%;
+  }
+}

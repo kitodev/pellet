@@ -12,9 +12,8 @@ import {
   SaleSection,
 } from "@/components/features/home/HomeSections";
 import pelletHome from "@/assets/pellet-home.jpg";
-import { SlideShow, type ShownSlide } from "@/components/features/slider/SlideShow";
-import feedPellets from "@/assets/feed-pellets.jpg";
-import workshop from "@/assets/pellet-workshop.jpg";
+import { SlideShow } from "@/components/features/slider/SlideShow";
+import { homeDefaultSlides } from "@/components/features/slider/defaultSlides";
 
 export const Route = createFileRoute("/")({
   head: () =>
@@ -25,31 +24,11 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-/** Shown after the hero until slides are uploaded in the admin (Slide-ok tab). */
-const defaultSlides: ShownSlide[] = [
-  {
-    id: "default-takarmany",
-    title: "Takarmányok raktárról",
-    subtitle: "Cukorrépa-, széna- és lucernapellet, ló müzlik – zsákos kiszerelésben.",
-    button_label: "Takarmányok",
-    link_url: "/takarmanyok",
-    src: feedPellets,
-  },
-  {
-    id: "default-futes",
-    title: "Kályhák és kazánok telepítéssel",
-    subtitle: "Pellet- és biomassza-tüzelésű fűtési megoldások, beüzemeléssel és szervizzel.",
-    button_label: "Fűtési megoldások",
-    link_url: "/futesi-megoldasok",
-    src: workshop,
-  },
-];
-
 function Index() {
   // The original hero is the first slide; slides uploaded in the admin (Slide-ok) follow it.
   return (
     <>
-      <SlideShow page="home" first={<DefaultHero />} defaults={defaultSlides} />
+      <SlideShow page="home" first={<DefaultHero />} defaults={homeDefaultSlides} />
       <IntroSection />
       <FeaturedSection />
       <SaleSection />

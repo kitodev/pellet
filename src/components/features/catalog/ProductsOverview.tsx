@@ -4,6 +4,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { Breadcrumbs, PageHero } from "@/components/layouts/SiteChrome";
 import { SlideShow } from "@/components/features/slider/SlideShow";
+import { productsDefaultSlides } from "@/components/features/slider/defaultSlides";
 import { productAreas } from "@/lib/content/catalog";
 import { SectionTiles } from "./CategoryTiles";
 
@@ -15,7 +16,7 @@ export function ProductsOverview() {
   const areas = useAreas();
   return (
     <>
-      <SlideShow page="termekek" />
+      <SlideShow page="termekek" defaults={productsDefaultSlides} />
       <PageHero
         id="/termekek"
         eyebrow="Termékek"
