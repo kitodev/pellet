@@ -2967,3 +2967,15 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* the built-in hero as the first slide: all slides take its height */
+.slideshow-track {
+  align-items: stretch;
+}
+.slide-custom {
+  height: auto;
+}
+.slideshow:has(.slide-custom) .slide:not(.slide-custom) {
+  height: auto;
+  min-height: clamp(320px, 42vw, 560px);
+}

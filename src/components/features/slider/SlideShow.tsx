@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
-import { useSlides } from "@/hooks/useContent";
+import { useSlides, useText } from "@/hooks/useContent";
 import { uploadUrl } from "@/lib/utils/urls";
 import type { Slide } from "@/types";
 
@@ -23,18 +23,25 @@ function SlideLink({ slide, children }: { slide: Slide; children: React.ReactNod
 }
 
 /**
- * Image carousel managed in the admin (Slide-ok tab). Renders nothing when the page has
- * no slides – the caller then shows its default content (`fallback`).
+ * Image carousel managed in the admin (Slide-ok tab).
+ * `first`: built-in content shown as the first slide (home page: the original hero picture);
+ * the admin can hide it (text key `slides.<page>.hideFirst` = "1").
+ * With a single slide it is shown without arrows and dots.
  */
 export function SlideShow({
   page,
-  fallback = null,
+  first = null,
 }: {
   page: Slide["page"];
-  fallback?: React.ReactNode;
+  first?: React.ReactNode;
 }) {
-  const slides = useSlides(page);
-  const [ref, api] = useEmblaCarousel({ loop: slides.length > 1 });
+  const adminSlides = useSlides(page);
+  const hideFirst = useText(`slides.${page}.hideFirst`, "") === "1" && adminSlides.length > 0;
+  const lead = first && !hideFirst ? first : null;
+  const total = (lead ? 1 : 0) + adminSlides.length;
+  const offset = lead ? 1 : 0;
+  const slides = adminSlides;
+  const [ref, api] = useEmblaCarousel({ loop: total > 1 });
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
 
@@ -51,13 +58,14 @@ export function SlideShow({
   }, [api, onSelect]);
 
   useEffect(() => {
-    if (!api || paused || slides.length < 2) return;
+    if (!api || paused || total < 2) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const timer = window.setInterval(() => api.scrollNext(), AUTOPLAY_MS);
     return () => window.clearInterval(timer);
-  }, [api, paused, slides.length]);
+  }, [api, paused, total]);
 
-  if (!slides.length) return <>{fallback}</>;
+  if (!total) return null;
+  if (total === 1 && lead) return <>{lead}</>;
 
   return (
     <section
@@ -71,40 +79,53 @@ export function SlideShow({
     >
       <div className="slideshow-viewport" ref={ref}>
         <div className="slideshow-track">
-          {slides.map((s, i) => (
+          {lead && (
             <div
-              key={s.id}
-              className="slide"
+              className="slide slide-custom"
               role="group"
               aria-roledescription="slide"
-              aria-label={`${i + 1} / ${slides.length}`}
+              aria-label={`1 / ${total}`}
             >
-              <img
-                src={uploadUrl("slides", s.image_path)}
-                alt={s.title}
-                className="slide-image"
-                loading={i === 0 ? "eager" : "lazy"}
-                fetchPriority={i === 0 ? "high" : "auto"}
-              />
-              {(s.title || s.subtitle || (s.button_label && s.link_url)) && (
-                <div className="container slide-content">
-                  <div className="slide-panel">
-                    {s.title &&
-                      (i === 0 && page === "home" ? <h1>{s.title}</h1> : <h2>{s.title}</h2>)}
-                    {s.subtitle && <p>{s.subtitle}</p>}
-                    {s.button_label && s.link_url && (
-                      <SlideLink slide={s}>
-                        {s.button_label} <ArrowRight size={16} />
-                      </SlideLink>
-                    )}
-                  </div>
-                </div>
-              )}
+              {lead}
             </div>
-          ))}
+          )}
+          {slides.map((s, j) => {
+            const i = j + offset;
+            return (
+              <div
+                key={s.id}
+                className="slide"
+                role="group"
+                aria-roledescription="slide"
+                aria-label={`${i + 1} / ${total}`}
+              >
+                <img
+                  src={uploadUrl("slides", s.image_path)}
+                  alt={s.title}
+                  className="slide-image"
+                  loading={i === 0 ? "eager" : "lazy"}
+                  fetchPriority={i === 0 ? "high" : "auto"}
+                />
+                {(s.title || s.subtitle || (s.button_label && s.link_url)) && (
+                  <div className="container slide-content">
+                    <div className="slide-panel">
+                      {s.title &&
+                        (i === 0 && page === "home" ? <h1>{s.title}</h1> : <h2>{s.title}</h2>)}
+                      {s.subtitle && <p>{s.subtitle}</p>}
+                      {s.button_label && s.link_url && (
+                        <SlideLink slide={s}>
+                          {s.button_label} <ArrowRight size={16} />
+                        </SlideLink>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
-      {slides.length > 1 && (
+      {total > 1 && (
         <>
           <button
             type="button"
@@ -123,9 +144,9 @@ export function SlideShow({
             <ChevronRight />
           </button>
           <div className="slide-dots">
-            {slides.map((s, i) => (
+            {Array.from({ length: total }, (_, i) => (
               <button
-                key={s.id}
+                key={i}
                 type="button"
                 aria-label={`${i + 1}. dia`}
                 aria-current={i === index}

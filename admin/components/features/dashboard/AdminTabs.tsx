@@ -45,7 +45,12 @@ export function AdminTabs({ products, slides, reviews, posts, texts }: Props) {
         ))}
       </nav>
       {tab === "products" && <ProductsPanel products={products} />}
-      {tab === "slides" && <SlidesPanel slides={slides} />}
+      {tab === "slides" && (
+        <SlidesPanel
+          slides={slides}
+          hideHero={texts.some((t) => t.key === "slides.home.hideFirst" && t.value === "1")}
+        />
+      )}
       {tab === "reviews" && <ReviewsPanel reviews={reviews} />}
       {tab === "blog" && <BlogPanel posts={posts} />}
       {tab === "contact" && <ContactPanel texts={texts} />}

@@ -4,6 +4,7 @@ import { EyeOff, Pencil, Plus, Save, Trash2, X } from "lucide-react";
 import { Button, Field, Section, StatusMessage } from "@/components/ui";
 import { useAsyncAction } from "@/hooks/useAsyncAction";
 import { deleteSlide, saveSlide } from "@/lib/actions/slides";
+import { saveText } from "@/lib/actions/texts";
 import { ALLOWED_IMAGE_TYPES } from "@/lib/validations/product";
 import type { Slide } from "@/types";
 
@@ -25,7 +26,7 @@ const empty: Slide = {
 const preview = (name: string) => `/uploads/slides/${encodeURIComponent(name)}`;
 
 /** Slide-ok: the image carousel of the home page and the Termékek page. */
-export function SlidesPanel({ slides }: { slides: Slide[] }) {
+export function SlidesPanel({ slides, hideHero }: { slides: Slide[]; hideHero: boolean }) {
   const [editing, setEditing] = useState<Slide | null>(null);
   const [confirming, setConfirming] = useState<string | null>(null);
   const { busy, status, run } = useAsyncAction();
@@ -59,10 +60,29 @@ export function SlidesPanel({ slides }: { slides: Slide[] }) {
         </Button>
       </div>
       <p className="hint-box">
-        A slide-ok 6 másodpercenként váltják egymást. A kezdőlapon, ha van legalább egy látható
-        slide, az a nagy nyitókép helyére kerül; ha nincs, a régi nyitókép látszik. Ajánlott
-        képméret: 1920 × 800 px (fekvő). A cím, a szöveg és a gomb elhagyható.
+        A kezdőlapon az első slide a megszokott nyitókép („Prémium pellet – Kérjen árat”), utána
+        jönnek az itt feltöltött slide-ok, 6 másodpercenként váltva. A Termékek oldalon csak a
+        feltöltött slide-ok látszanak. Ajánlott képméret: 1920 × 800 px (fekvő). A cím, a szöveg és
+        a gomb elhagyható.
       </p>
+      <label className="check">
+        <input
+          type="checkbox"
+          checked={!hideHero}
+          disabled={busy}
+          onChange={(e) =>
+            void run(async () => {
+              const r = await saveText({
+                key: "slides.home.hideFirst",
+                value: e.target.checked ? "" : "1",
+              });
+              if (!r.success) throw new Error(r.message);
+            })
+          }
+        />{" "}
+        A megszokott nyitókép legyen az első slide a kezdőlapon (ha kikapcsolja, csak a feltöltött
+        slide-ok látszanak)
+      </label>
       {editing && (
         <form className="admin-form admin-editor" onSubmit={submit} encType="multipart/form-data">
           <div className="admin-toolbar">

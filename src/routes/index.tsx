@@ -24,10 +24,10 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  // Slides uploaded in the admin replace the default hero picture below.
+  // The original hero is the first slide; slides uploaded in the admin (Slide-ok) follow it.
   return (
     <>
-      <SlideShow page="home" fallback={<DefaultHero />} />
+      <SlideShow page="home" first={<DefaultHero />} />
       <IntroSection />
       <FeaturedSection />
       <SaleSection />
@@ -39,7 +39,7 @@ function Index() {
   );
 }
 
-/** The original hero (shown while no slides are set up in the admin). */
+/** The original hero – first slide of the home page carousel. */
 function DefaultHero() {
   return (
     <section className="pellet-hero">
