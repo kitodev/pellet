@@ -8,7 +8,13 @@ import type { Slide } from "@/types";
 const AUTOPLAY_MS = 6000;
 
 /** Internal links ("/termekek") open in place, external ones in a new tab. */
-function SlideLink({ slide, children }: { slide: Slide; children: React.ReactNode }) {
+function SlideLink({
+  slide,
+  children,
+}: {
+  slide: { link_url: string };
+  children: React.ReactNode;
+}) {
   const url = slide.link_url.trim();
   const external = /^https?:\/\//i.test(url);
   return (
@@ -28,15 +34,26 @@ function SlideLink({ slide, children }: { slide: Slide; children: React.ReactNod
  * the admin can hide it (text key `slides.<page>.hideFirst` = "1").
  * With a single slide it is shown without arrows and dots.
  */
+/** A slide to show: from the admin (uploads/slides) or a built-in default (`src` = asset URL). */
+export type ShownSlide = Omit<Slide, "page" | "published" | "sort_order" | "image_path"> & {
+  src: string;
+};
+
 export function SlideShow({
   page,
   first = null,
+  defaults = [],
 }: {
   page: Slide["page"];
   first?: React.ReactNode;
+  /** shown while no slide has been uploaded for this page in the admin */
+  defaults?: ShownSlide[];
 }) {
-  const adminSlides = useSlides(page);
-  const hideFirst = useText(`slides.${page}.hideFirst`, "") === "1" && adminSlides.length > 0;
+  const uploaded = useSlides(page);
+  const adminSlides: ShownSlide[] = uploaded.length
+    ? uploaded.map((u) => ({ ...u, src: uploadUrl("slides", u.image_path) }))
+    : defaults;
+  const hideFirst = useText(`slides.${page}.hideFirst`, "") === "1" && uploaded.length > 0;
   const lead = first && !hideFirst ? first : null;
   const total = (lead ? 1 : 0) + adminSlides.length;
   const offset = lead ? 1 : 0;
@@ -100,7 +117,7 @@ export function SlideShow({
                 aria-label={`${i + 1} / ${total}`}
               >
                 <img
-                  src={uploadUrl("slides", s.image_path)}
+                  src={s.src}
                   alt={s.title}
                   className="slide-image"
                   loading={i === 0 ? "eager" : "lazy"}
