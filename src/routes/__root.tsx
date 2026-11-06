@@ -12,7 +12,7 @@ import {
 import { type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
-import { SiteFooter, SiteHeader } from "@/components/layouts/SiteChrome";
+import { FloatingActions, SiteFooter, SiteHeader } from "@/components/layouts/SiteChrome";
 import { contentOptions } from "@/lib/content/queries";
 import { ContentProvider } from "@/components/features/content/ContentProvider";
 
@@ -141,6 +141,7 @@ function RootComponent() {
           <Outlet />
         </main>
         {!administration && <SiteFooter />}
+        {!administration && <FloatingActions />}
       </ContentProvider>
     </QueryClientProvider>
   );

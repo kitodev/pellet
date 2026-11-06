@@ -32,11 +32,24 @@ For a hosted MySQL, only `DATABASE_URL` changes.
 
 ## Menu structure
 
-Kezdőlap · Fűtőanyagok · Takarmányok · Kályhák és kandallók · Kiegészítők · Szolgáltatások · Tudástár · Rólunk · Kapcsolat
+Kezdőlap · Termékek · Szolgáltatások · Biomassza · Tudástár · Rólunk · Kapcsolat · Árajánlatkérés
+(structure from "Pelletcentrum weboldal váz.xlsx", 2026-11)
+
+- Termékek: area (Tüzelőanyagok / Takarmányok / Fűtési megoldások) → section (tile, e.g. Fűtő pelletek)
+  → category (e.g. A1 fapellet; products belong here). Biomassza kazánok has a third level (`subgroup`:
+  Lakossági / Ipari / Nagyipari). On a category page products are grouped by the *Gyártó* spec if set.
+- Old URLs (/kalyhak-kandallok, /kiegeszitok, /futoanyagok/fa-pellet, …) redirect (301) – `renamedCategories`;
+  migration 006 moves the existing products (products of removed categories are hidden – check them in the admin).
+- `/termekek` – every product category as a tile, grouped by area (`ProductsOverview.tsx`).
+- Árajánlatkérés + Kazánkalkulátor are always on screen: header buttons, a tab on the right edge (desktop),
+  a bar at the bottom (mobile) – `FloatingActions` in `SiteChrome.tsx`.
+- Slides: admin → *Slide-ok* tab (table `slides`, migration 005, images in `uploads/slides`).
+  Home page: the slides replace the default hero; Termékek page: shown above the tiles.
+- Colours: light theme block at the end of `src/styles.css` (ecocomfort.hu greens/graphite on white).
 
 - The product menus and their submenus (categories) and the technical data shown per menu are defined in
   `src/lib/content/catalog.ts` (copy: `admin/lib/content/menu.ts` – keep them identical).
-- URLs: `/futoanyagok` → `/futoanyagok/fa-pellet` → `/futoanyagok/fa-pellet/<termek>` (3 clicks from the home page).
+- URLs: `/futoanyagok` → `/futoanyagok/futo-pelletek` → `/futoanyagok/a1-fapellet/<termek>` (3 clicks from the home page).
 - Old URLs (`/biomassza/...`, `/takarmany/...`, `/szerviz`, `/miert-minket`) redirect permanently (301) to the new pages.
 - SEO: `/sitemap.xml` (set `SITE_URL=https://www.your-domain.hu` in `.env` for production), JSON-LD for products,
   articles, breadcrumbs and the business; `public/robots.txt` (add your sitemap URL there).

@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const productSchema = z.object({
   id: z.string().uuid().optional(),
-  area: z.enum(["futoanyagok", "takarmanyok", "kalyhak-kandallok", "kiegeszitok"]),
+  area: z.enum(["futoanyagok", "takarmanyok", "futesi-megoldasok"]),
   category: z.string().min(1).max(80),
   name: z.string().trim().min(1).max(200),
   description: z.string().max(10000),

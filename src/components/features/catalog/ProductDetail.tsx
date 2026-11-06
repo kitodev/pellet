@@ -18,6 +18,7 @@ export function ProductDetail({ product }: { product: Product }) {
   const key = product.area as AreaKey;
   const area = useAreas()[key];
   const category = area.categories.find((c) => c.slug === product.category);
+  const section = category && area.sections.find((s) => s.slug === category.section);
   const photos = [
     uploadUrl("products", product.image_path),
     ...product.images.map((i) => uploadUrl("products", i)),
@@ -54,7 +55,17 @@ export function ProductDetail({ product }: { product: Product }) {
         <div className="container">
           <Breadcrumbs
             items={[
+              { label: "Termékek", to: "/termekek" },
               { label: area.label, to: "/$terulet", params: { terulet: key } },
+              ...(section && area.categories.filter((c) => c.section === section.slug).length > 1
+                ? [
+                    {
+                      label: section.name,
+                      to: "/$terulet/$kategoria",
+                      params: { terulet: key, kategoria: section.slug },
+                    },
+                  ]
+                : []),
               ...(category
                 ? [
                     {

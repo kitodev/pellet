@@ -4,6 +4,7 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
   ArrowRight,
+  Calculator,
   ChevronDown,
   ChevronRight,
   Leaf,
@@ -15,7 +16,7 @@ import {
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { groupedCategories, type AreaKey } from "@/lib/content/catalog";
+import { productAreas, sectionTarget } from "@/lib/content/catalog";
 import companyLogo from "@/assets/pellet-centrum-logo.jpg";
 import { jsonLd as toJsonLd } from "@/lib/utils/seo";
 
@@ -39,12 +40,22 @@ export function Brand() {
   );
 }
 
-const productAreas: AreaKey[] = ["futoanyagok", "takarmanyok", "kalyhak-kandallok", "kiegeszitok"];
+/** Main menu after Termékek (order from "Pelletcentrum weboldal váz.xlsx"). */
 const pagesAfter = [
-  { label: "Szolgáltatások", to: "/szolgaltatasok" },
+  { label: "Biomassza", to: "/biomassza" },
   { label: "Tudástár", to: "/blog" },
   { label: "Rólunk", to: "/rolunk" },
   { label: "Kapcsolat", to: "/kapcsolat" },
+  { label: "Árajánlatkérés", to: "/arajanlat" },
+] as const;
+/** Szolgáltatások submenu – anchors on /szolgaltatasok (ids in routes/szolgaltatasok.tsx). */
+const serviceLinks = [
+  { id: "telepites", label: "Fűtőkészülékek telepítése" },
+  { id: "beuzemeles", label: "Beüzemelés" },
+  { id: "karbantartas", label: "Karbantartás" },
+  { id: "szerviz", label: "Szerviz" },
+  { id: "szallitas", label: "Szállítás" },
+  { id: "tanacsadas", label: "Tanácsadás" },
 ] as const;
 const active = { className: "active" };
 
@@ -60,6 +71,7 @@ export function SiteHeader() {
   const [menu, setMenu] = useState(false);
   const [open, setOpen] = useState<string | null>(null);
   const { phone, href } = usePhone();
+  const isProductPath = productAreas.some((k) => path === `/${k}` || path.startsWith(`/${k}/`));
   useEffect(() => {
     setMenu(false);
     setOpen(null);
@@ -73,7 +85,9 @@ export function SiteHeader() {
             <Text id="SiteChrome.text.4">{"Természetes energia. Tudatos választás."}</Text>
           </span>
           <span className="top-location">
-            <Text id="SiteChrome.text.5">{"Fűtőanyag • Takarmány • Kályhák • Szerviz"}</Text>
+            <Text id="SiteChrome.text.5">
+              {"Tüzelőanyag • Takarmány • Fűtési megoldások • Szerviz"}
+            </Text>
           </span>
           {phone ? (
             <a href={href}>
@@ -98,6 +112,12 @@ export function SiteHeader() {
                 <Text id="SiteChrome.text.13">{"Mit keres? pl. pellet, lótáp, kályha…"}</Text>
               </span>
             </Link>
+            <Button asChild variant="outline" className="header-cta header-calc h-10 px-4 text-xs">
+              <Link to="/kalkulator">
+                <Calculator />
+                <Text id="SiteChrome.calc">{"Kazánkalkulátor"}</Text>
+              </Link>
+            </Button>
             <Button asChild className="header-cta h-10 px-5 text-xs">
               <Link to="/arajanlat">
                 <Text id="SiteChrome.text.8">{"Árajánlat"}</Text>
@@ -121,35 +141,50 @@ export function SiteHeader() {
             <Link to="/" activeOptions={{ exact: true }} activeProps={active}>
               <Text id="nav.home">{"Kezdőlap"}</Text>
             </Link>
-            {productAreas.map((key) => {
-              const a = areas[key];
-              return (
-                <div className="nav-dropdown" key={key}>
-                  <Link to="/$terulet" params={{ terulet: key }} activeProps={active}>
-                    {a.label} <ChevronDown size={12} />
-                  </Link>
-                  <div className="mega-menu">
-                    {groupedCategories(a).map((g) => (
-                      <div key={g.group || key} className="mega-col">
-                        <span className="dropdown-title">{g.group || a.label}</span>
-                        {g.categories.map((c) => (
-                          <Link
-                            key={c.slug}
-                            to="/$terulet/$kategoria"
-                            params={{ terulet: key, kategoria: c.slug }}
-                          >
-                            {c.name}
-                          </Link>
-                        ))}
-                      </div>
-                    ))}
-                    <Link className="mega-all" to="/$terulet" params={{ terulet: key }}>
-                      <Text id="nav.all">{"Összes termék"}</Text> <ArrowRight size={13} />
+            <div className="nav-dropdown products-dropdown">
+              <Link to="/termekek" activeProps={active} className={isProductPath ? "active" : ""}>
+                <Text id="nav.products">{"Termékek"}</Text> <ChevronDown size={12} />
+              </Link>
+              <div className="mega-menu products-mega">
+                {productAreas.map((key) => {
+                  const a = areas[key];
+                  return (
+                    <div key={key} className="mega-col">
+                      <Link className="dropdown-title" to="/$terulet" params={{ terulet: key }}>
+                        {a.label}
+                      </Link>
+                      {a.sections.map((sec) => (
+                        <Link
+                          key={sec.slug}
+                          to="/$terulet/$kategoria"
+                          params={{ terulet: key, kategoria: sectionTarget(a, sec.slug) }}
+                        >
+                          {sec.name}
+                        </Link>
+                      ))}
+                    </div>
+                  );
+                })}
+                <Link className="mega-all" to="/termekek">
+                  <Text id="nav.allProducts">{"Összes termékkategória"}</Text>{" "}
+                  <ArrowRight size={13} />
+                </Link>
+              </div>
+            </div>
+            <div className="nav-dropdown">
+              <Link to="/szolgaltatasok" activeProps={active}>
+                <Text id="nav.services">{"Szolgáltatások"}</Text> <ChevronDown size={12} />
+              </Link>
+              <div className="mega-menu services-mega">
+                <div className="mega-col">
+                  {serviceLinks.map((l) => (
+                    <Link key={l.id} to="/szolgaltatasok" hash={l.id}>
+                      {l.label}
                     </Link>
-                  </div>
+                  ))}
                 </div>
-              );
-            })}
+              </div>
+            </div>
             {pagesAfter.map((l) => (
               <Link key={l.to} to={l.to} activeProps={active}>
                 {l.label}
@@ -160,55 +195,71 @@ export function SiteHeader() {
         {menu && (
           <nav className="mobile-nav" aria-label="Mobil navigáció">
             <Link to="/">Kezdőlap</Link>
-            {productAreas.map((key) => {
-              const a = areas[key];
-              const expanded = open === key;
-              return (
-                <div key={key} className="mobile-group">
-                  <div className="mobile-group-head">
-                    <Link to="/$terulet" params={{ terulet: key }}>
-                      {a.label}
+            <div className="mobile-group">
+              <div className="mobile-group-head">
+                <Link to="/termekek">Termékek</Link>
+                <button
+                  type="button"
+                  aria-expanded={open === "products"}
+                  aria-label="Termékek almenü"
+                  onClick={() => setOpen(open === "products" ? null : "products")}
+                >
+                  <ChevronDown size={18} className={open === "products" ? "rotate-180" : ""} />
+                </button>
+              </div>
+              {open === "products" &&
+                productAreas.map((key) => (
+                  <div key={key} className="mobile-sub-group">
+                    <Link className="dropdown-title" to="/$terulet" params={{ terulet: key }}>
+                      {areas[key].label}
                     </Link>
-                    <button
-                      type="button"
-                      aria-expanded={expanded}
-                      aria-label={`${a.label} almenü`}
-                      onClick={() => setOpen(expanded ? null : key)}
-                    >
-                      <ChevronDown size={18} className={expanded ? "rotate-180" : ""} />
-                    </button>
-                  </div>
-                  {expanded &&
-                    groupedCategories(a).map((g) => (
-                      <div key={g.group || key} className="mobile-sub-group">
-                        {g.group && <span className="dropdown-title">{g.group}</span>}
-                        {g.categories.map((c) => (
-                          <Link
-                            key={c.slug}
-                            className="mobile-sub"
-                            to="/$terulet/$kategoria"
-                            params={{ terulet: key, kategoria: c.slug }}
-                          >
-                            {c.name}
-                          </Link>
-                        ))}
-                      </div>
+                    {areas[key].sections.map((sec) => (
+                      <Link
+                        key={sec.slug}
+                        className="mobile-sub"
+                        to="/$terulet/$kategoria"
+                        params={{ terulet: key, kategoria: sectionTarget(areas[key], sec.slug) }}
+                      >
+                        {sec.name}
+                      </Link>
                     ))}
-                </div>
-              );
-            })}
+                  </div>
+                ))}
+            </div>
+            <Link to="/szolgaltatasok">Szolgáltatások</Link>
             {pagesAfter.map((l) => (
               <Link key={l.to} to={l.to}>
                 {l.label}
               </Link>
             ))}
-            <Link to="/arajanlat" className="mobile-cta">
-              <Text id="SiteChrome.text.10">{"Árajánlatkérés"}</Text>
-            </Link>
           </nav>
         )}
       </header>
     </>
+  );
+}
+
+/**
+ * Árajánlatkérés + Kazánkalkulátor – always on screen: a tab on the right edge (desktop)
+ * and a bar at the bottom (mobile). Hidden on the two pages themselves.
+ */
+export function FloatingActions() {
+  const path = useLocation().pathname.replace(/\/$/, "");
+  return (
+    <div className="floating-actions" role="complementary" aria-label="Gyors elérés">
+      <Link to="/arajanlat" className={path === "/arajanlat" ? "fa-quote current" : "fa-quote"}>
+        <Mail size={18} />
+        <span>
+          <Text id="floating.quote">{"Árajánlatkérés"}</Text>
+        </span>
+      </Link>
+      <Link to="/kalkulator" className={path === "/kalkulator" ? "fa-calc current" : "fa-calc"}>
+        <Calculator size={18} />
+        <span>
+          <Text id="floating.calc">{"Kazánkalkulátor"}</Text>
+        </span>
+      </Link>
+    </div>
   );
 }
 
@@ -225,7 +276,9 @@ export function SiteFooter() {
           <Brand />
           <p>
             <Text id="footer.text.1">
-              {"Fűtőanyag, takarmány, kályhák és kiegészítők – egy helyen, szakértő segítséggel."}
+              {
+                "Tüzelőanyag, takarmány, kályhák, kazánok és kiegészítők – egy helyen, szakértő segítséggel."
+              }
             </Text>
           </p>
         </div>
@@ -233,6 +286,9 @@ export function SiteFooter() {
           <h3>
             <Text id="footer.products">{"Termékek"}</Text>
           </h3>
+          <Link to="/termekek">
+            <Text id="footer.allProducts">{"Összes termék"}</Text>
+          </Link>
           {productAreas.map((k) => (
             <Link key={k} to="/$terulet" params={{ terulet: k }}>
               {areas[k].label}
@@ -244,6 +300,7 @@ export function SiteFooter() {
             <Text id="footer.info">{"Információ"}</Text>
           </h3>
           <Link to="/szolgaltatasok">Szolgáltatások</Link>
+          <Link to="/biomassza">Biomassza</Link>
           <Link to="/blog">Tudástár</Link>
           <Link to="/rolunk">Rólunk</Link>
           <Link to="/kalkulator">Kazánkalkulátor</Link>

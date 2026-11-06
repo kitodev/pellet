@@ -18,7 +18,7 @@ export const Route = createFileRoute("/szolgaltatasok")({
   head: () =>
     pageHead(
       "Szolgáltatások – telepítés, szerviz, szállítás",
-      "Kályha telepítés, beüzemelés, karbantartás, szerviz, szállítás és tanácsadás pellet- és fatüzelésű kályhákhoz, kandallókhoz.",
+      "Fűtőkészülékek telepítése, beüzemelés, karbantartás, szerviz, szállítás és tanácsadás pellet- és biomassza-kályhákhoz, kazánokhoz.",
     ),
   component: Page,
 });
@@ -27,9 +27,9 @@ const services = [
   {
     id: "telepites",
     icon: Hammer,
-    t: "Kályha telepítés",
-    d: "Kályhák, kandallók és vízteres berendezések szakszerű telepítése, a füstcső és a kémény bekötésével.",
-    subject: "Kályha telepítés",
+    t: "Fűtőkészülékek telepítése",
+    d: "Pellet- és biomassza-kályhák, kazánok, vízteres berendezések szakszerű telepítése, a füstcső és a kémény bekötésével.",
+    subject: "Fűtőkészülékek telepítése",
   },
   {
     id: "beuzemeles",

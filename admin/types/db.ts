@@ -31,6 +31,20 @@ export type Product = {
 
 export type SiteText = { key: string; value: string };
 
+/** Carousel slide (website: home page / Termékek page). */
+export type Slide = {
+  id: string;
+  page: "home" | "termekek";
+  title: string;
+  subtitle: string;
+  button_label: string;
+  link_url: string;
+  /** Image file name in uploads/slides */
+  image_path: string;
+  published: boolean;
+  sort_order: number;
+};
+
 export type Review = {
   id: string;
   author: string;

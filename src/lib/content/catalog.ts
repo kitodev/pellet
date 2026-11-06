@@ -1,9 +1,13 @@
-// Product catalogue structure: areas (main menu items) → categories (submenu items).
+// Product catalogue structure (2026-11, "Pelletcentrum weboldal váz.xlsx"):
+//   area (Termékek → Tüzelőanyagok / Takarmányok / Fűtési megoldások)
+//     → section (e.g. Fűtő pelletek; shown as a tile)
+//       → category (e.g. A1 fapellet; products belong to these)
+// A category can also have a `subgroup` (Biomassza kazánok → Lakossági / Ipari / Nagyipari).
 // Products themselves live in MySQL; this file defines the menu, the URLs and
 // which technical data ("specs") each area's product page shows.
 // NOTE: keep in sync with admin/lib/content/menu.ts
 
-export type AreaKey = "futoanyagok" | "takarmanyok" | "kalyhak-kandallok" | "kiegeszitok";
+export type AreaKey = "futoanyagok" | "takarmanyok" | "futesi-megoldasok";
 
 export type SpecField = {
   key: string;
@@ -13,10 +17,22 @@ export type SpecField = {
   placeholder?: string;
 };
 
+/** A tile on the Termékek page; opens a page with the tiles of its categories. */
+export type Section = {
+  slug: string;
+  name: string;
+  short: string;
+  description: string;
+};
+
+/** Products are assigned to categories. */
 export type Category = {
   slug: string;
   name: string;
-  group?: string;
+  /** slug of the Section it belongs to */
+  section: string;
+  /** optional third level inside the section (e.g. "Lakossági") */
+  subgroup?: string;
   short: string;
   description: string;
   keywords?: string[];
@@ -28,16 +44,17 @@ export type Area = {
   intro: string;
   /** Technical data shown on every product page of this area, in this order. */
   specFields: SpecField[];
+  sections: Section[];
   categories: Category[];
 };
 
 export const areas: Record<AreaKey, Area> = {
   futoanyagok: {
     key: "futoanyagok",
-    label: "Fűtőanyagok",
-    title: "Fűtőanyagok – pellet, brikett, tűzifa",
+    label: "Tüzelőanyagok",
+    title: "Tüzelőanyagok – fűtő pelletek és brikettek",
     intro:
-      "Fapellet zsákos és raklapos kiszerelésben, prémium és ipari minőségben, valamint brikett, tűzifa és apríték.",
+      "A1 fapellet, ipari pellet és szalmapellet zsákos és raklapos kiszerelésben, valamint brikettek.",
     specFields: [
       {
         key: "futoertek",
@@ -69,79 +86,62 @@ export const areas: Record<AreaKey, Area> = {
         placeholder: "pl. 15 kg/zsák, 65 zsák/raklap",
       },
     ],
-    categories: [
+    sections: [
       {
-        slug: "fa-pellet",
-        group: "Pellet",
-        name: "Fa pellet",
-        short: "Természetes fapellet",
+        slug: "futo-pelletek",
+        name: "Fűtő pelletek",
+        short: "Fapellet, ipari és szalmapellet",
         description:
-          "Tiszta, kéregmentes faanyagból préselt pellet otthoni kályhákhoz és kazánokhoz.",
-        keywords: ["fapellet", "pellet"],
+          "Pellet otthoni kályhákhoz és kazánokhoz, valamint nagyobb fűtési rendszerekhez.",
       },
       {
-        slug: "premium-pellet",
-        group: "Pellet",
-        name: "Prémium pellet",
-        short: "Alacsony hamutartalom",
+        slug: "brikettek",
+        name: "Brikettek",
+        short: "Hosszú égésidő",
+        description: "Préselt brikett kályhákba, kandallókba és vegyes tüzelésű kazánokba.",
+      },
+    ],
+    categories: [
+      {
+        slug: "a1-fapellet",
+        section: "futo-pelletek",
+        name: "A1 fapellet",
+        short: "Prémium minőség",
         description:
-          "Kiemelt minőségű, alacsony hamutartalmú pellet a ritkább tisztításért és az egyenletes égésért.",
-        keywords: ["A1", "ENplus"],
+          "Tiszta, kéregmentes faanyagból préselt, alacsony hamutartalmú A1 minőségű fapellet otthoni kályhákhoz és kazánokhoz.",
+        keywords: ["fapellet", "pellet", "ENplus", "prémium", "zsák", "raklap"],
       },
       {
         slug: "ipari-pellet",
-        group: "Pellet",
+        section: "futo-pelletek",
         name: "Ipari pellet",
         short: "Nagy fogyasztóknak",
         description: "Pellet nagyobb kazánokhoz, üzemekhez és intézményekhez, nagy tételben.",
       },
       {
-        slug: "zsakos-pellet",
-        group: "Pellet",
-        name: "Pellet zsákos kiszerelésben",
-        short: "Könnyen tárolható",
-        description: "Zsákos pellet, amely kis helyen is jól tárolható és egyszerűen adagolható.",
-        keywords: ["zsák"],
-      },
-      {
-        slug: "raklapos-pellet",
-        group: "Pellet",
-        name: "Pellet raklapos kiszerelésben",
-        short: "Egész szezonra",
-        description: "Raklapos tételek, hogy a teljes fűtési szezonra előre bespájzolhasson.",
-        keywords: ["raklap"],
+        slug: "szalma-pellet",
+        section: "futo-pelletek",
+        name: "Szalma pellet",
+        short: "Gazdaságos tüzelőanyag",
+        description: "Szalmából préselt pellet erre alkalmas biomassza-kazánokhoz.",
+        keywords: ["szalmapellet"],
       },
       {
         slug: "brikett",
-        group: "Egyéb tüzelőanyagok",
+        section: "brikettek",
         name: "Brikett",
         short: "Hosszú égésidő",
         description:
-          "Préselt fabrikett kályhákba és kandallókba, egyenletes és hosszan tartó égéssel.",
-      },
-      {
-        slug: "tuzifa",
-        group: "Egyéb tüzelőanyagok",
-        name: "Tűzifa",
-        short: "Hagyományos fűtéshez",
-        description: "Tűzifa vegyes tüzelésű kazánokhoz, kályhákhoz és kandallókhoz.",
-        keywords: ["fa", "tüzifa"],
-      },
-      {
-        slug: "apritek",
-        group: "Egyéb tüzelőanyagok",
-        name: "Apríték",
-        short: "Nagy rendszerekhez",
-        description: "Faapríték apríték-tüzelésű kazánokhoz – elérhetőségről érdeklődjön.",
+          "Préselt brikett kályhákba és kandallókba, egyenletes és hosszan tartó égéssel.",
+        keywords: ["fabrikett"],
       },
     ],
   },
   takarmanyok: {
     key: "takarmanyok",
     label: "Takarmányok",
-    title: "Takarmányok",
-    intro:
-      "Pelletált és kiegészítő takarmányok lovaknak, szarvasmarhának, sertésnek, baromfinak, nyulaknak és más állatoknak.",
+    title: "Takarmányok – takarmány pelletek és ló müzlik",
+    intro: "Cukorrépa-, széna- és lucernapellet, valamint ló müzlik.",
     specFields: [
       { key: "osszetetel", label: "Összetétel", type: "textarea" },
       {
@@ -153,51 +153,63 @@ export const areas: Record<AreaKey, Area> = {
       { key: "kiszereles", label: "Kiszerelés", type: "text", placeholder: "pl. 25 kg/zsák" },
       { key: "felhasznalas", label: "Felhasználási javaslat", type: "textarea" },
     ],
+    sections: [
+      {
+        slug: "takarmany-pelletek",
+        name: "Takarmány pelletek",
+        short: "Cukorrépa, széna, lucerna",
+        description: "Pelletált takarmányok lovaknak és más haszonállatoknak.",
+      },
+      {
+        slug: "lo-muzlik",
+        name: "Ló müzlik",
+        short: "Lovaknak",
+        description: "Ízletes, kiegyensúlyozott müzlik lovak számára.",
+      },
+    ],
     categories: [
       {
-        slug: "lo-takarmany",
-        name: "Ló takarmány",
+        slug: "cukorrepa-pellet",
+        section: "takarmany-pelletek",
+        name: "Cukorrépa pellet",
+        short: "Energiadús",
+        description: "Cukorrépaszelet-pellet energiadús, rostban gazdag takarmányozáshoz.",
+        keywords: ["cukorrépa", "répaszelet"],
+      },
+      {
+        slug: "szena-pellet",
+        section: "takarmany-pelletek",
+        name: "Széna pellet",
+        short: "Rostban gazdag",
+        description: "Pelletált széna, amely kis helyen tárolható és pormentesen etethető.",
+        keywords: ["széna"],
+      },
+      {
+        slug: "lucerna-pellet",
+        section: "takarmany-pelletek",
+        name: "Lucerna pellet",
+        short: "Magas fehérjetartalom",
+        description: "Lucernapellet lovaknak és más állatoknak, magas fehérjetartalommal.",
+        keywords: ["lucerna", "ló"],
+      },
+      {
+        slug: "lo-muzli",
+        section: "lo-muzlik",
+        name: "Ló müzli",
         short: "Lovaknak",
-        description: "Pelletált takarmányok, lucernapellet és kiegészítők lovak számára.",
-        keywords: ["ló", "lucerna"],
-      },
-      {
-        slug: "szarvasmarha-takarmany",
-        name: "Szarvasmarha takarmány",
-        short: "Szarvasmarháknak",
-        description: "Takarmányok és kiegészítők tejelő és hústermelő szarvasmarhákhoz.",
-        keywords: ["marha", "tehén"],
-      },
-      {
-        slug: "sertes-takarmany",
-        name: "Sertés takarmány",
-        short: "Sertéseknek",
-        description: "Takarmányok a sertéstartás különböző szakaszaihoz.",
-        keywords: ["disznó", "malac"],
-      },
-      {
-        slug: "baromfi-takarmany",
-        name: "Baromfi takarmány",
-        short: "Baromfinak",
-        description: "Tápok tojótyúkoknak, brojlereknek és egyéb baromfinak.",
-        keywords: ["tyúk", "csirke", "tojó"],
-      },
-      {
-        slug: "nyul-es-egyeb",
-        name: "Nyúl és egyéb állatok",
-        short: "Kisállatoknak",
-        description: "Takarmány nyulaknak és más kisállatoknak, valamint alom és vitaminok.",
-        keywords: ["nyúl", "alom", "vitamin"],
+        description: "Müzlik lovak napi takarmányozásához és kiegészítéséhez.",
+        keywords: ["ló", "lótáp", "müzli"],
       },
     ],
   },
-  "kalyhak-kandallok": {
-    key: "kalyhak-kandallok",
-    label: "Kályhák és kandallók",
-    title: "Kályhák és kandallók",
+  "futesi-megoldasok": {
+    key: "futesi-megoldasok",
+    label: "Fűtési megoldások",
+    title: "Fűtési megoldások – pellet kályhák, kazánok, kiegészítők",
     intro:
-      "Pellet- és fatüzelésű kályhák, kandallók, vízteres kályhák és ipari berendezések – szakszerű telepítéssel.",
+      "Pellet tüzelésű kályhák és kazánok, lakossági és ipari biomassza-kazánok, valamint füstcsövek, hamuporszívók és alkatrészek.",
     specFields: [
+      { key: "gyarto", label: "Gyártó", type: "text", placeholder: "pl. a gyártó neve" },
       {
         key: "teljesitmeny",
         label: "Teljesítmény",
@@ -214,58 +226,6 @@ export const areas: Record<AreaKey, Area> = {
       },
       { key: "uzemanyag", label: "Üzemanyag típusa", type: "text", placeholder: "pl. fapellet" },
       { key: "hatasfok", label: "Hatásfok", unit: "%", type: "number" },
-      {
-        key: "muszaki",
-        label: "Műszaki adatok",
-        type: "textarea",
-        placeholder: "Méretek, tömeg, füstcső-csatlakozás, tartály mérete…",
-      },
-    ],
-    categories: [
-      {
-        slug: "pellet-kalyhak",
-        name: "Pellet kályhák",
-        short: "Automatikus fűtés",
-        description: "Programozható pelletkályhák egyenletes, kényelmes fűtéshez.",
-        keywords: ["kazán", "pelletkályha"],
-      },
-      {
-        slug: "fatuzelesu-kalyhak",
-        name: "Fatüzelésű kályhák",
-        short: "Hagyományos meleg",
-        description: "Fatüzelésű kályhák tűzifához és brikett égetéséhez.",
-        keywords: ["kályha", "kandalló"],
-      },
-      {
-        slug: "kandallok",
-        name: "Kandallók",
-        short: "Látványos tűz",
-        description: "Kandallók és kandallóbetétek, amelyek fűtenek és hangulatot teremtenek.",
-      },
-      {
-        slug: "vizteres-kalyhak",
-        name: "Vízteres kályhák",
-        short: "Központi fűtéshez",
-        description:
-          "Vízteres kályhák, amelyek a radiátoros vagy padlófűtési rendszert is ellátják.",
-        keywords: ["vízteres", "radiátor"],
-      },
-      {
-        slug: "ipari-berendezesek",
-        name: "Ipari berendezések",
-        short: "Nagy teljesítmény",
-        description: "Nagy teljesítményű kazánok és berendezések üzemeknek, gazdaságoknak.",
-        keywords: ["kazán", "ipari"],
-      },
-    ],
-  },
-  kiegeszitok: {
-    key: "kiegeszitok",
-    label: "Kiegészítők",
-    title: "Kiegészítők",
-    intro:
-      "Pellettartályok, kéményelemek, füstcsövek, tisztítóeszközök, alkatrészek, termosztátok és ventilátorok.",
-    specFields: [
       { key: "meret", label: "Méret / átmérő", type: "text", placeholder: "pl. Ø 80 mm, 1 m" },
       { key: "anyag", label: "Anyag", type: "text", placeholder: "pl. saválló acél" },
       {
@@ -274,91 +234,259 @@ export const areas: Record<AreaKey, Area> = {
         type: "text",
         placeholder: "Mely kályhákhoz, kazánokhoz",
       },
-      { key: "muszaki", label: "Műszaki adatok", type: "textarea" },
+      {
+        key: "muszaki",
+        label: "Műszaki adatok",
+        type: "textarea",
+        placeholder: "Méretek, tömeg, füstcső-csatlakozás, tartály mérete…",
+      },
+    ],
+    sections: [
+      {
+        slug: "pellet-kalyhak",
+        name: "Pellet tüzelésű kályhák",
+        short: "Levegős, vízteres, légcsatornázható",
+        description: "Programozható pelletkályhák egyenletes, kényelmes fűtéshez.",
+      },
+      {
+        slug: "pellet-kazanok",
+        name: "Pellet tüzelésű kazánok",
+        short: "Központi fűtéshez",
+        description: "Pellet kazánok radiátoros és padlófűtési rendszerekhez, gyártók szerint.",
+      },
+      {
+        slug: "biomassza-kazanok",
+        name: "Biomassza tüzelésű kazánok",
+        short: "Lakossági, ipari, nagyipari",
+        description:
+          "Biomassza-kazánok vízteres és légbefúvós kivitelben, családi házaktól az ipari létesítményekig.",
+      },
+      {
+        slug: "kiegeszitok",
+        name: "Kiegészítők",
+        short: "Füstcsövek, hamuporszívók, alkatrészek",
+        description: "Minden, ami a biztonságos és kényelmes fűtéshez kell.",
+      },
     ],
     categories: [
       {
-        slug: "pellet-tartalyok",
-        name: "Pellet tartályok",
-        short: "Tárolás",
-        description: "Pellettárolók és -tartályok a kényelmes, tiszta tároláshoz.",
+        slug: "levegos-pellet-kalyhak",
+        section: "pellet-kalyhak",
+        name: "Levegős pellet kályhák",
+        short: "A helyiség levegőjét fűti",
+        description: "Pelletkályhák, amelyek közvetlenül a helyiség levegőjét melegítik.",
+        keywords: ["pelletkályha", "kályha"],
       },
       {
-        slug: "kemeny-elemek",
-        name: "Kémény elemek",
-        short: "Kéményrendszerek",
-        description: "Kéményrendszerek és kéményelemek szilárd tüzelésű berendezésekhez.",
+        slug: "vizteres-pellet-kalyhak",
+        section: "pellet-kalyhak",
+        name: "Vízteres pellet kályhák",
+        short: "Központi fűtéshez",
+        description:
+          "Vízteres pelletkályhák, amelyek a radiátoros vagy padlófűtési rendszert is ellátják.",
+        keywords: ["vízteres", "radiátor", "kályha"],
+      },
+      {
+        slug: "legcsatornazhato-pellet-kalyhak",
+        section: "pellet-kalyhak",
+        name: "Légcsatornázható pellet kályhák",
+        short: "Több helyiség fűtése",
+        description: "Pelletkályhák, amelyek légcsatornákon keresztül több helyiséget is fűtenek.",
+        keywords: ["légcsatorna", "kályha"],
+      },
+      {
+        slug: "pellet-kazanok-gyartok",
+        section: "pellet-kazanok",
+        name: "Pellet kazánok",
+        short: "Gyártók szerint",
+        description: "Pellet tüzelésű kazánok – a termékeket gyártók szerint csoportosítjuk.",
+        keywords: ["kazán", "pelletkazán"],
+      },
+      {
+        slug: "lakossagi-vizteres",
+        section: "biomassza-kazanok",
+        subgroup: "Lakossági",
+        name: "Lakossági vízteres kazánok",
+        short: "Családi házakhoz",
+        description: "Vízteres biomassza-kazánok családi házak központi fűtéséhez.",
+        keywords: ["kazán", "biomassza"],
+      },
+      {
+        slug: "lakossagi-legbefuvos",
+        section: "biomassza-kazanok",
+        subgroup: "Lakossági",
+        name: "Lakossági légbefúvós kazánok",
+        short: "Meleg levegős fűtés",
+        description: "Légbefúvós biomassza-kazánok lakások, házak, műhelyek fűtésére.",
+        keywords: ["kazán", "biomassza", "hőlégfúvó"],
+      },
+      {
+        slug: "ipari-vizteres",
+        section: "biomassza-kazanok",
+        subgroup: "Ipari",
+        name: "Ipari vízteres kazánok",
+        short: "Üzemeknek, gazdaságoknak",
+        description: "Nagyobb teljesítményű vízteres biomassza-kazánok üzemeknek és gazdaságoknak.",
+        keywords: ["kazán", "ipari"],
+      },
+      {
+        slug: "ipari-legbefuvos",
+        section: "biomassza-kazanok",
+        subgroup: "Ipari",
+        name: "Ipari légbefúvós kazánok",
+        short: "Csarnokok fűtése",
+        description: "Légbefúvós biomassza-kazánok csarnokok, üzemek, fóliasátrak fűtésére.",
+        keywords: ["kazán", "ipari"],
+      },
+      {
+        slug: "nagyipari-vizteres",
+        section: "biomassza-kazanok",
+        subgroup: "Nagyipari",
+        name: "Nagyipari vízteres kazánok",
+        short: "Nagy teljesítmény",
+        description: "Nagy teljesítményű vízteres biomassza-kazánok ipari létesítményekhez.",
+        keywords: ["kazán", "nagyipari"],
+      },
+      {
+        slug: "nagyipari-kazanok",
+        section: "biomassza-kazanok",
+        subgroup: "Nagyipari",
+        name: "Nagyipari kazánok",
+        short: "Egyedi rendszerek",
+        description: "Nagyipari biomassza-kazánrendszerek egyedi méretezéssel.",
+        keywords: ["kazán", "nagyipari"],
       },
       {
         slug: "fustcsovek",
+        section: "kiegeszitok",
         name: "Füstcsövek",
         short: "Bekötés",
         description: "Füstcsövek, könyökök és idomok a biztonságos füstgáz-elvezetéshez.",
-        keywords: ["füstgáz"],
+        keywords: ["füstgáz", "kémény"],
       },
       {
-        slug: "tisztito-eszkozok",
-        name: "Tisztító eszközök",
-        short: "Karbantartás",
-        description: "Hamuporszívók, kefék és tisztítószerek a rendszeres karbantartáshoz.",
-        keywords: ["hamuporszívó", "porszívó", "kefe"],
+        slug: "hamu-porszivok",
+        section: "kiegeszitok",
+        name: "Hamu porszívók",
+        short: "Tisztítás",
+        description: "Hamuporszívók a kályhák és kazánok gyors, tiszta karbantartásához.",
+        keywords: ["hamuporszívó", "porszívó", "tisztítás"],
       },
       {
         slug: "alkatreszek",
+        section: "kiegeszitok",
         name: "Alkatrészek",
         short: "Pótlás, javítás",
         description:
           "Alkatrészek kályhákhoz és kazánokhoz: tömítések, égőfejek, rostélyok és egyebek.",
-      },
-      {
-        slug: "termosztatok",
-        name: "Termosztátok",
-        short: "Szabályozás",
-        description: "Szobatermosztátok és vezérlők a takarékos, kényelmes fűtéshez.",
-      },
-      {
-        slug: "ventilatorok",
-        name: "Ventilátorok",
-        short: "Hőelosztás",
-        description: "Kályhaventilátorok és légtechnikai eszközök a meleg jobb elosztásához.",
       },
     ],
   },
 };
 
 export const areaKeys = Object.keys(areas) as AreaKey[];
+/** Order of the product areas on the Termékek page and in the TERMÉKEK menu. */
+export const productAreas: AreaKey[] = ["futoanyagok", "takarmanyok", "futesi-megoldasok"];
 export const isAreaKey = (value: string): value is AreaKey => value in areas;
 
 export function findCategory(area: AreaKey, slug: string) {
   return areas[area].categories.find((c) => c.slug === slug);
 }
+export function findSection(area: AreaKey, slug: string) {
+  return areas[area].sections.find((s) => s.slug === slug);
+}
 
-/** Categories grouped for menus: [{ group: 'Pellet', categories: [...] }, …] (group '' = ungrouped). */
-export function groupedCategories(area: Area) {
-  const groups: { group: string; categories: Category[] }[] = [];
-  for (const c of area.categories) {
-    const name = c.group ?? "";
-    const existing = groups.find((g) => g.group === name);
+/** Categories of a section, grouped by subgroup: [{ subgroup: 'Lakossági', categories }] ('' = none). */
+export function subgroupsOf(area: Pick<Area, "categories">, section: string) {
+  const groups: { subgroup: string; categories: Category[] }[] = [];
+  for (const c of area.categories.filter((x) => x.section === section)) {
+    const name = c.subgroup ?? "";
+    const existing = groups.find((g) => g.subgroup === name);
     if (existing) existing.categories.push(c);
-    else groups.push({ group: name, categories: [c] });
+    else groups.push({ subgroup: name, categories: [c] });
   }
   return groups;
 }
 
+/** Categories grouped by section, for menus and the admin: [{ group: 'Fűtő pelletek', categories }]. */
+export function groupedCategories(area: Pick<Area, "sections" | "categories">) {
+  return area.sections
+    .map((s) => ({
+      group: s.name,
+      section: s,
+      categories: area.categories.filter((c) => c.section === s.slug),
+    }))
+    .filter((g) => g.categories.length);
+}
+
+/**
+ * Where a section tile links to: a section with a single category opens that category
+ * directly (e.g. Brikettek → Brikett); otherwise the section page with the category tiles.
+ */
+export function sectionTarget(area: Pick<Area, "categories">, section: string) {
+  const cats = area.categories.filter((c) => c.section === section);
+  return cats.length === 1 ? cats[0]!.slug : section;
+}
+
 /** Old URLs (before the 2026 menu redesign) → new area/category. */
 export const legacyCategories: Record<string, { area: AreaKey; category?: string }> = {
-  biomassza: { area: "futoanyagok" },
-  "biomassza/pellet": { area: "futoanyagok", category: "fa-pellet" },
-  "biomassza/kazanok": { area: "kalyhak-kandallok", category: "pellet-kalyhak" },
-  "biomassza/porszivok": { area: "kiegeszitok", category: "tisztito-eszkozok" },
-  "biomassza/fustgaz-elvezetes": { area: "kiegeszitok", category: "fustcsovek" },
-  "biomassza/tartozekok": { area: "kiegeszitok", category: "pellet-tartalyok" },
+  "biomassza/pellet": { area: "futoanyagok", category: "a1-fapellet" },
+  "biomassza/kazanok": { area: "futesi-megoldasok", category: "pellet-kalyhak" },
+  "biomassza/porszivok": { area: "futesi-megoldasok", category: "hamu-porszivok" },
+  "biomassza/fustgaz-elvezetes": { area: "futesi-megoldasok", category: "fustcsovek" },
+  "biomassza/tartozekok": { area: "futesi-megoldasok", category: "kiegeszitok" },
   takarmany: { area: "takarmanyok" },
-  "takarmany/takarmanypellet": { area: "takarmanyok", category: "lo-takarmany" },
-  "takarmany/alom": { area: "takarmanyok", category: "nyul-es-egyeb" },
-  "takarmany/vitaminok": { area: "takarmanyok", category: "nyul-es-egyeb" },
-  "takarmany/kiegeszitok": { area: "kiegeszitok", category: "alkatreszek" },
+  "takarmany/takarmanypellet": { area: "takarmanyok", category: "takarmany-pelletek" },
+  "takarmany/alom": { area: "takarmanyok" },
+  "takarmany/vitaminok": { area: "takarmanyok" },
+  "takarmany/kiegeszitok": { area: "futesi-megoldasok", category: "alkatreszek" },
 };
+
+/**
+ * Areas / categories renamed in the 2026-11 restructure (xlsx) → their new place,
+ * so old links (and product URLs) keep working with a permanent redirect.
+ */
+export const renamedAreas: Record<string, AreaKey> = {
+  "kalyhak-kandallok": "futesi-megoldasok",
+  kiegeszitok: "futesi-megoldasok",
+};
+export const renamedCategories: Record<string, { area: AreaKey; category?: string }> = {
+  "futoanyagok/fa-pellet": { area: "futoanyagok", category: "a1-fapellet" },
+  "futoanyagok/premium-pellet": { area: "futoanyagok", category: "a1-fapellet" },
+  "futoanyagok/zsakos-pellet": { area: "futoanyagok", category: "a1-fapellet" },
+  "futoanyagok/raklapos-pellet": { area: "futoanyagok", category: "a1-fapellet" },
+  "futoanyagok/tuzifa": { area: "futoanyagok" },
+  "futoanyagok/apritek": { area: "futoanyagok" },
+  "takarmanyok/lo-takarmany": { area: "takarmanyok", category: "lucerna-pellet" },
+  "takarmanyok/szarvasmarha-takarmany": { area: "takarmanyok" },
+  "takarmanyok/sertes-takarmany": { area: "takarmanyok" },
+  "takarmanyok/baromfi-takarmany": { area: "takarmanyok" },
+  "takarmanyok/nyul-es-egyeb": { area: "takarmanyok" },
+  "kalyhak-kandallok/pellet-kalyhak": { area: "futesi-megoldasok", category: "pellet-kalyhak" },
+  "kalyhak-kandallok/vizteres-kalyhak": {
+    area: "futesi-megoldasok",
+    category: "vizteres-pellet-kalyhak",
+  },
+  "kalyhak-kandallok/ipari-berendezesek": {
+    area: "futesi-megoldasok",
+    category: "biomassza-kazanok",
+  },
+  "kiegeszitok/fustcsovek": { area: "futesi-megoldasok", category: "fustcsovek" },
+  "kiegeszitok/kemeny-elemek": { area: "futesi-megoldasok", category: "fustcsovek" },
+  "kiegeszitok/tisztito-eszkozok": { area: "futesi-megoldasok", category: "hamu-porszivok" },
+  "kiegeszitok/alkatreszek": { area: "futesi-megoldasok", category: "alkatreszek" },
+};
+
+/** New place of an old /area/category URL (null = it is a current one / unknown). */
+export function renamedTarget(area: string, category?: string) {
+  if (category) {
+    const hit = renamedCategories[`${area}/${category}`];
+    if (hit) return hit;
+  }
+  const newArea = renamedAreas[area];
+  if (newArea) return { area: newArea };
+  return null;
+}
 
 export type SearchHit = {
   title: string;
@@ -367,6 +495,11 @@ export type SearchHit = {
   params?: Record<string, string>;
 };
 const pages: SearchHit[] = [
+  {
+    title: "Termékek",
+    text: "Összes termékkategória: fűtőanyag, pellet, takarmány, kályha, kandalló, kiegészítő",
+    to: "/termekek",
+  },
   {
     title: "Szolgáltatások",
     text: "Kályha telepítés, karbantartás, szerviz, szállítás, beüzemelés, tanácsadás",
@@ -389,6 +522,11 @@ const pages: SearchHit[] = [
     to: "/kalkulator",
   },
   { title: "Árajánlatkérés", text: "Ajánlat, ár, rendelés", to: "/arajanlat" },
+  {
+    title: "Biomassza",
+    text: "Biomassza fűtés, megújuló energia, pellet, brikett, biomassza-kazán",
+    to: "/biomassza",
+  },
 ];
 
 const norm = (s: string) => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
@@ -404,6 +542,13 @@ export function searchSite(query: string): SearchHit[] {
       to: "/$terulet",
       params: { terulet: area.key },
     });
+    for (const sec of area.sections)
+      hits.push({
+        title: `${sec.name} – ${area.label}`,
+        text: `${sec.short} ${sec.description}`,
+        to: "/$terulet/$kategoria",
+        params: { terulet: area.key, kategoria: sec.slug },
+      });
     for (const c of area.categories)
       hits.push({
         title: `${c.name} – ${area.label}`,

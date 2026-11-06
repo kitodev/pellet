@@ -11,7 +11,7 @@ describe("editable products", () => {
     expect(
       productSchema.parse({
         area: "futoanyagok",
-        category: "fa-pellet",
+        category: "a1-fapellet",
         name: "Fapellet",
         description: "",
         image_path: "",
@@ -21,7 +21,7 @@ describe("editable products", () => {
     expect(
       productSchema.parse({
         area: "takarmanyok",
-        category: "lo-takarmany",
+        category: "lucerna-pellet",
         name: "Alom",
         description: "",
         image_path: "",

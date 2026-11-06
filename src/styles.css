@@ -2437,3 +2437,533 @@ iframe {
     hyphens: manual;
   }
 }
+
+/* =====================================================================
+   2026-11: LIGHT THEME – same ecocomfort.hu colours (#4b7b0a green, #a2c65b light green,
+   #333 / #2b2b2b graphite), but on a white page. Dark is kept only for a few bands
+   (top bar, footer, home hero, delivery band). To go back to the dark look, delete this block.
+   ===================================================================== */
+:root {
+  --background: #ffffff;
+  --foreground: #333333;
+  --secondary: #f5f6f1;
+  --muted: #f1f3ec;
+  --muted-foreground: #5f6358;
+  --accent: #e9edcf;
+  --border: #e3e5dd;
+  --card: #ffffff;
+  /* green that is readable on white (the light green #a2c65b is only used on dark bands) */
+  --highlight: #4b7b0a;
+  --shadow: 0 10px 30px rgb(51 51 51 / 0.1);
+  --page-hero-bg: linear-gradient(120deg, #f3f6e8 0%, #e9edcf 100%);
+}
+/* Bands that stay dark: restore the dark tokens inside them */
+.topbar,
+.footer,
+.pellet-hero,
+.pellet-trust,
+.offer-heading,
+.pellet-photo-caption,
+.badge:not(.sale) {
+  --background: #333333;
+  --foreground: #ffffff;
+  --muted: #414141;
+  --muted-foreground: #d0d0d0;
+  --border: #585858;
+  --accent: #45483a;
+  --highlight: #a2c65b;
+}
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+.site-header {
+  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 2px 12px rgb(51 51 51 / 0.06);
+}
+.site-header .brand-name small {
+  color: var(--muted-foreground);
+}
+/* main menu: white bar, graphite text, green active line */
+.main-nav {
+  background: #ffffff;
+  border-top: 1px solid var(--border);
+}
+.main-nav a {
+  color: var(--foreground);
+  position: relative;
+}
+.main-nav > .container > a.active::after,
+.main-nav .nav-dropdown > a.active::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 0;
+  height: 3px;
+  background: var(--primary);
+}
+.main-nav a:hover,
+.main-nav a.active {
+  color: var(--primary);
+}
+.mega-menu {
+  background: #ffffff;
+  border-top-color: var(--primary);
+}
+/* TERMÉKEK mega menu: the four product areas side by side */
+.products-mega {
+  flex-wrap: wrap;
+  min-width: 860px;
+  column-gap: 28px;
+}
+.products-mega .mega-col {
+  min-width: 180px;
+}
+.main-nav .products-mega .dropdown-title {
+  height: auto;
+  padding: 0 0 8px;
+  margin-bottom: 4px;
+  font-size: 11px;
+  color: var(--primary);
+  border-bottom: 2px solid var(--accent);
+}
+.main-nav .products-mega a:not(.dropdown-title, .mega-all) {
+  font-size: 13px;
+  padding: 5px 0;
+}
+.main-nav .mega-menu a:hover,
+.main-nav .mega-menu .mega-all {
+  color: var(--primary);
+}
+.mobile-nav {
+  background: #ffffff;
+}
+.mobile-sub-group {
+  border-left-color: var(--primary);
+}
+.mobile-sub-group .dropdown-title {
+  padding: 4px 0 0;
+  color: var(--primary);
+}
+.header-search {
+  background: var(--secondary);
+}
+.header-search:hover {
+  border-color: var(--primary);
+}
+.header-calc svg {
+  color: var(--primary);
+}
+/* page title band: light green instead of graphite */
+.page-hero {
+  background: var(--page-hero-bg);
+  color: var(--foreground);
+  border-bottom: 1px solid var(--border);
+}
+.page-hero .eyebrow {
+  color: var(--primary);
+}
+.page-hero p,
+.page-hero .breadcrumbs ol {
+  color: var(--muted-foreground);
+}
+.breadcrumbs a:hover {
+  color: var(--primary);
+}
+.sale-section {
+  background: linear-gradient(180deg, #f6f1e7, #ffffff);
+}
+.cta-band .cta-actions > a:first-child {
+  background: #2b2b2b;
+}
+#rolunk .eyebrow,
+#rolunk .check-list svg,
+#rolunk a,
+.calc-panel .text-primary,
+.calc-panel label strong {
+  color: var(--primary);
+}
+.cta-band .cta-actions > a:nth-child(2) {
+  background: transparent;
+  color: #ffffff;
+  border-color: rgb(255 255 255 / 0.7);
+}
+.cta-band .cta-actions > a:nth-child(2):hover {
+  background: rgb(255 255 255 / 0.12);
+}
+.footer .footer-grid a:hover {
+  color: var(--highlight);
+}
+
+/* ===== Slides (admin: Slide-ok) ===== */
+.slideshow {
+  position: relative;
+  background: #2b2b2b;
+  overflow: hidden;
+}
+.slideshow-viewport {
+  overflow: hidden;
+}
+.slideshow-track {
+  display: flex;
+  touch-action: pan-y pinch-zoom;
+}
+.slide {
+  position: relative;
+  flex: 0 0 100%;
+  min-width: 0;
+  height: clamp(320px, 42vw, 560px);
+}
+.slide-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.slide-content {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.slide-panel {
+  max-width: 520px;
+  padding: 28px 32px;
+  background: rgb(43 43 43 / 0.78);
+  border-left: 5px solid #a2c65b;
+  color: #ffffff;
+  border-radius: 4px;
+}
+.slide-panel h1,
+.slide-panel h2 {
+  margin: 0 0 10px;
+  font-size: 42px;
+  line-height: 1.05;
+  text-transform: none;
+  color: #ffffff;
+}
+.slide-panel p {
+  margin: 0 0 18px;
+  color: #e6e6e6;
+  line-height: 1.6;
+}
+.slide-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--primary);
+  color: #ffffff;
+  font-weight: 800;
+  padding: 11px 20px;
+  border-radius: 4px;
+  transition: filter 0.2s;
+}
+.slide-button:hover {
+  filter: brightness(1.12);
+}
+.slide-arrow {
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.85);
+  color: #333333;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+}
+.slide-arrow.prev {
+  left: 16px;
+}
+.slide-arrow.next {
+  right: 64px; /* leaves room for the floating Árajánlat / Kalkulátor tab */
+}
+.slide-arrow:hover {
+  background: #ffffff;
+  color: var(--primary);
+}
+.slide-dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 14px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+.slide-dots button {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.55);
+  cursor: pointer;
+  transition:
+    width 0.2s,
+    background 0.2s;
+}
+.slide-dots button[aria-current="true"] {
+  width: 26px;
+  border-radius: 5px;
+  background: #a2c65b;
+}
+
+/* ===== /termekek – category tiles ===== */
+.area-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 36px;
+}
+.area-jump a {
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--foreground);
+  transition:
+    border-color 0.2s,
+    color 0.2s;
+}
+.area-jump a:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.tile-area {
+  scroll-margin-top: 150px;
+}
+.tile-area + .tile-area {
+  margin-top: 52px;
+}
+.tile-area-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--accent);
+}
+.tile-area-head h2 {
+  margin: 0;
+}
+.tile-area-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--primary);
+  white-space: nowrap;
+}
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+.product-tile {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  color: var(--foreground);
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s,
+    border-color 0.2s;
+}
+.product-tile:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+  border-color: var(--primary);
+}
+.product-tile-img {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--muted);
+}
+.product-tile-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.35s;
+}
+.product-tile:hover .product-tile-img img {
+  transform: scale(1.05);
+}
+.product-tile-body {
+  padding: 14px 16px 16px;
+  display: grid;
+  gap: 6px;
+  text-align: center;
+}
+.product-tile-body h3 {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.15;
+}
+.product-tile-body span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+/* ===== Árajánlatkérés + Kazánkalkulátor – always on screen ===== */
+.floating-actions {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  translate: 0 -50%;
+  z-index: 35;
+  display: grid;
+  gap: 6px;
+}
+.floating-actions a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 6px 0 0 6px;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 13px;
+  box-shadow: var(--shadow);
+  /* collapsed to the icon, opens on hover */
+  max-width: 46px;
+  overflow: hidden;
+  white-space: nowrap;
+  transition:
+    max-width 0.25s,
+    filter 0.2s;
+}
+.floating-actions a:hover,
+.floating-actions a:focus-visible {
+  max-width: 220px;
+}
+.floating-actions svg {
+  flex-shrink: 0;
+}
+.floating-actions span {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.floating-actions a:hover span,
+.floating-actions a:focus-visible span {
+  opacity: 1;
+}
+.floating-actions .fa-quote {
+  background: var(--primary);
+}
+.floating-actions .fa-calc {
+  background: #2b2b2b;
+}
+.floating-actions a.current {
+  display: none;
+}
+
+@media (max-width: 1180px) {
+  .products-mega {
+    min-width: 0;
+  }
+  .header-calc {
+    display: none;
+  }
+}
+@media (max-width: 1000px) {
+  .tile-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .slide-panel h1,
+  .slide-panel h2 {
+    font-size: 32px;
+  }
+}
+@media (max-width: 700px) {
+  .tile-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .product-tile-body h3 {
+    font-size: 16px;
+  }
+  .slide {
+    height: 420px;
+  }
+  .slide-content {
+    align-items: flex-end;
+    padding-bottom: 44px;
+  }
+  .slide-panel {
+    padding: 18px 20px;
+  }
+  .slide-panel h1,
+  .slide-panel h2 {
+    font-size: 26px;
+  }
+  .slide-arrow {
+    display: none;
+  }
+  /* mobile: a two-button bar at the bottom of the screen */
+  .floating-actions {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    translate: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    box-shadow: 0 -4px 16px rgb(0 0 0 / 0.12);
+  }
+  .floating-actions a,
+  .floating-actions a:hover {
+    max-width: none;
+    justify-content: center;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 13px 8px;
+  }
+  .floating-actions span {
+    opacity: 1;
+  }
+  .floating-actions a.current {
+    display: flex;
+    filter: brightness(0.85);
+  }
+  body {
+    padding-bottom: 50px;
+  }
+}
+
+/* 2026-11 restructure: three product areas, Biomassza page */
+.area-tiles {
+  grid-template-columns: repeat(3, 1fr);
+}
+.reason-grid.four {
+  grid-template-columns: repeat(4, 1fr);
+}
+.page-actions {
+  margin-top: 22px;
+}
+@media (max-width: 1000px) {
+  .reason-grid.four {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 700px) {
+  .area-tiles,
+  .reason-grid.four {
+    grid-template-columns: 1fr;
+  }
+}

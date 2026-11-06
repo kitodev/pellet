@@ -19,10 +19,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { ProductGrid } from "@/components/features/catalog/ProductCard";
 import { areaImage } from "@/components/features/catalog/images";
-import { areaKeys } from "@/lib/content/catalog";
+import { productAreas } from "@/lib/content/catalog";
 import { formatDate } from "@/lib/utils/format";
 
-/** Rövid bemutatkozás + the four product areas (≤ 3 clicks to any product). */
+/** Rövid bemutatkozás + the three product areas (≤ 3 clicks to any product). */
 export function IntroSection() {
   const areas = useAreas();
   const products = useProducts();
@@ -49,7 +49,7 @@ export function IntroSection() {
           </p>
         </div>
         <div className="area-tiles">
-          {areaKeys.map((k) => {
+          {productAreas.map((k) => {
             const a = areas[k];
             const count = products.filter((p) => p.area === k).length;
             return (
@@ -58,10 +58,9 @@ export function IntroSection() {
                 <div>
                   <h3>{a.label}</h3>
                   <ul>
-                    {a.categories.slice(0, 4).map((c) => (
-                      <li key={c.slug}>{c.name}</li>
+                    {a.sections.map((s) => (
+                      <li key={s.slug}>{s.name}</li>
                     ))}
-                    {a.categories.length > 4 && <li>+{a.categories.length - 4}</li>}
                   </ul>
                   <span className="choice-cta">
                     {count ? `${count} termék` : <Text id="home.tiles.cta">{"Megnézem"}</Text>}{" "}

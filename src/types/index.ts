@@ -1,1 +1,10 @@
-export type { Product, ProductSpecs, SiteText, Review, BlogPost, User, AppRole } from "./database";
+export type {
+  Product,
+  ProductSpecs,
+  SiteText,
+  Review,
+  BlogPost,
+  Slide,
+  User,
+  AppRole,
+} from "./database";

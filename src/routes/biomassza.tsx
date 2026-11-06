@@ -1,4 +1,4 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 
-// Old section URL (before the menu redesign); children redirect to the new pages.
+// /biomassza – information page (index); old /biomassza/<x> URLs redirect to the new categories.
 export const Route = createFileRoute("/biomassza")({ component: Outlet });

@@ -1,4 +1,4 @@
-export type UploadFolder = "products" | "datasheets" | "blog";
+export type UploadFolder = "products" | "datasheets" | "blog" | "slides";
 
 /** Public URL of an uploaded file (served by routes/uploads.$.ts). */
 export const uploadUrl = (folder: UploadFolder, name: string | null | undefined) =>

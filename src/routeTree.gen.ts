@@ -25,6 +25,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SzervizRouteImport } from './routes/szerviz'
 import { Route as SzolgaltatasokRouteImport } from './routes/szolgaltatasok'
 import { Route as TakarmanyRouteImport } from './routes/takarmany'
+import { Route as TermekekRouteImport } from './routes/termekek'
 import { Route as TeruletIndexRouteImport } from './routes/$terulet.index'
 import { Route as TeruletKategoriaRouteImport } from './routes/$terulet.$kategoria'
 import { Route as AuthenticatedBackendRouteImport } from './routes/_authenticated/backend'
@@ -117,6 +118,11 @@ const TakarmanyRoute = TakarmanyRouteImport.update({
   path: '/takarmany',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TermekekRoute = TermekekRouteImport.update({
+  id: '/termekek',
+  path: '/termekek',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TeruletIndexRoute = TeruletIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -194,6 +200,7 @@ export interface FileRoutesByFullPath {
   '/szerviz': typeof SzervizRoute
   '/szolgaltatasok': typeof SzolgaltatasokRoute
   '/takarmany': typeof TakarmanyRouteWithChildren
+  '/termekek': typeof TermekekRoute
   '/$terulet/$kategoria': typeof TeruletKategoriaRouteWithChildren
   '/backend': typeof AuthenticatedBackendRoute
   '/biomassza/$kategoria': typeof BiomasszaKategoriaRoute
@@ -219,6 +226,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/szerviz': typeof SzervizRoute
   '/szolgaltatasok': typeof SzolgaltatasokRoute
+  '/termekek': typeof TermekekRoute
   '/backend': typeof AuthenticatedBackendRoute
   '/biomassza/$kategoria': typeof BiomasszaKategoriaRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -249,6 +257,7 @@ export interface FileRoutesById {
   '/szerviz': typeof SzervizRoute
   '/szolgaltatasok': typeof SzolgaltatasokRoute
   '/takarmany': typeof TakarmanyRouteWithChildren
+  '/termekek': typeof TermekekRoute
   '/$terulet/$kategoria': typeof TeruletKategoriaRouteWithChildren
   '/_authenticated/backend': typeof AuthenticatedBackendRoute
   '/biomassza/$kategoria': typeof BiomasszaKategoriaRoute
@@ -280,6 +289,7 @@ export interface FileRouteTypes {
     | '/szerviz'
     | '/szolgaltatasok'
     | '/takarmany'
+    | '/termekek'
     | '/$terulet/$kategoria'
     | '/backend'
     | '/biomassza/$kategoria'
@@ -305,6 +315,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/szerviz'
     | '/szolgaltatasok'
+    | '/termekek'
     | '/backend'
     | '/biomassza/$kategoria'
     | '/blog/$slug'
@@ -334,6 +345,7 @@ export interface FileRouteTypes {
     | '/szerviz'
     | '/szolgaltatasok'
     | '/takarmany'
+    | '/termekek'
     | '/$terulet/$kategoria'
     | '/_authenticated/backend'
     | '/biomassza/$kategoria'
@@ -365,6 +377,7 @@ export interface RootRouteChildren {
   SzervizRoute: typeof SzervizRoute
   SzolgaltatasokRoute: typeof SzolgaltatasokRoute
   TakarmanyRoute: typeof TakarmanyRouteWithChildren
+  TermekekRoute: typeof TermekekRoute
   UploadsSplatRoute: typeof UploadsSplatRoute
 }
 
@@ -480,6 +493,13 @@ declare module '@tanstack/react-router' {
       path: '/takarmany'
       fullPath: '/takarmany'
       preLoaderRoute: typeof TakarmanyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/termekek': {
+      id: '/termekek'
+      path: '/termekek'
+      fullPath: '/termekek'
+      preLoaderRoute: typeof TermekekRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$terulet/': {
@@ -663,6 +683,7 @@ const rootRouteChildren: RootRouteChildren = {
   SzervizRoute: SzervizRoute,
   SzolgaltatasokRoute: SzolgaltatasokRoute,
   TakarmanyRoute: TakarmanyRouteWithChildren,
+  TermekekRoute: TermekekRoute,
   UploadsSplatRoute: UploadsSplatRoute,
 }
 export const routeTree = rootRouteImport

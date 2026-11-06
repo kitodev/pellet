@@ -482,3 +482,17 @@ img {
     flex: 1 1 100%;
   }
 }
+
+/* Slide-ok tab */
+.slide-row {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.slide-row img {
+  width: 120px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+}

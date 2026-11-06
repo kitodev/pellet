@@ -4,8 +4,8 @@ import { legacyCategories } from "@/lib/content/catalog";
 // Old URL (before the menu redesign) → permanent redirect to the new category.
 export const Route = createFileRoute("/biomassza/$kategoria")({
   beforeLoad: ({ params }) => {
-    const target =
-      legacyCategories[`biomassza/${params.kategoria}`] ?? legacyCategories["biomassza"]!;
+    const target = legacyCategories[`biomassza/${params.kategoria}`];
+    if (!target) throw redirect({ to: "/biomassza", statusCode: 301 });
     if (target.category)
       throw redirect({
         to: "/$terulet/$kategoria",

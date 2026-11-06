@@ -6,6 +6,10 @@ export const textDefaults: Record<string, string> = {
   "/arajanlat.eyebrow": "Személyre szabott ajánlat",
   "/arajanlat.text": "Adja meg, mire van szüksége és milyen mennyiségben.",
   "/arajanlat.title": "Árajánlatkérés",
+  "/biomassza.eyebrow": "Megújuló energia",
+  "/biomassza.text":
+    "Fűtés természetes, megújuló tüzelőanyaggal – pellettel, brikettel, korszerű kazánokkal.",
+  "/biomassza.title": "Biomassza",
   "/blog.eyebrow": "Blog",
   "/blog.text": "Gyakorlati tanácsok fűtéshez, tüzelőanyagokhoz, kályhákhoz és takarmányozáshoz.",
   "/blog.title": "Tudástár",
@@ -23,6 +27,10 @@ export const textDefaults: Record<string, string> = {
   "/szolgaltatasok.text":
     "A kiválasztástól a telepítésen át a karbantartásig mindenben számíthat ránk.",
   "/szolgaltatasok.title": "Szolgáltatások",
+  "/termekek.eyebrow": "Termékek",
+  "/termekek.text":
+    "Válassza ki a termékkategóriát – tüzelőanyagok, takarmányok és fűtési megoldások.",
+  "/termekek.title": "Termékeink",
   "about.certifications": "",
   "about.history": "",
   "about.mission":
@@ -31,6 +39,12 @@ export const textDefaults: Record<string, string> = {
   "about.references": "",
   "about.site.title": "Telephelyünk",
   "AreaPages.text.5": "Ajánlatot kérek",
+  "biomassza.cta.boilers": "Biomassza kazánok",
+  "biomassza.cta.fuels": "Tüzelőanyagok",
+  "biomassza.eyebrow": "Mi a biomassza?",
+  "biomassza.text":
+    "Biomasszának nevezzük a növényi eredetű anyagokat – fát, fűrészport, szalmát, mezőgazdasági melléktermékeket –, amelyekből préseléssel pellet és brikett készül. Ezek egyenletesen, kevés hamuval égnek, és automatizált kályhákban, kazánokban kényelmes, takarékos fűtést adnak.",
+  "biomassza.title": "Természetes energia, tudatos fűtés",
   "blog.empty": "Hamarosan új cikkekkel jelentkezünk.",
   "Calculator.text.10": "kW",
   "Calculator.text.11": "Személyre szabott ajánlatot kérek",
@@ -44,6 +58,7 @@ export const textDefaults: Record<string, string> = {
   "Calculator.text.7": "Melegvíz-igény",
   "Calculator.text.8": "Ajánlott teljesítmény",
   "Calculator.text.9": "Az Ön otthonának becsült hőigénye",
+  "catalog.allIn": "Összes",
   "catalog.ask": "Érdeklődjön",
   "catalog.empty.text":
     "A termékek feltöltése folyamatban van. Írja meg, mire van szüksége, és személyre szabott ajánlatot küldünk.",
@@ -62,13 +77,16 @@ export const textDefaults: Record<string, string> = {
   "contact.map": "",
   "contact.phone": "",
   "contact.title": "Elérhetőségeink",
+  "floating.calc": "Kazánkalkulátor",
+  "floating.quote": "Árajánlatkérés",
+  "footer.allProducts": "Összes termék",
   "footer.contact": "Kapcsolat",
   "footer.contactLink": "Elérhetőségek és térkép",
   "footer.info": "Információ",
   "footer.products": "Termékek",
   "footer.slogan": "Természetes energia. Megbízható meleg.",
   "footer.text.1":
-    "Fűtőanyag, takarmány, kályhák és kiegészítők – egy helyen, szakértő segítséggel.",
+    "Tüzelőanyag, takarmány, kályhák, kazánok és kiegészítők – egy helyen, szakértő segítséggel.",
   "home.cta.contact": "Kapcsolat",
   "home.cta.phone": "Telefonon:",
   "home.cta.quote": "Ajánlatot kérek",
@@ -126,8 +144,10 @@ export const textDefaults: Record<string, string> = {
   "miert-minket.reason.4.t": "Teljes fűtési kínálat",
   "miert-minket.reason.5.d": "Ne akkor keresse a pelletet, amikor már mindenki keresi!",
   "miert-minket.reason.5.t": "Kényelmes beszerzés",
-  "nav.all": "Összes termék",
+  "nav.allProducts": "Összes termékkategória",
   "nav.home": "Kezdőlap",
+  "nav.products": "Termékek",
+  "nav.services": "Szolgáltatások",
   "product.datasheet": "Műszaki adatlap (PDF)",
   "product.description": "Termékleírás",
   "product.order": "Rendelés / érdeklődés",
@@ -146,8 +166,8 @@ export const textDefaults: Record<string, string> = {
   "rolunk.text.2": "Biztos alapokra építve.",
   "rolunk.text.8": "Vegye fel velünk a kapcsolatot",
   "services.0.d":
-    "Kályhák, kandallók és vízteres berendezések szakszerű telepítése, a füstcső és a kémény bekötésével.",
-  "services.0.t": "Kályha telepítés",
+    "Pellet- és biomassza-kályhák, kazánok, vízteres berendezések szakszerű telepítése, a füstcső és a kémény bekötésével.",
+  "services.0.t": "Fűtőkészülékek telepítése",
   "services.1.d":
     "Az első begyújtás és beállítás szakemberrel, hogy a berendezés hatékonyan és biztonságosan működjön. Megmutatjuk a helyes használatot is.",
   "services.1.t": "Beüzemelés",
@@ -169,12 +189,12 @@ export const textDefaults: Record<string, string> = {
   "services.help.text":
     "Becsülje meg a szükséges teljesítményt kalkulátorunkkal, vagy írja meg az épület adatait, és kollégáink segítenek.",
   "services.help.title": "Nem tudja, melyik kályha vagy mennyi pellet kell?",
+  "SiteChrome.calc": "Kazánkalkulátor",
   "SiteChrome.text.1": "PELLET CENTRUM",
-  "SiteChrome.text.10": "Árajánlatkérés",
   "SiteChrome.text.13": "Mit keres? pl. pellet, lótáp, kályha…",
   "SiteChrome.text.2": "KFT. · TERMÉSZETES ENERGIA",
   "SiteChrome.text.4": "Természetes energia. Tudatos választás.",
-  "SiteChrome.text.5": "Fűtőanyag • Takarmány • Kályhák • Szerviz",
+  "SiteChrome.text.5": "Tüzelőanyag • Takarmány • Fűtési megoldások • Szerviz",
   "SiteChrome.text.6": "Árajánlatot kérek",
   "SiteChrome.text.8": "Árajánlat",
 };
@@ -182,6 +202,9 @@ export const textDefaults: Record<string, string> = {
 for (const area of Object.values(areas)) {
   for (const field of ["title", "label", "intro"] as const)
     textDefaults[`area.${area.key}.${field}`] = area[field];
+  for (const section of area.sections)
+    for (const field of ["name", "short", "description"] as const)
+      textDefaults[`section.${area.key}.${section.slug}.${field}`] = section[field];
   for (const category of area.categories)
     for (const field of ["name", "short", "description"] as const)
       textDefaults[`category.${area.key}.${category.slug}.${field}`] = category[field];

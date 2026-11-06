@@ -17,6 +17,7 @@ import {
   listProducts,
   listPublishedPosts,
   listReviews,
+  listSlides,
   listTexts,
   upsertProduct,
   upsertText,
@@ -37,15 +38,20 @@ const adminOnly = createMiddleware({ type: "function" }).server(async ({ next })
  */
 export const readPublicContent = createServerFn({ method: "GET" }).handler(async () => {
   try {
-    const [texts, products, reviews] = await Promise.all([
+    const [texts, products, reviews, slides] = await Promise.all([
       listTexts(),
       listProducts({ publishedOnly: true }),
       listReviews({ publishedOnly: true }),
+      // The slides table comes with migration 005 – until it runs, simply no slides.
+      listSlides({ publishedOnly: true }).catch((error: unknown) => {
+        console.error("[pellet] Slide-ok betöltése sikertelen (pnpm db:migrate?):", error);
+        return [];
+      }),
     ]);
-    return { texts, products, reviews, offline: false };
+    return { texts, products, reviews, slides, offline: false };
   } catch (error) {
     console.error("[pellet] Adatbázis nem elérhető (DATABASE_URL?):", error);
-    return { texts: [], products: [], reviews: [], offline: true };
+    return { texts: [], products: [], reviews: [], slides: [], offline: true };
   }
 });
 

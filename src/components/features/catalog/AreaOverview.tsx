@@ -1,13 +1,11 @@
 import { Text } from "@/components/features/content/ContentProvider";
 import { useAreas, useProducts } from "@/hooks/useContent";
-import { Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
 import { Breadcrumbs, PageHero } from "@/components/layouts/SiteChrome";
-import { groupedCategories, type AreaKey } from "@/lib/content/catalog";
-import { areaImage } from "./images";
+import type { AreaKey } from "@/lib/content/catalog";
+import { SectionTiles } from "./CategoryTiles";
 import { ProductGrid } from "./ProductCard";
 
-/** /futoanyagok etc. – subcategories grouped, with product counts. */
+/** /futoanyagok etc. – the sections of the area as tiles, then featured products. */
 export function AreaOverview({ area: key }: { area: AreaKey }) {
   const area = useAreas()[key];
   const products = useProducts({ area: key });
@@ -15,43 +13,11 @@ export function AreaOverview({ area: key }: { area: AreaKey }) {
   return (
     <>
       <PageHero id={null} eyebrow="Termékek" title={area.label} text={area.intro}>
-        <Breadcrumbs items={[{ label: area.label }]} />
+        <Breadcrumbs items={[{ label: "Termékek", to: "/termekek" }, { label: area.label }]} />
       </PageHero>
       <section className="section soft-section">
         <div className="container">
-          {groupedCategories(area).map((g) => (
-            <div key={g.group || key} className="category-group">
-              {g.group && <h2 className="group-title">{g.group}</h2>}
-              <div className="category-grid">
-                {g.categories.map((c) => {
-                  const count = products.filter((p) => p.category === c.slug).length;
-                  return (
-                    <Link
-                      key={c.slug}
-                      to="/$terulet/$kategoria"
-                      params={{ terulet: key, kategoria: c.slug }}
-                      className="category-card"
-                    >
-                      <img src={areaImage[key]} alt="" loading="lazy" width={1024} height={768} />
-                      <div>
-                        <span className="product-category">{c.short}</span>
-                        <h3>{c.name}</h3>
-                        <p>{c.description}</p>
-                        <span className="choice-cta">
-                          {count ? (
-                            `${count} termék`
-                          ) : (
-                            <Text id="catalog.ask">{"Érdeklődjön"}</Text>
-                          )}{" "}
-                          <ArrowRight size={14} />
-                        </span>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
+          <SectionTiles area={key} sections={area.sections} categories={area.categories} />
         </div>
       </section>
       {featured.length > 0 && (

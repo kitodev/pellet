@@ -77,6 +77,7 @@ ${sorted.map(([k, v]) => `  ${JSON.stringify(k)}: ${JSON.stringify(v)},`).join("
 
 for (const area of Object.values(areas)) {
   for (const field of ['title', 'label', 'intro'] as const) textDefaults[\`area.\${area.key}.\${field}\`] = area[field];
+  for (const section of area.sections) for (const field of ['name', 'short', 'description'] as const) textDefaults[\`section.\${area.key}.\${section.slug}.\${field}\`] = section[field];
   for (const category of area.categories) for (const field of ['name', 'short', 'description'] as const) textDefaults[\`category.\${area.key}.\${category.slug}.\${field}\`] = category[field];
 }
 `;

@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { db } from "./client";
-import type { BlogPost, Product, Review, SiteText } from "@/types";
+import type { BlogPost, Product, Review, SiteText, Slide } from "@/types";
 import type { ProductInput, TextInput } from "@/lib/validations/content";
 import { slugify } from "@/lib/utils/slug";
 
@@ -137,6 +137,24 @@ export async function listReviews({ publishedOnly = false } = {}): Promise<Revie
     review_date: r["review_date"] ? new Date(r["review_date"]).toISOString().slice(0, 10) : null,
     published: Number(r["published"]) === 1,
     sort_order: Number(r["sort_order"]),
+  }));
+}
+
+// ---- slides ----
+export async function listSlides({ publishedOnly = false } = {}): Promise<Slide[]> {
+  const [rows] = await db().query<RowDataPacket[]>(
+    `SELECT * FROM slides ${publishedOnly ? "WHERE published = 1" : ""} ORDER BY sort_order, created_at`,
+  );
+  return rows.map((r) => ({
+    id: r["id"],
+    page: r["page"] === "termekek" ? "termekek" : "home",
+    title: r["title"] ?? "",
+    subtitle: r["subtitle"] ?? "",
+    button_label: r["button_label"] ?? "",
+    link_url: r["link_url"] ?? "",
+    image_path: r["image_path"],
+    published: Number(r["published"]) === 1,
+    sort_order: Number(r["sort_order"] ?? 0),
   }));
 }
 

@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { ContentContext } from "@/lib/content/context";
 import { areas as baseAreas, type AreaKey } from "@/lib/content/catalog";
-import type { Product } from "@/types";
+import type { Product, Slide } from "@/types";
 
 export function useContent() {
   return useContext(ContentContext);
@@ -25,6 +25,12 @@ export function useAreas() {
         title: read(`area.${key}.title`, area.title),
         label: read(`area.${key}.label`, area.label),
         intro: read(`area.${key}.intro`, area.intro),
+        sections: area.sections.map((s) => ({
+          ...s,
+          name: read(`section.${key}.${s.slug}.name`, s.name),
+          short: read(`section.${key}.${s.slug}.short`, s.short),
+          description: read(`section.${key}.${s.slug}.description`, s.description),
+        })),
         categories: area.categories.map((c) => ({
           ...c,
           name: read(`category.${key}.${c.slug}.name`, c.name),
@@ -44,4 +50,10 @@ export function useProducts(filter: { area?: AreaKey; category?: string } = {}):
       (!filter.area || p.area === filter.area) &&
       (!filter.category || p.category === filter.category),
   );
+}
+
+/** Published slides of one page (home page / Termékek page), in admin order. */
+export function useSlides(page: Slide["page"]): Slide[] {
+  const content = useContent();
+  return (content?.slides ?? []).filter((s) => s.page === page);
 }

@@ -5,7 +5,7 @@ import path from "node:path";
 import { env } from "@/lib/env";
 import { MAX_IMAGE_BYTES, MAX_PDF_BYTES } from "@/lib/validations/product";
 
-export type UploadFolder = "products" | "datasheets" | "blog";
+export type UploadFolder = "products" | "datasheets" | "blog" | "slides";
 const RULES: Record<
   UploadFolder,
   { types: Record<string, string>; max: number; error: string; name: RegExp }
@@ -17,6 +17,12 @@ const RULES: Record<
     name: /\.(jpe?g|png|webp)$/i,
   },
   blog: {
+    types: { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" },
+    max: MAX_IMAGE_BYTES,
+    error: "JPG, PNG vagy WebP képet válasszon (max. 5 MB).",
+    name: /\.(jpe?g|png|webp)$/i,
+  },
+  slides: {
     types: { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" },
     max: MAX_IMAGE_BYTES,
     error: "JPG, PNG vagy WebP képet válasszon (max. 5 MB).",

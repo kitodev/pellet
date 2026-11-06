@@ -20,6 +20,7 @@ const MIME: Record<string, string> = {
 const FOLDERS: Record<UploadFolder, RegExp> = {
   products: /\.(jpe?g|png|webp)$/i,
   blog: /\.(jpe?g|png|webp)$/i,
+  slides: /\.(jpe?g|png|webp)$/i,
   datasheets: /\.pdf$/i,
 };
 const dir = (folder: UploadFolder) => path.join(serverEnv().uploadsDir, folder);

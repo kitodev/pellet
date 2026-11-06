@@ -57,5 +57,19 @@ export type BlogPost = {
   created_at: string;
 };
 
+/** Carousel slide (admin: Slide-ok). page = where it is shown. */
+export type Slide = {
+  id: string;
+  page: "home" | "termekek";
+  title: string;
+  subtitle: string;
+  button_label: string;
+  link_url: string;
+  /** Image file name in uploads/slides */
+  image_path: string;
+  published: boolean;
+  sort_order: number;
+};
+
 export type User = { id: string; email: string; created_at: string };
 export type AppRole = "admin";

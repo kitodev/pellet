@@ -21,6 +21,7 @@ export const Route = createFileRoute("/sitemap.xml")({
         const urls: { loc: string; lastmod?: string }[] = [
           ...[
             "/",
+            "/termekek",
             "/szolgaltatasok",
             "/blog",
             "/rolunk",
