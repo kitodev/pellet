@@ -2830,6 +2830,8 @@ body {
   z-index: 35;
   display: grid;
   gap: 6px;
+  /* each tab hugs the right edge and opens on its own – the other one stays closed */
+  justify-items: end;
 }
 .floating-actions a {
   display: flex;
@@ -2925,6 +2927,7 @@ body {
     grid-template-columns: 1fr 1fr;
     gap: 0;
     box-shadow: 0 -4px 16px rgb(0 0 0 / 0.12);
+    justify-items: stretch;
   }
   .floating-actions a,
   .floating-actions a:hover {
