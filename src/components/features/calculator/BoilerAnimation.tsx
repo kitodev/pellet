@@ -27,7 +27,7 @@ function useTweened(value: number) {
 const INSULATION = {
   weak: { label: "Gyenge", jacket: 4, color: "#d9534f", losses: 3 },
   medium: { label: "Közepes", jacket: 10, color: "#e0a526", losses: 1 },
-  good: { label: "Jó", jacket: 17, color: "#4b7b0a", losses: 0 },
+  good: { label: "Jó", jacket: 17, color: "#a2c65b", losses: 0 },
 } as const;
 
 // Boiler casing (the insulation jacket is drawn around it)
@@ -136,8 +136,8 @@ export function BoilerAnimation({ insulation, people, power }: CalcValues) {
           stroke="#cfd5c4"
         />
         <path d="M24 120 Q80 82 136 120" fill="#ffffff" stroke="#cfd5c4" />
-        <rect x="24" y="352" width="112" height="10" fill="#4b7b0a" />
-        <text x="80" y="380" textAnchor="middle" className="ba-label" fill="#4b7b0a">
+        <rect x="24" y="352" width="112" height="10" fill="#a2c65b" />
+        <text x="80" y="380" textAnchor="middle" className="ba-label" fill="#a2c65b">
           PELLET
         </text>
         <rect x="46" y="136" width="68" height="200" rx="8" fill="#f7f8f4" stroke="#cfd5c4" />
@@ -210,12 +210,12 @@ export function BoilerAnimation({ insulation, people, power }: CalcValues) {
           fill="url(#ba-casing)"
           stroke="#cfd5c4"
         />
-        <rect x={B.x} y={B.y + B.h - 26} width={B.w} height="26" rx="0" fill="#4b7b0a" />
-        <rect x={B.x} y={B.y + B.h - 10} width={B.w} height="10" rx="0" fill="#3d6608" />
+        <rect x={B.x} y={B.y + B.h - 26} width={B.w} height="26" rx="0" fill="#a2c65b" />
+        <rect x={B.x} y={B.y + B.h - 10} width={B.w} height="10" rx="0" fill="#a2c65b" />
 
         {/* control panel with kW display */}
-        <rect x="232" y="108" width="134" height="58" rx="10" fill="#1f2a17" />
-        <rect x="242" y="116" width="78" height="42" rx="6" fill="#0f160b" />
+        <rect x="232" y="108" width="134" height="58" rx="10" fill="#2b2b2b" />
+        <rect x="242" y="116" width="78" height="42" rx="6" fill="#161616" />
         <text x="281" y="146" textAnchor="middle" className="ba-lcd" fill="#a2c65b">
           {kw}
         </text>
@@ -296,7 +296,7 @@ export function BoilerAnimation({ insulation, people, power }: CalcValues) {
         </text>
 
         {/* labels */}
-        <text x="299" y={B.y + B.h - 9} textAnchor="middle" className="ba-label" fill="#ffffff">
+        <text x="299" y={B.y + B.h - 9} textAnchor="middle" className="ba-label" fill="#2b2b2b">
           PELLETKAZÁN
         </text>
         {/* plinth + shadow */}

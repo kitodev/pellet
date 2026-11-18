@@ -38,6 +38,7 @@ export function Calculator({
           max="400"
           step="5"
           value={area}
+          style={{ "--fill": `${((area - 30) / 370) * 100}%` } as React.CSSProperties}
           onChange={(e) => setArea(Number(e.target.value))}
         />
         <div className="range-labels">
@@ -83,6 +84,7 @@ export function Calculator({
           min="0"
           max="8"
           value={people}
+          style={{ "--fill": `${(people / 8) * 100}%` } as React.CSSProperties}
           onChange={(e) => setPeople(Number(e.target.value))}
         />
       </div>

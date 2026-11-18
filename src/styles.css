@@ -32,8 +32,8 @@
 :root {
   --background: #333333;
   --foreground: #ffffff;
-  --primary: #4b7b0a;
-  --primary-foreground: #ffffff;
+  --primary: #a2c65b;
+  --primary-foreground: #2b2b2b;
   --secondary: #f5f5f5;
   --muted: #414141;
   --muted-foreground: #d0d0d0;
@@ -42,7 +42,7 @@
   --card: #ffffff;
   --destructive: oklch(0.57 0.2 27);
   --highlight: #a2c65b;
-  --offer: #4b7b0a;
+  --offer: #a2c65b;
   --display-font: "Dosis", sans-serif;
   --script-font: "Caveat", cursive;
   --hero-ink: #2b2b2b;
@@ -53,7 +53,7 @@
   --light-muted: #626262;
   --light-border: #dddddd;
   --light-accent: #e9edcf;
-  --light-primary: #4b7b0a;
+  --light-primary: #a2c65b;
   --hero-overlay: linear-gradient(90deg, transparent 30%, rgb(51 51 51 / 0.3) 44%, #333333 55%);
   --dialog-overlay: rgb(0 0 0 / 0.65);
 }
@@ -2439,7 +2439,7 @@ iframe {
 }
 
 /* =====================================================================
-   2026-11: LIGHT THEME – same ecocomfort.hu colours (#4b7b0a green, #a2c65b light green,
+   2026-11: LIGHT THEME – same ecocomfort.hu colours (#a2c65b green, #a2c65b light green,
    #333 / #2b2b2b graphite), but on a white page. Dark is kept only for a few bands
    (top bar, footer, home hero, delivery band). To go back to the dark look, delete this block.
    ===================================================================== */
@@ -2453,7 +2453,7 @@ iframe {
   --border: #e3e5dd;
   --card: #ffffff;
   /* green that is readable on white (the light green #a2c65b is only used on dark bands) */
-  --highlight: #4b7b0a;
+  --highlight: #a2c65b;
   --shadow: 0 10px 30px rgb(51 51 51 / 0.1);
   --page-hero-bg: linear-gradient(120deg, #f3f6e8 0%, #e9edcf 100%);
 }
@@ -2988,13 +2988,11 @@ body {
   overflow: hidden;
 }
 .slide-graphic.green {
-  background:
-    radial-gradient(circle at 78% 50%, rgb(162 198 91 / 0.35), transparent 45%),
-    linear-gradient(120deg, #3d6608 0%, #4b7b0a 55%, #5d8f1a 100%);
+  background: #a2c65b;
 }
 .slide-graphic.dark {
   background:
-    radial-gradient(circle at 78% 50%, rgb(75 123 10 / 0.45), transparent 45%),
+    radial-gradient(circle at 78% 50%, rgb(162 198 91 / 0.45), transparent 45%),
     linear-gradient(120deg, #232323 0%, #333333 60%, #3b3f33 100%);
 }
 .slide-graphic-icon {
@@ -3018,7 +3016,7 @@ body {
 }
 .slide-graphic.green .slide-button {
   background: #ffffff;
-  color: #3d6608;
+  color: #a2c65b;
 }
 @media (max-width: 700px) {
   .slide-graphic-icon {
@@ -3220,4 +3218,81 @@ body {
   .boiler-anim svg {
     max-height: 340px;
   }
+}
+
+/* =====================================================================
+   2026-11-18: ONE green everywhere – the light green of the footer headings (#a2c65b).
+   Text on green is dark graphite (#2b2b2b) so it stays readable.
+   ===================================================================== */
+:root {
+  --primary: #a2c65b;
+  --primary-foreground: #2b2b2b;
+  --highlight: #a2c65b;
+  --light-primary: #a2c65b;
+  --offer: #a2c65b;
+}
+.slide-button,
+.floating-actions .fa-quote,
+.slide-graphic.green .slide-button {
+  color: #2b2b2b;
+}
+.slide-graphic.green .slide-button {
+  background: #ffffff;
+}
+.slide-graphic.green,
+.slide-graphic.green .slide-panel h1,
+.slide-graphic.green .slide-panel h2,
+.slide-graphic.green .slide-panel p {
+  color: #2b2b2b;
+}
+.slide-graphic.green .slide-panel {
+  border-left-color: #2b2b2b;
+}
+.slide-graphic.green .slide-graphic-icon {
+  color: rgb(43 43 43 / 0.16);
+}
+.cta-band .cta-actions > a:first-child {
+  color: #ffffff;
+}
+.cta-band .cta-actions > a:nth-child(2) {
+  color: #2b2b2b;
+  border-color: rgb(43 43 43 / 0.5);
+}
+.cta-band .cta-actions > a:nth-child(2):hover {
+  background: rgb(43 43 43 / 0.08);
+}
+
+/* range sliders: green filled part, light track, green thumb */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(to right, #a2c65b var(--fill, 50%), #e3e5dd var(--fill, 50%));
+  outline-offset: 4px;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #a2c65b;
+  border: 3px solid #ffffff;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.3);
+  cursor: pointer;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #a2c65b;
+  border: 3px solid #ffffff;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.3);
+  cursor: pointer;
+}
+input[type="range"]::-moz-range-track {
+  background: transparent;
+}
+.slide-dots button[aria-current="true"] {
+  box-shadow: 0 0 0 2px #ffffff;
 }
