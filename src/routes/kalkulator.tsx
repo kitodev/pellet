@@ -4,6 +4,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CheckCircle2 } from "lucide-react";
 import { PageHero } from "@/components/layouts/SiteChrome";
 import { Calculator } from "@/components/features/calculator/Calculator";
+import { StoveAnimation } from "@/components/features/calculator/StoveAnimation";
+import { estimateHeating } from "@/lib/utils/heating";
+import { useState } from "react";
 export const Route = createFileRoute("/kalkulator")({
   head: () =>
     pageHead(
@@ -13,36 +16,42 @@ export const Route = createFileRoute("/kalkulator")({
   component: Page,
 });
 function Page() {
+  const [power, setPower] = useState(() => estimateHeating(120, "medium", 3));
   return (
     <>
       <PageHero eyebrow="Kezdjük a megfelelő méretezéssel" title="Kazánkalkulátor" />
       <section className="section">
-        <div className="container calc-grid">
-          <div>
+        <div className="container">
+          <div className="calc-intro">
             <h2>
               <Text id="kalkulator.text.1">{"Mekkora kazánra"}</Text>
               <br />
               <Text id="kalkulator.text.2">{"van szüksége?"}</Text>
             </h2>
-            <p className="section-copy">
-              <Text id="kalkulator.text.3">
-                {
-                  "Adja meg a fűtött alapterületet, a szigetelés minőségét és a melegvizet használók számát."
-                }
-              </Text>
-            </p>
-            <div className="check-list">
-              <span>
-                <CheckCircle2 />
-                <Text id="kalkulator.text.4">{"Személyre szabott becslés"}</Text>
-              </span>
-              <span>
-                <CheckCircle2 />
-                <Text id="kalkulator.text.5">{"Egyszerű tervezés"}</Text>
-              </span>
+            <div>
+              <p className="section-copy">
+                <Text id="kalkulator.text.3">
+                  {
+                    "Adja meg a fűtött alapterületet, a szigetelés minőségét és a melegvizet használók számát."
+                  }
+                </Text>
+              </p>
+              <div className="check-list">
+                <span>
+                  <CheckCircle2 />
+                  <Text id="kalkulator.text.4">{"Személyre szabott becslés"}</Text>
+                </span>
+                <span>
+                  <CheckCircle2 />
+                  <Text id="kalkulator.text.5">{"Egyszerű tervezés"}</Text>
+                </span>
+              </div>
             </div>
           </div>
-          <Calculator />
+          <div className="calc-stage">
+            <StoveAnimation power={power} />
+            <Calculator onPowerChange={setPower} />
+          </div>
         </div>
       </section>
     </>

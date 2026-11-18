@@ -3027,3 +3027,116 @@ body {
     translate: 50% -50%;
   }
 }
+
+/* ===== Kazánkalkulátor: animated pellet stove next to the calculator ===== */
+.calc-intro {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+  align-items: end;
+  margin-bottom: 40px;
+}
+.calc-intro h2 {
+  margin: 0;
+}
+.calc-intro .check-list {
+  margin-bottom: 0;
+}
+.calc-stage {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: stretch;
+}
+.stove-anim {
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: #ffffff;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+  min-height: 420px;
+}
+.stove-anim svg {
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  max-height: 640px;
+}
+.stove-pellet {
+  fill: #c98b45;
+  animation: stove-pellet-fall var(--dur, 2s) linear var(--delay, 0s) infinite;
+}
+.stove-pellet:nth-child(3n) {
+  fill: #b5772f;
+}
+.stove-pellet:nth-child(4n + 1) {
+  fill: #d9a05c;
+}
+@keyframes stove-pellet-fall {
+  0% {
+    transform: translate(0, 0) rotate(var(--rot));
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--drift), 250px) rotate(calc(var(--rot) + 200deg));
+    opacity: 0;
+  }
+}
+.stove-display {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.stove-flame {
+  transition: transform 0.6s ease;
+}
+.flame-outer {
+  transform-origin: 150px 412px;
+  animation: stove-flicker 1.4s ease-in-out infinite alternate;
+}
+.flame-inner {
+  transform-origin: 150px 408px;
+  animation: stove-flicker 0.9s ease-in-out infinite alternate-reverse;
+}
+@keyframes stove-flicker {
+  0% {
+    transform: scale(1, 1) skewX(0deg);
+  }
+  50% {
+    transform: scale(0.94, 1.06) skewX(-3deg);
+  }
+  100% {
+    transform: scale(1.04, 0.96) skewX(3deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stove-pellet,
+  .flame-outer,
+  .flame-inner {
+    animation: none;
+  }
+  .stove-pellet {
+    opacity: 0;
+  }
+}
+@media (max-width: 1000px) {
+  .calc-intro,
+  .calc-stage {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .stove-anim {
+    min-height: 0;
+  }
+  .stove-anim svg {
+    max-height: 360px;
+  }
+}
