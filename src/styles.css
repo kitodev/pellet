@@ -3028,7 +3028,7 @@ body {
   }
 }
 
-/* ===== Kazánkalkulátor: animated pellet stove next to the calculator ===== */
+/* ===== Kazánkalkulátor: animated pellet boiler next to the calculator ===== */
 .calc-intro {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -3048,83 +3048,167 @@ body {
   gap: 40px;
   align-items: stretch;
 }
-.stove-anim {
+.boiler-anim {
   border: 1px solid var(--border);
   border-radius: 5px;
-  background: #ffffff;
+  background: linear-gradient(180deg, #ffffff 0%, #f7f8f3 100%);
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-end;
   overflow: hidden;
-  min-height: 420px;
+  padding: 16px 16px 12px;
 }
-.stove-anim svg {
+.boiler-anim svg {
   width: 100%;
-  max-width: 420px;
   height: auto;
-  max-height: 640px;
+  max-height: 520px;
 }
-.stove-pellet {
-  fill: #c98b45;
-  animation: stove-pellet-fall var(--dur, 2s) linear var(--delay, 0s) infinite;
+.boiler-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 18px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+  color: var(--muted-foreground);
 }
-.stove-pellet:nth-child(3n) {
-  fill: #b5772f;
+.boiler-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
-.stove-pellet:nth-child(4n + 1) {
-  fill: #d9a05c;
+.boiler-legend strong {
+  color: var(--foreground);
 }
-@keyframes stove-pellet-fall {
+.boiler-legend .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.ba-label {
+  font: 800 11px var(--font-sans, sans-serif);
+  letter-spacing: 1.5px;
+}
+.ba-lcd {
+  font:
+    700 30px ui-monospace,
+    "SFMono-Regular",
+    Menlo,
+    Consolas,
+    monospace;
+}
+.ba-lcd-unit {
+  font:
+    700 12px ui-monospace,
+    "SFMono-Regular",
+    Menlo,
+    Consolas,
+    monospace;
+}
+.ba-gauge-val {
+  font: 800 11px var(--font-sans, sans-serif);
+}
+.ba-jacket {
+  transition:
+    x 0.5s ease,
+    y 0.5s ease,
+    width 0.5s ease,
+    height 0.5s ease,
+    rx 0.5s ease;
+}
+.ba-loss {
+  transition: opacity 0.4s;
+}
+.ba-loss path {
+  animation: ba-loss 1.8s ease-in-out infinite;
+}
+@keyframes ba-loss {
   0% {
-    transform: translate(0, 0) rotate(var(--rot));
+    transform: translateY(6px);
     opacity: 0;
   }
-  8% {
-    opacity: 1;
-  }
-  88% {
+  40% {
     opacity: 1;
   }
   100% {
-    transform: translate(var(--drift), 250px) rotate(calc(var(--rot) + 200deg));
+    transform: translateY(-14px);
     opacity: 0;
   }
 }
-.stove-display {
-  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-  font-weight: 700;
-  letter-spacing: 0.5px;
+.ba-puff {
+  animation: ba-puff var(--speed, 2.4s) ease-in infinite;
+  transition: opacity 0.4s;
 }
-.stove-flame {
+@keyframes ba-puff {
+  0% {
+    transform: translateY(8px);
+    stroke-opacity: 0;
+  }
+  30% {
+    stroke-opacity: 0.9;
+  }
+  100% {
+    transform: translateY(-16px);
+    stroke-opacity: 0;
+  }
+}
+.ba-auger {
+  animation: ba-auger 1s linear infinite;
+}
+@keyframes ba-auger {
+  to {
+    stroke-dashoffset: -28;
+  }
+}
+.ba-flame {
   transition: transform 0.6s ease;
 }
-.flame-outer {
-  transform-origin: 150px 412px;
-  animation: stove-flicker 1.4s ease-in-out infinite alternate;
+.ba-tongue {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: ba-flicker 1.2s ease-in-out infinite alternate;
 }
-.flame-inner {
-  transform-origin: 150px 408px;
-  animation: stove-flicker 0.9s ease-in-out infinite alternate-reverse;
+.ba-tongue.b {
+  animation-duration: 0.9s;
 }
-@keyframes stove-flicker {
+.ba-tongue.c {
+  animation-duration: 1.5s;
+  animation-direction: alternate-reverse;
+}
+.ba-tongue.d {
+  animation-duration: 0.7s;
+}
+@keyframes ba-flicker {
   0% {
     transform: scale(1, 1) skewX(0deg);
   }
   50% {
-    transform: scale(0.94, 1.06) skewX(-3deg);
+    transform: scale(0.92, 1.1) skewX(-4deg);
   }
   100% {
-    transform: scale(1.04, 0.96) skewX(3deg);
+    transform: scale(1.05, 0.94) skewX(4deg);
+  }
+}
+.ba-needle {
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.ba-led {
+  animation: ba-led 2s ease-in-out infinite;
+}
+@keyframes ba-led {
+  50% {
+    opacity: 0.35;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .stove-pellet,
-  .flame-outer,
-  .flame-inner {
+  .ba-loss path,
+  .ba-puff,
+  .ba-auger,
+  .ba-tongue,
+  .ba-led {
     animation: none;
-  }
-  .stove-pellet {
-    opacity: 0;
   }
 }
 @media (max-width: 1000px) {
@@ -3133,10 +3217,7 @@ body {
     grid-template-columns: 1fr;
     gap: 24px;
   }
-  .stove-anim {
-    min-height: 0;
-  }
-  .stove-anim svg {
-    max-height: 360px;
+  .boiler-anim svg {
+    max-height: 340px;
   }
 }

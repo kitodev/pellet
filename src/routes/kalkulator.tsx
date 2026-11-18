@@ -4,7 +4,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CheckCircle2 } from "lucide-react";
 import { PageHero } from "@/components/layouts/SiteChrome";
 import { Calculator } from "@/components/features/calculator/Calculator";
-import { StoveAnimation } from "@/components/features/calculator/StoveAnimation";
+import { BoilerAnimation, type CalcValues } from "@/components/features/calculator/BoilerAnimation";
 import { estimateHeating } from "@/lib/utils/heating";
 import { useState } from "react";
 export const Route = createFileRoute("/kalkulator")({
@@ -16,7 +16,12 @@ export const Route = createFileRoute("/kalkulator")({
   component: Page,
 });
 function Page() {
-  const [power, setPower] = useState(() => estimateHeating(120, "medium", 3));
+  const [values, setValues] = useState<CalcValues>(() => ({
+    area: 120,
+    insulation: "medium",
+    people: 3,
+    power: estimateHeating(120, "medium", 3),
+  }));
   return (
     <>
       <PageHero eyebrow="Kezdjük a megfelelő méretezéssel" title="Kazánkalkulátor" />
@@ -49,8 +54,8 @@ function Page() {
             </div>
           </div>
           <div className="calc-stage">
-            <StoveAnimation power={power} />
-            <Calculator onPowerChange={setPower} />
+            <BoilerAnimation {...values} />
+            <Calculator onChange={setValues} />
           </div>
         </div>
       </section>

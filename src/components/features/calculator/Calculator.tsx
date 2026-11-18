@@ -5,14 +5,21 @@ import { ArrowRight, Calculator as CalcIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { estimateHeating, type Insulation } from "@/lib/utils/heating";
 
-/** `onPowerChange`: called with the estimated kW whenever an input changes (e.g. for the stove animation). */
-export function Calculator({ onPowerChange }: { onPowerChange?: (kw: number) => void } = {}) {
+/** `onChange`: called with the inputs and the estimated kW whenever something changes (boiler animation). */
+export function Calculator({
+  onChange,
+}: {
+  onChange?: (v: { area: number; insulation: Insulation; people: number; power: number }) => void;
+} = {}) {
   const navigate = useNavigate();
   const [area, setArea] = useState(120);
   const [insulation, setInsulation] = useState<Insulation>("medium");
   const [people, setPeople] = useState(3);
   const power = estimateHeating(area, insulation, people);
-  useEffect(() => onPowerChange?.(power), [power, onPowerChange]);
+  useEffect(
+    () => onChange?.({ area, insulation, people, power }),
+    [area, insulation, people, power, onChange],
+  );
   return (
     <div className="calc-panel">
       <h3 className="flex items-center gap-2">
