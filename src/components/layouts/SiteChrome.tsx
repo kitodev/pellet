@@ -7,7 +7,6 @@ import {
   Calculator,
   ChevronDown,
   ChevronRight,
-  Leaf,
   Mail,
   MapPin,
   Menu,
@@ -70,7 +69,6 @@ export function SiteHeader() {
   const path = useLocation().pathname;
   const [menu, setMenu] = useState(false);
   const [open, setOpen] = useState<string | null>(null);
-  const { phone, href } = usePhone();
   const isProductPath = productAreas.some((k) => path === `/${k}` || path.startsWith(`/${k}/`));
   useEffect(() => {
     setMenu(false);
@@ -78,30 +76,6 @@ export function SiteHeader() {
   }, [path]);
   return (
     <>
-      <div className="topbar">
-        <div className="container">
-          <span>
-            <Leaf size={12} />
-            <Text id="SiteChrome.text.4">{"Természetes energia. Tudatos választás."}</Text>
-          </span>
-          <span className="top-location">
-            <Text id="SiteChrome.text.5">
-              {"Tüzelőanyag • Takarmány • Fűtési megoldások • Szerviz"}
-            </Text>
-          </span>
-          {phone ? (
-            <a href={href}>
-              <Phone size={12} />
-              {phone}
-            </a>
-          ) : (
-            <Link to="/arajanlat">
-              <Text id="SiteChrome.text.6">{"Árajánlatot kérek"}</Text>
-              <ArrowRight size={12} />
-            </Link>
-          )}
-        </div>
-      </div>
       <header className="site-header">
         <div className="container header-inner">
           <Brand />

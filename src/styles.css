@@ -3433,3 +3433,44 @@ input[type="range"]::-moz-range-track {
     display: none;
   }
 }
+
+/* 2026-11-19: no top bar – taller header, bigger menu text */
+.header-inner {
+  height: 104px;
+}
+.company-logo {
+  width: 84px;
+  height: 84px;
+}
+.site-header .brand-name {
+  font-size: 28px;
+}
+.main-nav .container {
+  height: 56px;
+}
+.main-nav a,
+.main-nav .nav-dropdown > a {
+  height: 56px;
+  font-size: 16px;
+}
+.mega-menu {
+  top: 56px;
+}
+.main-nav .mega-menu a {
+  font-size: 16px;
+}
+html {
+  scroll-padding-top: 180px;
+}
+@media (max-width: 700px) {
+  .header-inner {
+    height: 84px;
+  }
+  .company-logo {
+    width: 64px;
+    height: 64px;
+  }
+  .site-header .brand-name {
+    font-size: 22px;
+  }
+}
