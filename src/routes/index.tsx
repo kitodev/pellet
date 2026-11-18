@@ -1,7 +1,7 @@
 import { Text } from "@/components/features/content/ContentProvider";
 import { pageHead } from "@/lib/utils/seo";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Flame, Leaf, Wheat } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import {
   ContactCtaSection,
   DeliverySection,
@@ -12,6 +12,9 @@ import {
   SaleSection,
 } from "@/components/features/home/HomeSections";
 import pelletHome from "@/assets/pellet-home.jpg";
+import woodPellets from "@/assets/wood-pellets.jpg";
+import feedPellets from "@/assets/feed-pellets.jpg";
+import { useAreas } from "@/hooks/useContent";
 import { SlideShow } from "@/components/features/slider/SlideShow";
 import { homeDefaultSlides } from "@/components/features/slider/defaultSlides";
 
@@ -25,7 +28,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  // The original hero is the first slide; slides uploaded in the admin (Slide-ok) follow it.
+  // First slide: the three product areas as tiles; slides uploaded in the admin (Slide-ok) follow it.
   return (
     <>
       <SlideShow page="home" first={<DefaultHero />} defaults={homeDefaultSlides} />
@@ -40,78 +43,64 @@ function Index() {
   );
 }
 
-/** The original hero – first slide of the home page carousel. */
+/** The three product areas of the first slide (texts editable in the admin). */
+const mosaic = [
+  {
+    area: "futoanyagok",
+    image: woodPellets,
+    alt: "Fapellet fakanállal",
+    eyebrow: "Természetes energia",
+    text: "A1 fapellet, ipari és szalmapellet, brikett – zsákos és raklapos kiszerelésben.",
+  },
+  {
+    area: "takarmanyok",
+    image: feedPellets,
+    alt: "Takarmánypellet az istállóban",
+    eyebrow: "Állattartáshoz",
+    text: "Cukorrépa-, széna- és lucernapellet, ló müzlik.",
+  },
+  {
+    area: "futesi-megoldasok",
+    image: pelletHome,
+    alt: "Pelletkályha egy meleg otthonban",
+    eyebrow: "Meleg otthon",
+    text: "Pellet kályhák és kazánok, biomassza-kazánok, kiegészítők – telepítéssel.",
+  },
+] as const;
+
+/** First slide of the home page carousel: three tiles – Tüzelőanyagok, Takarmányok, Fűtési megoldások. */
 function DefaultHero() {
+  const areas = useAreas();
   return (
-    <section className="pellet-hero">
-      <img
-        src={pelletHome}
-        width={1920}
-        height={1024}
-        alt="Zsákos fapellet egy meleg, kandallós otthonban"
-        className="pellet-hero-image"
-        fetchPriority="high"
-      />
-      <div className="container pellet-hero-inner">
-        <div className="pellet-promise">
-          <Text id="index.text.1">{"Meleg otthon,"}</Text>
-          <br />
-          <span>
-            <Text id="index.text.2">{"biztos holnap!"}</Text>
-          </span>
-        </div>
-        <div className="pellet-offer">
-          <div className="offer-heading">
-            <span>
-              <Text id="index.text.3">{"TERMÉSZETES ENERGIA"}</Text>
+    <section className="hero-mosaic">
+      <h1 className="sr-only">
+        <Text id="index.mosaic.h1">
+          {"Pellet Centrum – tüzelőanyagok, takarmányok és fűtési megoldások"}
+        </Text>
+      </h1>
+      {mosaic.map((m, i) => (
+        <Link key={m.area} to="/$terulet" params={{ terulet: m.area }} className="mosaic-tile">
+          <img
+            src={m.image}
+            alt={m.alt}
+            width={1024}
+            height={768}
+            fetchPriority={i === 0 ? "high" : "auto"}
+          />
+          <div className="mosaic-body">
+            <span className="mosaic-eyebrow">
+              <Text id={`index.mosaic.${m.area}.eyebrow`}>{m.eyebrow}</Text>
             </span>
-            <h1>
-              <Text id="index.text.4">{"PRÉMIUM"}</Text> <br />
-              <Text id="index.text.5">{"PELLET"}</Text>
-            </h1>
-          </div>
-          <Link to="/arajanlat" className="offer-price">
-            <span>
-              <Text id="index.text.6">{"JÓ ÁR. VALÓDI MINŐSÉG."}</Text>
+            <h2>{areas[m.area].label}</h2>
+            <p>
+              <Text id={`index.mosaic.${m.area}.text`}>{m.text}</Text>
+            </p>
+            <span className="mosaic-button">
+              <Text id="index.mosaic.cta">{"Megnézem"}</Text> <ArrowRight size={16} />
             </span>
-            <strong>
-              <Text id="index.text.7">{"KÉRJEN ÁRAT"}</Text>
-              <ArrowRight />
-            </strong>
-          </Link>
-          <div className="offer-benefits">
-            <div>
-              <Leaf />
-              <span>
-                <Text id="index.text.8">{"Természetes"}</Text>
-                <br />
-                <Text id="index.text.9">{"alapanyag"}</Text>
-              </span>
-            </div>
-            <div>
-              <Flame />
-              <span>
-                <Text id="index.text.10">{"Fűtéshez"}</Text>
-              </span>
-            </div>
-            <div>
-              <Wheat />
-              <span>
-                <Text id="index.text.11">{"Takarmányozáshoz"}</Text>
-              </span>
-            </div>
           </div>
-          <p className="offer-copy">
-            <Text id="index.text.12">{"Tüzelőanyag és takarmány – egy helyen."}</Text>
-          </p>
-        </div>
-        <div className="pellet-photo-caption">
-          <Text id="index.text.13">{"Tiszta energia,"}</Text>
-          <br />
-          <Text id="index.text.14">{"természetesen!"}</Text>
-          <Leaf />
-        </div>
-      </div>
+        </Link>
+      ))}
     </section>
   );
 }
