@@ -267,7 +267,10 @@ export function SiteFooter() {
   const areas = useAreas();
   const { phone, href } = usePhone();
   const email = useText("contact.email", "");
-  const address = useText("contact.address", "");
+  const address = useText(
+    "contact.address",
+    "8000 Székesfehérvár, Seregélyesi út 98, 26-os épület",
+  );
   const hours = useText("contact.hours", "");
   return (
     <footer className="footer">
