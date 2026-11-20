@@ -32,10 +32,14 @@ type Errors = Partial<Record<keyof QuoteInput | "form", string>>;
 export function QuoteForm({
   product,
   initialSubject = GENERAL,
+  initialQuantity = "",
+  initialUnit,
   onDone,
 }: {
   product?: Product;
   initialSubject?: string;
+  initialQuantity?: string;
+  initialUnit?: string;
   onDone?: () => void;
 }) {
   const [subject, setSubject] = useState(initialSubject);
@@ -164,6 +168,7 @@ export function QuoteForm({
             name="quantity"
             inputMode="decimal"
             placeholder="pl. 2"
+            defaultValue={initialQuantity}
             maxLength={40}
           />
         </div>
@@ -171,7 +176,12 @@ export function QuoteForm({
           <label htmlFor="q-unit">
             <Text id="quote.unit">{"Mértékegység"}</Text>
           </label>
-          <select id="q-unit" name="unit" defaultValue={units[0]} key={units.join()}>
+          <select
+            id="q-unit"
+            name="unit"
+            defaultValue={initialUnit && units.includes(initialUnit) ? initialUnit : units[0]}
+            key={units.join()}
+          >
             {units.map((u) => (
               <option key={u}>{u}</option>
             ))}
