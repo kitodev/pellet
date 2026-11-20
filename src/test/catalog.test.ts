@@ -57,7 +57,14 @@ describe("catalog (Termékek menu)", () => {
       "Nagyipari",
     ]);
     expect(area.specFields.map((f) => f.key)).toEqual(
-      expect.arrayContaining(["gyarto", "teljesitmeny", "legkobmeter", "uzemanyag"]),
+      expect.arrayContaining([
+        "tipus",
+        "teljesitmeny",
+        "hatasfok",
+        "fogyasztas",
+        "tartaly",
+        "garancia",
+      ]),
     );
   });
   it("every category belongs to an existing section and every section has categories", () => {

@@ -2,12 +2,23 @@
 
 export type ProductSpecs = Record<string, string>;
 
+/** How the price is shown: public gross price / "Árért érdeklődjön" / quantity-based quote. */
+export type PriceMode = "public" | "ask" | "quantity";
+/** Raktáron / Korlátozott készlet / Rendelésre / Jelenleg nem elérhető */
+export type StockStatus = "in_stock" | "limited" | "on_order" | "out_of_stock";
+export type DocumentKind = "certificate" | "manual" | "other";
+
+/** Downloadable PDF besides the Műszaki adatlap (uploads/datasheets). */
+export type ProductDocument = { id: string; kind: DocumentKind; title: string; path: string };
+
 export type Product = {
   id: string;
   slug: string;
   area: string;
   category: string;
   name: string;
+  /** Gyártó / márka */
+  brand: string;
   short_description: string;
   description: string;
   /** Price in HUF; null = "Ajánlatot kérek" */
@@ -23,6 +34,20 @@ export type Product = {
   images: string[];
   /** PDF file name in uploads/datasheets */
   datasheet_path: string;
+  /** Kiszerelés / méret / teljesítmény in one line, e.g. "15 kg/zsák" or "10 kW" */
+  packaging: string;
+  /** Key features, one per line (4–6) */
+  highlights: string;
+  stock_status: StockStatus;
+  price_mode: PriceMode;
+  /** e.g. "Az ár a szállítási díjat nem tartalmazza." */
+  price_note: string;
+  seo_title: string;
+  meta_description: string;
+  keywords: string;
+  /** Alt text of the main photo (default: product name) */
+  image_alt: string;
+  documents: ProductDocument[];
   featured: boolean;
   published: boolean;
   sort_order: number;

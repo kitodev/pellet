@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { db } from "@/lib/db/client";
 import { slugify } from "@/lib/utils/slug";
-import type { Product } from "@/types";
+import type { DocumentKind, PriceMode, Product, ProductDocument, StockStatus } from "@/types";
 import type { ProductInput } from "@/lib/validations/product";
 
 function parseSpecs(raw: unknown): Record<string, string> {
@@ -18,12 +18,22 @@ function parseSpecs(raw: unknown): Record<string, string> {
   }
 }
 
-const toProduct = (r: RowDataPacket, images: string[] = []): Product => ({
+const PRICE_MODES: PriceMode[] = ["public", "ask", "quantity"];
+const STOCK: StockStatus[] = ["in_stock", "limited", "on_order", "out_of_stock"];
+const DOC_KINDS: DocumentKind[] = ["certificate", "manual", "other"];
+const s = (v: unknown) => (typeof v === "string" ? v : "");
+
+const toProduct = (
+  r: RowDataPacket,
+  images: string[] = [],
+  documents: ProductDocument[] = [],
+): Product => ({
   id: r.id,
   slug: r.slug ?? "",
   area: r.area,
   category: r.category,
   name: r.name,
+  brand: s(r.brand),
   short_description: r.short_description ?? "",
   description: r.description ?? "",
   price: r.price === null ? null : Number(r.price),
@@ -33,6 +43,20 @@ const toProduct = (r: RowDataPacket, images: string[] = []): Product => ({
   image_path: r.image_path ?? "",
   images,
   datasheet_path: r.datasheet_path ?? "",
+  packaging: s(r.packaging),
+  highlights: s(r.highlights),
+  stock_status: STOCK.includes(r.stock_status) ? r.stock_status : "in_stock",
+  price_mode: PRICE_MODES.includes(r.price_mode)
+    ? r.price_mode
+    : r.price !== null || r.sale_price !== null
+      ? "public"
+      : "ask",
+  price_note: s(r.price_note),
+  seo_title: s(r.seo_title),
+  meta_description: s(r.meta_description),
+  keywords: s(r.keywords),
+  image_alt: s(r.image_alt),
+  documents,
   featured: Number(r.featured) === 1,
   published: Number(r.published) === 1,
   sort_order: Number(r.sort_order ?? 0),
@@ -50,17 +74,44 @@ async function imagesFor(ids: string[]) {
   return map;
 }
 
+async function documentsFor(ids: string[]) {
+  const map = new Map<string, ProductDocument[]>();
+  if (!ids.length) return map;
+  try {
+    const [rows] = await db.query<RowDataPacket[]>(
+      "SELECT id, product_id, kind, title, path FROM product_documents WHERE product_id IN (?) ORDER BY sort_order, created_at",
+      [ids],
+    );
+    for (const r of rows)
+      map.set(r.product_id, [
+        ...(map.get(r.product_id) ?? []),
+        {
+          id: r.id,
+          kind: DOC_KINDS.includes(r.kind) ? r.kind : "other",
+          title: s(r.title),
+          path: r.path,
+        },
+      ]);
+  } catch (error) {
+    console.error("product_documents (pnpm db:migrate?):", error);
+  }
+  return map;
+}
+
 export async function listProducts(): Promise<Product[]> {
   const [rows] = await db.query<RowDataPacket[]>(
     "SELECT * FROM products ORDER BY area, category, sort_order, created_at",
   );
-  const images = await imagesFor(rows.map((r) => r.id));
-  return rows.map((r) => toProduct(r, images.get(r.id)));
+  const ids = rows.map((r) => r.id);
+  const [images, documents] = await Promise.all([imagesFor(ids), documentsFor(ids)]);
+  return rows.map((r) => toProduct(r, images.get(r.id), documents.get(r.id)));
 }
 
 export async function getProduct(id: string): Promise<Product | null> {
   const [rows] = await db.query<RowDataPacket[]>("SELECT * FROM products WHERE id = ?", [id]);
-  return rows[0] ? toProduct(rows[0], (await imagesFor([id])).get(id)) : null;
+  return rows[0]
+    ? toProduct(rows[0], (await imagesFor([id])).get(id), (await documentsFor([id])).get(id))
+    : null;
 }
 
 /** Unique URL slug: the requested one (or the name) plus "-2", "-3"… when taken. */
@@ -80,7 +131,7 @@ export async function uniqueSlug(
   return slug;
 }
 
-type SaveProduct = Omit<ProductInput, "remove_images" | "id"> & {
+type SaveProduct = Omit<ProductInput, "remove_images" | "remove_documents" | "id"> & {
   id?: string | undefined;
   slug: string;
 };
@@ -91,6 +142,7 @@ export async function upsertProduct(p: SaveProduct): Promise<string> {
     p.area,
     p.category,
     p.name,
+    p.brand,
     p.short_description,
     p.description,
     p.price,
@@ -102,11 +154,22 @@ export async function upsertProduct(p: SaveProduct): Promise<string> {
     p.featured ? 1 : 0,
     p.published ? 1 : 0,
     p.sort_order,
+    p.packaging,
+    p.highlights,
+    p.stock_status,
+    p.price_mode,
+    p.price_note,
+    p.seo_title,
+    p.meta_description,
+    p.keywords,
+    p.image_alt,
   ];
   if (p.id) {
     const [res] = await db.query<ResultSetHeader>(
-      `UPDATE products SET slug = ?, area = ?, category = ?, name = ?, short_description = ?, description = ?, price = ?, sale_price = ?, price_unit = ?,
-         specs = ?, image_path = ?, datasheet_path = ?, featured = ?, published = ?, sort_order = ?, updated_at = NOW(3) WHERE id = ?`,
+      `UPDATE products SET slug = ?, area = ?, category = ?, name = ?, brand = ?, short_description = ?, description = ?, price = ?, sale_price = ?, price_unit = ?,
+         specs = ?, image_path = ?, datasheet_path = ?, featured = ?, published = ?, sort_order = ?,
+         packaging = ?, highlights = ?, stock_status = ?, price_mode = ?, price_note = ?, seo_title = ?, meta_description = ?, keywords = ?, image_alt = ?,
+         updated_at = NOW(3) WHERE id = ?`,
       [...values, p.id],
     );
     if (!res.affectedRows) throw new Error("A termék nem található.");
@@ -114,8 +177,9 @@ export async function upsertProduct(p: SaveProduct): Promise<string> {
   }
   const id = randomUUID();
   await db.query(
-    `INSERT INTO products (slug, area, category, name, short_description, description, price, sale_price, price_unit, specs, image_path, datasheet_path, featured, published, sort_order, id)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO products (slug, area, category, name, brand, short_description, description, price, sale_price, price_unit, specs, image_path, datasheet_path, featured, published, sort_order,
+       packaging, highlights, stock_status, price_mode, price_note, seo_title, meta_description, keywords, image_alt, id)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [...values, id],
   );
   return id;
@@ -140,4 +204,24 @@ export async function removeProductImages(productId: string, paths: string[]) {
 export async function deleteProductById(id: string) {
   const [res] = await db.query<ResultSetHeader>("DELETE FROM products WHERE id = ?", [id]);
   if (!res.affectedRows) throw new Error("A termék nem található.");
+}
+
+export async function addProductDocuments(
+  productId: string,
+  docs: { kind: DocumentKind; title: string; path: string }[],
+  startAt: number,
+) {
+  for (const [i, d] of docs.entries())
+    await db.query(
+      "INSERT INTO product_documents (id, product_id, kind, title, path, sort_order) VALUES (?, ?, ?, ?, ?, ?)",
+      [randomUUID(), productId, d.kind, d.title, d.path, startAt + i],
+    );
+}
+
+export async function removeProductDocuments(productId: string, ids: string[]) {
+  if (ids.length)
+    await db.query("DELETE FROM product_documents WHERE product_id = ? AND id IN (?)", [
+      productId,
+      ids,
+    ]);
 }

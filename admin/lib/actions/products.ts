@@ -2,9 +2,11 @@
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/auth/session";
 import {
+  addProductDocuments,
   addProductImages,
   deleteProductById,
   getProduct,
+  removeProductDocuments,
   removeProductImages,
   uniqueSlug,
   upsertProduct,
@@ -24,7 +26,7 @@ export async function saveProduct(
 ): Promise<ActionResult<{ id: string; slug: string }>> {
   return toActionResult(async () => {
     await requireAdmin();
-    const { product, image, gallery, datasheet } = parseProductForm(form);
+    const { product, image, gallery, datasheet, documents } = parseProductForm(form);
     const previous = product.id ? await getProduct(product.id) : null;
     if (product.id && !previous) throw new Error("A termék nem található.");
     const keptGallery = (previous?.images ?? []).filter((p) => !product.remove_images.includes(p));
@@ -43,6 +45,13 @@ export async function saveProduct(
       }
       const newSheet = datasheet ? await saveUpload("datasheets", datasheet) : null;
       if (newSheet) uploaded.push({ folder: "datasheets", name: newSheet });
+      const newDocs: { kind: (typeof documents)[number]["kind"]; title: string; path: string }[] =
+        [];
+      for (const d of documents) {
+        const n = await saveUpload("datasheets", d.file);
+        uploaded.push({ folder: "datasheets", name: n });
+        newDocs.push({ kind: d.kind, title: d.title, path: n });
+      }
 
       // Keep existing files unless replaced or removed in the form.
       const image_path =
@@ -61,6 +70,14 @@ export async function saveProduct(
       const removed = (previous?.images ?? []).filter((p) => product.remove_images.includes(p));
       await removeProductImages(id, removed);
       await addProductImages(id, newGallery, keptGallery.length);
+      const removedDocs = (previous?.documents ?? []).filter((d) =>
+        product.remove_documents.includes(d.id),
+      );
+      await removeProductDocuments(
+        id,
+        removedDocs.map((d) => d.id),
+      );
+      await addProductDocuments(id, newDocs, (previous?.documents.length ?? 0) + 1);
 
       const orphans = [
         ...(previous?.image_path && previous.image_path !== image_path
@@ -70,6 +87,7 @@ export async function saveProduct(
           ? [{ folder: "datasheets" as const, name: previous.datasheet_path }]
           : []),
         ...removed.map((name) => ({ folder: "products" as const, name })),
+        ...removedDocs.map((d) => ({ folder: "datasheets" as const, name: d.path })),
       ];
       await Promise.all(orphans.map((o) => deleteUpload(o.folder, o.name)));
       revalidatePath("/");
@@ -94,6 +112,7 @@ export async function deleteProduct(input: { id: string }): Promise<ActionResult
       deleteUpload("products", product.image_path),
       ...product.images.map((i) => deleteUpload("products", i)),
       deleteUpload("datasheets", product.datasheet_path),
+      ...product.documents.map((d) => deleteUpload("datasheets", d.path)),
     ]);
     revalidatePath("/");
   });

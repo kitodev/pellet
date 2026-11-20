@@ -15,13 +15,13 @@ export function CategoryView({ area: key, category: slug }: { area: AreaKey; cat
   const siblings = area.categories.filter((c) => c.section === category.section);
   const products = useProducts({ area: key, category: slug });
   // Grouped by manufacturer (Gyártó) when the products have one, e.g. Pellet kazánok.
-  const makers = [...new Set(products.map((p) => p.specs["gyarto"]?.trim() ?? ""))];
+  const makers = [...new Set(products.map((p) => (p.brand || p.specs["gyarto"] || "").trim()))];
   const byMaker = makers.some(Boolean)
     ? makers
         .sort((a, b) => (a ? (b ? a.localeCompare(b, "hu") : -1) : 1))
         .map((m) => ({
           maker: m,
-          items: products.filter((p) => (p.specs["gyarto"]?.trim() ?? "") === m),
+          items: products.filter((p) => (p.brand || p.specs["gyarto"] || "").trim() === m),
         }))
     : null;
   return (

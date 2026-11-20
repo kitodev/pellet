@@ -5,6 +5,10 @@ export type {
   Review,
   BlogPost,
   Slide,
+  PriceMode,
+  StockStatus,
+  DocumentKind,
+  ProductDocument,
   User,
   AppRole,
 } from "./database";

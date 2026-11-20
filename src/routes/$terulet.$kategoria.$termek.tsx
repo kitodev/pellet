@@ -14,12 +14,12 @@ export const Route = createFileRoute("/$terulet/$kategoria/$termek")({
     if (!product) throw notFound();
     return product;
   },
-  head: ({ loaderData }) =>
-    loaderData
+  head: ({ loaderData: p }) =>
+    p
       ? pageHead(
-          loaderData.name,
-          loaderData.short_description || loaderData.description.slice(0, 160) || loaderData.name,
-          { image: productImage(loaderData), type: "product" },
+          p.seo_title || `${p.name}${p.brand ? ` – ${p.brand}` : ""}`,
+          p.meta_description || p.short_description || p.description.slice(0, 160) || p.name,
+          { image: productImage(p), type: "product", keywords: p.keywords },
         )
       : {},
   component: Page,

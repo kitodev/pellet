@@ -1,6 +1,14 @@
 "use client";
 import { useState } from "react";
-import { BookOpen, FileText, Images, MapPin, MessageSquareQuote, Package } from "lucide-react";
+import {
+  BookOpen,
+  FileText,
+  Images,
+  Inbox,
+  MapPin,
+  MessageSquareQuote,
+  Package,
+} from "lucide-react";
 import { Button } from "@/components/ui";
 import { ProductsPanel } from "@/components/features/products/ProductsPanel";
 import { ReviewsPanel } from "@/components/features/reviews/ReviewsPanel";
@@ -8,20 +16,27 @@ import { BlogPanel } from "@/components/features/blog/BlogPanel";
 import { ContactPanel } from "@/components/features/contact/ContactPanel";
 import { TextsPanel } from "@/components/features/texts/TextsPanel";
 import { SlidesPanel } from "@/components/features/slides/SlidesPanel";
-import type { BlogPost, Product, Review, SiteText, Slide } from "@/types";
+import { QuotesPanel } from "@/components/features/quotes/QuotesPanel";
+import type { BlogPost, Product, QuoteRequest, Review, SiteText, Slide } from "@/types";
 
-type Tab = "products" | "slides" | "reviews" | "blog" | "contact" | "texts";
+type Tab = "quotes" | "products" | "slides" | "reviews" | "blog" | "contact" | "texts";
 type Props = {
   products: Product[];
+  quotes: QuoteRequest[];
   slides: Slide[];
   reviews: Review[];
   posts: BlogPost[];
   texts: SiteText[];
 };
 
-export function AdminTabs({ products, slides, reviews, posts, texts }: Props) {
+export function AdminTabs({ products, quotes, slides, reviews, posts, texts }: Props) {
   const [tab, setTab] = useState<Tab>("products");
   const tabs: { key: Tab; label: string; icon: typeof Package }[] = [
+    {
+      key: "quotes",
+      label: `Ajánlatkérések (${quotes.filter((q) => q.status === "new").length})`,
+      icon: Inbox,
+    },
     { key: "products", label: `Termékek (${products.length})`, icon: Package },
     { key: "slides", label: `Slide-ok (${slides.length})`, icon: Images },
     { key: "reviews", label: `Vélemények (${reviews.length})`, icon: MessageSquareQuote },
@@ -44,6 +59,7 @@ export function AdminTabs({ products, slides, reviews, posts, texts }: Props) {
           </Button>
         ))}
       </nav>
+      {tab === "quotes" && <QuotesPanel quotes={quotes} />}
       {tab === "products" && <ProductsPanel products={products} />}
       {tab === "slides" && (
         <SlidesPanel

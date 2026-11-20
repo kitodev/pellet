@@ -102,7 +102,7 @@ export function FeaturedSection() {
 
 export function SaleSection() {
   const products = useProducts()
-    .filter((p) => p.sale_price !== null)
+    .filter((p) => p.price_mode === "public" && p.sale_price !== null)
     .slice(0, 6);
   if (!products.length) return null;
   return (

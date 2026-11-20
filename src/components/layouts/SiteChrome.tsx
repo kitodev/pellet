@@ -282,6 +282,7 @@ export function SiteFooter() {
           <Link to="/rolunk">Rólunk</Link>
           <Link to="/kalkulator">Kazánkalkulátor</Link>
           <Link to="/kereso">Keresés</Link>
+          <Link to="/adatkezeles">Adatkezelési tájékoztató</Link>
         </div>
         <div>
           <h3>

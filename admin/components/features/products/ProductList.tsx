@@ -45,8 +45,10 @@ export function ProductList({ products, busy, onEdit, onDelete }: Props) {
                 {category?.name ?? `${p.category} (ismeretlen kategória!)`}
               </small>
               <p className="tags">
-                {p.price === null && p.sale_price === null ? (
-                  <span>Ajánlatkérés</span>
+                {p.price_mode !== "public" || (p.price === null && p.sale_price === null) ? (
+                  <span>
+                    {p.price_mode === "quantity" ? "Mennyiségi ajánlat" : "Árért érdeklődjön"}
+                  </span>
                 ) : (
                   <span>{formatPrice(p.price ?? p.sale_price ?? 0, p.price_unit)}</span>
                 )}

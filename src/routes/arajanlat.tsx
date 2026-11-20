@@ -23,11 +23,7 @@ function Page() {
       />
       <section className="section soft-section">
         <div className="container narrow">
-          <QuoteForm
-            key={targy}
-            {...(targy ? { initialSubject: targy } : {})}
-            kind="Árajánlatkérés"
-          />
+          <QuoteForm key={targy} {...(targy ? { initialSubject: targy } : {})} />
         </div>
       </section>
     </>

@@ -496,3 +496,29 @@ img {
   border-radius: 4px;
   flex-shrink: 0;
 }
+
+/* product form: uploaded documents */
+.doc-edit {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.doc-edit button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.doc-edit button.removed {
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+
+.admin-list article.quote-done {
+  opacity: 0.6;
+}

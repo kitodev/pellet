@@ -137,6 +137,7 @@ export const deleteProduct = createServerFn({ method: "POST" })
       deleteProductImage(product.image_path),
       ...product.images.map(deleteProductImage),
       deleteUpload("datasheets", product.datasheet_path),
+      ...product.documents.map((d) => deleteUpload("datasheets", d.path)),
     ]);
     return { ok: true };
   });

@@ -4,10 +4,10 @@ import { ArrowRight, BadgePercent, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Product } from "@/types";
 import { productImage } from "./images";
-import { PriceTag } from "./PriceTag";
+import { PriceTag, showsPrice } from "./PriceTag";
 
 export function ProductCard({ product }: { product: Product }) {
-  const onSale = product.sale_price !== null;
+  const onSale = showsPrice(product) && product.sale_price !== null;
   return (
     <article className="product-card">
       <Link

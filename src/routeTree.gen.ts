@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TeruletRouteImport } from './routes/$terulet'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AdatkezelesRouteImport } from './routes/adatkezeles'
 import { Route as ArajanlatRouteImport } from './routes/arajanlat'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BiomasszaRouteImport } from './routes/biomassza'
@@ -51,6 +52,11 @@ const TeruletRoute = TeruletRouteImport.update({
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdatkezelesRoute = AdatkezelesRouteImport.update({
+  id: '/adatkezeles',
+  path: '/adatkezeles',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArajanlatRoute = ArajanlatRouteImport.update({
@@ -187,6 +193,7 @@ const TeruletKategoriaTermekRoute = TeruletKategoriaTermekRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$terulet': typeof TeruletRouteWithChildren
+  '/adatkezeles': typeof AdatkezelesRoute
   '/arajanlat': typeof ArajanlatRoute
   '/auth': typeof AuthRoute
   '/biomassza': typeof BiomasszaRouteWithChildren
@@ -216,6 +223,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/adatkezeles': typeof AdatkezelesRoute
   '/arajanlat': typeof ArajanlatRoute
   '/auth': typeof AuthRoute
   '/kalkulator': typeof KalkulatorRoute
@@ -244,6 +252,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/$terulet': typeof TeruletRouteWithChildren
+  '/adatkezeles': typeof AdatkezelesRoute
   '/arajanlat': typeof ArajanlatRoute
   '/auth': typeof AuthRoute
   '/biomassza': typeof BiomasszaRouteWithChildren
@@ -276,6 +285,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/$terulet'
+    | '/adatkezeles'
     | '/arajanlat'
     | '/auth'
     | '/biomassza'
@@ -305,6 +315,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/adatkezeles'
     | '/arajanlat'
     | '/auth'
     | '/kalkulator'
@@ -332,6 +343,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/$terulet'
+    | '/adatkezeles'
     | '/arajanlat'
     | '/auth'
     | '/biomassza'
@@ -364,6 +376,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   TeruletRoute: typeof TeruletRouteWithChildren
+  AdatkezelesRoute: typeof AdatkezelesRoute
   ArajanlatRoute: typeof ArajanlatRoute
   AuthRoute: typeof AuthRoute
   BiomasszaRoute: typeof BiomasszaRouteWithChildren
@@ -402,6 +415,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/adatkezeles': {
+      id: '/adatkezeles'
+      path: '/adatkezeles'
+      fullPath: '/adatkezeles'
+      preLoaderRoute: typeof AdatkezelesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/arajanlat': {
@@ -670,6 +690,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   TeruletRoute: TeruletRouteWithChildren,
+  AdatkezelesRoute: AdatkezelesRoute,
   ArajanlatRoute: ArajanlatRoute,
   AuthRoute: AuthRoute,
   BiomasszaRoute: BiomasszaRouteWithChildren,

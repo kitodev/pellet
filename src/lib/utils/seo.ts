@@ -20,13 +20,14 @@ export const jsonLd = (data: unknown) => JSON.stringify(data).replace(/</g, "\\u
 export function pageHead(
   title: string,
   description: string,
-  extra: { image?: string; type?: string } = {},
+  extra: { image?: string; type?: string; keywords?: string } = {},
 ) {
   const full = title.includes("Pellet Centrum") ? title : `${title} – Pellet Centrum Kft.`;
   return {
     meta: [
       { title: full },
       { name: "description", content: description },
+      ...(extra.keywords ? [{ name: "keywords", content: extra.keywords }] : []),
       { property: "og:title", content: full },
       { property: "og:description", content: description },
       { property: "og:type", content: extra.type ?? "website" },

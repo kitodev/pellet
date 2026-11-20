@@ -15,6 +15,7 @@ export const emptyProduct = (area: AreaKey = "futoanyagok"): ProductDraft => ({
   area,
   category: areas[area].categories[0]!.slug,
   name: "",
+  brand: "",
   short_description: "",
   description: "",
   price: null,
@@ -24,12 +25,27 @@ export const emptyProduct = (area: AreaKey = "futoanyagok"): ProductDraft => ({
   image_path: "",
   images: [],
   datasheet_path: "",
+  packaging: "",
+  highlights: "",
+  stock_status: "in_stock",
+  price_mode: "ask",
+  price_note: "",
+  seo_title: "",
+  meta_description: "",
+  keywords: "",
+  image_alt: "",
+  documents: [],
   featured: false,
   published: true,
   sort_order: 0,
 });
 
 const preview = (folder: string, name: string) => `/uploads/${folder}/${encodeURIComponent(name)}`;
+const DOC_KINDS = {
+  certificate: "Minőségi tanúsítvány",
+  manual: "Használati útmutató",
+  other: "Egyéb dokumentum",
+} as const;
 const UNITS = ["Ft/zsák", "Ft/raklap", "Ft/kg", "Ft/tonna", "Ft/db", "Ft/m³", "Ft/csomag"];
 
 type Props = {
@@ -45,6 +61,7 @@ export function ProductForm({ initial, busy, onCancel, onSubmit }: Props) {
   const [removeImages, setRemoveImages] = useState<string[]>([]);
   const [removeMain, setRemoveMain] = useState(false);
   const [removeSheet, setRemoveSheet] = useState(false);
+  const [removeDocs, setRemoveDocs] = useState<string[]>([]);
   const area = areas[p.area as AreaKey] ?? areas.futoanyagok;
 
   function submit(event: FormEvent<HTMLFormElement>) {
@@ -54,6 +71,7 @@ export function ProductForm({ initial, busy, onCancel, onSubmit }: Props) {
     form.set("image_path", removeMain ? "" : p.image_path);
     form.set("datasheet_path", removeSheet ? "" : p.datasheet_path);
     for (const r of removeImages) form.append("remove_images", r);
+    for (const d of removeDocs) form.append("remove_documents", d);
     onSubmit(form);
   }
 
@@ -140,9 +158,56 @@ export function ProductForm({ initial, busy, onCancel, onSubmit }: Props) {
             }}
           />
         </Field>
+        <Field label="Gyártó / márka" hint="pl. Mareli, ENplus-minősített gyártó neve">
+          <input
+            name="brand"
+            maxLength={120}
+            value={p.brand}
+            onChange={(e) => setP({ ...p, brand: e.target.value })}
+          />
+        </Field>
+        <Field
+          label="Kiszerelés / méret / teljesítmény"
+          hint="pl. 15 kg/zsák · 10 kW · Ø 80 mm, 1 m"
+        >
+          <input
+            name="packaging"
+            maxLength={200}
+            value={p.packaging}
+            onChange={(e) => setP({ ...p, packaging: e.target.value })}
+          />
+        </Field>
+        <Field label="Elérhetőség">
+          <select
+            name="stock_status"
+            value={p.stock_status}
+            onChange={(e) =>
+              setP({ ...p, stock_status: e.target.value as ProductDraft["stock_status"] })
+            }
+          >
+            <option value="in_stock">Raktáron</option>
+            <option value="limited">Korlátozott készlet</option>
+            <option value="on_order">Rendelésre</option>
+            <option value="out_of_stock">Jelenleg nem elérhető</option>
+          </select>
+        </Field>
+        <Field
+          label="Legfontosabb jellemzők"
+          hint="Soronként egy jellemző (4–6 sor) – a termékoldalon pipás listaként jelenik meg."
+          wide
+        >
+          <textarea
+            name="highlights"
+            rows={5}
+            maxLength={3000}
+            value={p.highlights}
+            placeholder={"pl. ENplus A1 minősítés\nAlacsony hamutartalom (≤ 0,7%)\n6 mm átmérő"}
+            onChange={(e) => setP({ ...p, highlights: e.target.value })}
+          />
+        </Field>
         <Field
           label="Rövid leírás"
-          hint="A termékkártyán és a Google-találatban jelenik meg (max. 300 karakter)."
+          hint="2–4 mondatos bemutatás – a termékoldal tetején, a termékkártyán és a Google-találatban jelenik meg (max. 300 karakter)."
           wide
         >
           <textarea
@@ -164,7 +229,23 @@ export function ProductForm({ initial, busy, onCancel, onSubmit }: Props) {
       </Section>
 
       <Section title="Ár">
-        <Field label="Ár (Ft)" hint="Ha üresen hagyja, „Ajánlatot kérek” gomb jelenik meg.">
+        <Field label="Ár megjelenítése">
+          <select
+            name="price_mode"
+            value={p.price_mode}
+            onChange={(e) =>
+              setP({ ...p, price_mode: e.target.value as ProductDraft["price_mode"] })
+            }
+          >
+            <option value="public">Nyilvános bruttó fogyasztói ár</option>
+            <option value="ask">„Árért érdeklődjön”</option>
+            <option value="quantity">Mennyiségtől függő, egyedi árajánlat</option>
+          </select>
+        </Field>
+        <Field
+          label="Ár (Ft, bruttó)"
+          hint="Csak „Nyilvános bruttó fogyasztói ár” esetén jelenik meg."
+        >
           <input
             name="price"
             inputMode="numeric"
@@ -209,6 +290,18 @@ export function ProductForm({ initial, busy, onCancel, onSubmit }: Props) {
             ))}
           </datalist>
         </Field>
+        <Field
+          label="Megjegyzés az ár mellett"
+          hint="pl. Az ár a szállítási díjat nem tartalmazza. · Raklapos tételnél kedvezmény."
+          wide
+        >
+          <input
+            name="price_note"
+            maxLength={300}
+            value={p.price_note}
+            onChange={(e) => setP({ ...p, price_note: e.target.value })}
+          />
+        </Field>
       </Section>
 
       <Section title={`Műszaki adatok – ${area.label}`}>
@@ -237,7 +330,7 @@ export function ProductForm({ initial, busy, onCancel, onSubmit }: Props) {
         ))}
       </Section>
 
-      <Section title="Képek és adatlap">
+      <Section title="Képek és dokumentumok">
         <Field label="Fő kép" hint="JPG, PNG vagy WebP, max. 5 MB.">
           {p.image_path && !removeMain && (
             <span className="file-current">
@@ -249,6 +342,18 @@ export function ProductForm({ initial, busy, onCancel, onSubmit }: Props) {
             </span>
           )}
           <input type="file" name="image" accept={ALLOWED_IMAGE_TYPES.join(",")} />
+        </Field>
+        <Field
+          label="A fő kép leírása (alt szöveg)"
+          hint="Google-képkereséshez; üresen a terméknév."
+        >
+          <input
+            name="image_alt"
+            maxLength={200}
+            value={p.image_alt}
+            placeholder={p.name}
+            onChange={(e) => setP({ ...p, image_alt: e.target.value })}
+          />
         </Field>
         <Field
           label={`További képek (galéria, max. ${MAX_GALLERY})`}
@@ -285,6 +390,81 @@ export function ProductForm({ initial, busy, onCancel, onSubmit }: Props) {
             </span>
           )}
           <input type="file" name="datasheet" accept="application/pdf" />
+        </Field>
+        {p.documents.length > 0 && (
+          <Field label="Feltöltött dokumentumok" hint="Kattintson a törléshez jelöléshez." wide>
+            <span className="doc-edit">
+              {p.documents.map((d) => (
+                <button
+                  type="button"
+                  key={d.id}
+                  className={removeDocs.includes(d.id) ? "removed" : ""}
+                  onClick={() =>
+                    setRemoveDocs((l) =>
+                      l.includes(d.id) ? l.filter((x) => x !== d.id) : [...l, d.id],
+                    )
+                  }
+                >
+                  <FileText size={14} /> {d.title || DOC_KINDS[d.kind]} ({DOC_KINDS[d.kind]})
+                  <span>{removeDocs.includes(d.id) ? " – törlésre" : " ×"}</span>
+                </button>
+              ))}
+            </span>
+          </Field>
+        )}
+        {(Object.keys(DOC_KINDS) as (keyof typeof DOC_KINDS)[]).map((kind) => (
+          <Field
+            key={kind}
+            label={`${DOC_KINDS[kind]} (PDF)`}
+            hint="Több fájl is választható, max. 10 MB/db."
+          >
+            <input type="file" name={`doc.${kind}`} multiple accept="application/pdf" />
+            <input
+              name={`doc_title.${kind}`}
+              maxLength={200}
+              placeholder="Megnevezés (nem kötelező)"
+            />
+          </Field>
+        ))}
+      </Section>
+
+      <Section title="Keresőoptimalizálás (Google)">
+        <Field
+          label="SEO-cím"
+          hint={`A böngészőfülön és a Google-találat címében. Üresen: „${p.name || "Terméknév"}${p.brand ? ` – ${p.brand}` : ""}”. Ajánlott max. 60 karakter (${p.seo_title.length}).`}
+          wide
+        >
+          <input
+            name="seo_title"
+            maxLength={200}
+            value={p.seo_title}
+            onChange={(e) => setP({ ...p, seo_title: e.target.value })}
+          />
+        </Field>
+        <Field
+          label="Meta leírás"
+          hint={`A Google-találat szövege. Üresen a rövid leírás. Ajánlott 120–160 karakter (${p.meta_description.length}).`}
+          wide
+        >
+          <textarea
+            name="meta_description"
+            rows={2}
+            maxLength={300}
+            value={p.meta_description}
+            onChange={(e) => setP({ ...p, meta_description: e.target.value })}
+          />
+        </Field>
+        <Field
+          label="Keresőkifejezések"
+          hint="Vesszővel elválasztva, pl. fapellet, ENplus A1, pellet 15 kg"
+          wide
+        >
+          <input
+            name="keywords"
+            maxLength={300}
+            value={p.keywords}
+            onChange={(e) => setP({ ...p, keywords: e.target.value })}
+          />
         </Field>
       </Section>
 

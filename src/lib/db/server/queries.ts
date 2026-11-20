@@ -1,7 +1,17 @@
 import { randomUUID } from "node:crypto";
 import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { db } from "./client";
-import type { BlogPost, Product, Review, SiteText, Slide } from "@/types";
+import type {
+  BlogPost,
+  DocumentKind,
+  PriceMode,
+  Product,
+  ProductDocument,
+  Review,
+  SiteText,
+  Slide,
+  StockStatus,
+} from "@/types";
 import type { ProductInput, TextInput } from "@/lib/validations/content";
 import { slugify } from "@/lib/utils/slug";
 
@@ -38,13 +48,29 @@ function parseSpecs(raw: unknown): Record<string, string> {
   }
 }
 
-function toProduct(r: RowDataPacket, images: string[] = []): Product {
+const PRICE_MODES: PriceMode[] = ["public", "ask", "quantity"];
+const STOCK: StockStatus[] = ["in_stock", "limited", "on_order", "out_of_stock"];
+const DOC_KINDS: DocumentKind[] = ["certificate", "manual", "other"];
+const str = (v: unknown) => (typeof v === "string" ? v : "");
+
+function toProduct(
+  r: RowDataPacket,
+  images: string[] = [],
+  documents: ProductDocument[] = [],
+): Product {
+  // Rows from before migration 007 have no price_mode: a price means "public".
+  const priceMode = PRICE_MODES.includes(r["price_mode"])
+    ? (r["price_mode"] as PriceMode)
+    : r["price"] !== null || r["sale_price"] !== null
+      ? "public"
+      : "ask";
   return {
     id: r["id"],
     slug: r["slug"] ?? "",
     area: r["area"],
     category: r["category"],
     name: r["name"],
+    brand: str(r["brand"]),
     short_description: r["short_description"] ?? "",
     description: r["description"] ?? "",
     price: r["price"] === null ? null : Number(r["price"]),
@@ -54,6 +80,16 @@ function toProduct(r: RowDataPacket, images: string[] = []): Product {
     image_path: r["image_path"] ?? "",
     images,
     datasheet_path: r["datasheet_path"] ?? "",
+    packaging: str(r["packaging"]),
+    highlights: str(r["highlights"]),
+    stock_status: STOCK.includes(r["stock_status"]) ? r["stock_status"] : "in_stock",
+    price_mode: priceMode,
+    price_note: str(r["price_note"]),
+    seo_title: str(r["seo_title"]),
+    meta_description: str(r["meta_description"]),
+    keywords: str(r["keywords"]),
+    image_alt: str(r["image_alt"]),
+    documents,
     featured: Number(r["featured"]) === 1,
     published: Number(r["published"]) === 1,
     sort_order: Number(r["sort_order"] ?? 0),
@@ -72,18 +108,44 @@ async function imagesFor(ids: string[]) {
   return map;
 }
 
+/** Extra PDFs (table from migration 007 – empty until it has run). */
+async function documentsFor(ids: string[]) {
+  const map = new Map<string, ProductDocument[]>();
+  if (!ids.length) return map;
+  try {
+    const [rows] = await db().query<RowDataPacket[]>(
+      "SELECT id, product_id, kind, title, path FROM product_documents WHERE product_id IN (?) ORDER BY sort_order, created_at",
+      [ids],
+    );
+    for (const r of rows)
+      map.set(r["product_id"], [
+        ...(map.get(r["product_id"]) ?? []),
+        {
+          id: r["id"],
+          kind: DOC_KINDS.includes(r["kind"]) ? r["kind"] : "other",
+          title: str(r["title"]),
+          path: r["path"],
+        },
+      ]);
+  } catch (error) {
+    console.error("[pellet] Termékdokumentumok betöltése sikertelen (pnpm db:migrate?):", error);
+  }
+  return map;
+}
+
 export async function listProducts({ publishedOnly = false } = {}): Promise<Product[]> {
   const [rows] = await db().query<RowDataPacket[]>(
     `SELECT * FROM products ${publishedOnly ? "WHERE published = 1" : ""} ORDER BY sort_order, created_at`,
   );
-  const images = await imagesFor(rows.map((r) => r["id"]));
-  return rows.map((r) => toProduct(r, images.get(r["id"])));
+  const ids = rows.map((r) => r["id"]);
+  const [images, documents] = await Promise.all([imagesFor(ids), documentsFor(ids)]);
+  return rows.map((r) => toProduct(r, images.get(r["id"]), documents.get(r["id"])));
 }
 
 export async function getProduct(id: string): Promise<Product | null> {
   const [rows] = await db().query<RowDataPacket[]>("SELECT * FROM products WHERE id = ?", [id]);
   if (!rows[0]) return null;
-  return toProduct(rows[0], (await imagesFor([id])).get(id));
+  return toProduct(rows[0], (await imagesFor([id])).get(id), (await documentsFor([id])).get(id));
 }
 
 async function uniqueProductSlug(name: string, exceptId?: string) {
@@ -187,4 +249,50 @@ export async function getPublishedPost(slug: string): Promise<BlogPost | null> {
     [slug],
   );
   return rows[0] ? toPost(rows[0]) : null;
+}
+
+// ---- quote requests (Árajánlatkérés) ----
+export async function insertQuoteRequest(q: {
+  product_id: string | null;
+  product_name: string;
+  product_url: string;
+  quantity: string;
+  unit: string;
+  delivery: string;
+  zip: string;
+  city: string;
+  installation: string;
+  name: string;
+  company: string;
+  email: string;
+  phone: string;
+  message: string;
+}) {
+  const id = randomUUID();
+  await db().query(
+    `INSERT INTO quote_requests (id, product_id, product_name, product_url, quantity, unit, delivery, zip, city, installation, name, company, email, phone, message)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [
+      id,
+      q.product_id,
+      q.product_name,
+      q.product_url,
+      q.quantity,
+      q.unit,
+      q.delivery,
+      q.zip,
+      q.city,
+      q.installation,
+      q.name,
+      q.company,
+      q.email,
+      q.phone,
+      q.message,
+    ],
+  );
+  return id;
+}
+
+export async function markQuoteMailed(id: string) {
+  await db().query("UPDATE quote_requests SET mail_sent = 1 WHERE id = ?", [id]);
 }

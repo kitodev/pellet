@@ -44,6 +44,8 @@ export type Area = {
   intro: string;
   /** Technical data shown on every product page of this area, in this order. */
   specFields: SpecField[];
+  /** Units offered in the quote form (Kért mennyiség). */
+  quoteUnits: string[];
   sections: Section[];
   categories: Category[];
 };
@@ -55,35 +57,60 @@ export const areas: Record<AreaKey, Area> = {
     title: "Tüzelőanyagok – fűtő pelletek és brikettek",
     intro:
       "A1 fapellet, ipari pellet és szalmapellet zsákos és raklapos kiszerelésben, valamint brikettek.",
+    quoteUnits: ["zsák", "raklap", "tonna"],
     specFields: [
+      {
+        key: "alapanyag",
+        label: "Alapanyag, fafaj",
+        type: "text",
+        placeholder: "pl. 100% lucfenyő fűrészpor",
+      },
+      {
+        key: "szarmazas",
+        label: "Származási ország",
+        type: "text",
+        placeholder: "pl. Magyarország",
+      },
+      { key: "minosites", label: "Minősítés", type: "text", placeholder: "pl. ENplus A1" },
+      {
+        key: "tanusitvany",
+        label: "Tanúsítványazonosító",
+        type: "text",
+        placeholder: "pl. HU 000",
+      },
+      { key: "atmero", label: "Átmérő", unit: "mm", type: "number", placeholder: "pl. 6" },
       {
         key: "futoertek",
         label: "Fűtőérték",
         unit: "MJ/kg",
-        type: "number",
-        placeholder: "pl. 17,5",
+        type: "text",
+        placeholder: "pl. ≥ 16,5",
       },
       {
         key: "hamutartalom",
         label: "Hamutartalom",
         unit: "%",
-        type: "number",
-        placeholder: "pl. 0,5",
+        type: "text",
+        placeholder: "pl. ≤ 0,7",
       },
       {
         key: "nedvesseg",
         label: "Nedvességtartalom",
         unit: "%",
-        type: "number",
-        placeholder: "pl. 8",
+        type: "text",
+        placeholder: "pl. ≤ 10",
       },
-      { key: "atmero", label: "Átmérő", unit: "mm", type: "number", placeholder: "pl. 6" },
-      { key: "minosites", label: "Minősítés", type: "text", placeholder: "pl. ENplus A1" },
       {
         key: "kiszereles",
         label: "Kiszerelés",
         type: "text",
-        placeholder: "pl. 15 kg/zsák, 65 zsák/raklap",
+        placeholder: "pl. 15 kg/zsák",
+      },
+      {
+        key: "raklap",
+        label: "Raklaponkénti mennyiség",
+        type: "text",
+        placeholder: "pl. 65 zsák (975 kg)",
       },
     ],
     sections: [
@@ -142,16 +169,38 @@ export const areas: Record<AreaKey, Area> = {
     label: "Takarmányok",
     title: "Takarmányok – takarmány pelletek és ló müzlik",
     intro: "Cukorrépa-, széna- és lucernapellet, valamint ló müzlik.",
+    quoteUnits: ["zsák", "kg", "tonna", "raklap"],
     specFields: [
       { key: "osszetetel", label: "Összetétel", type: "textarea" },
       {
-        key: "tapertek",
-        label: "Tápérték",
-        type: "textarea",
-        placeholder: "pl. nyersfehérje 16%, nyersrost 18%…",
+        key: "nyersfeherje",
+        label: "Nyersfehérje",
+        unit: "%",
+        type: "number",
+        placeholder: "pl. 16",
       },
-      { key: "kiszereles", label: "Kiszerelés", type: "text", placeholder: "pl. 25 kg/zsák" },
-      { key: "felhasznalas", label: "Felhasználási javaslat", type: "textarea" },
+      { key: "nyersrost", label: "Nyersrost", unit: "%", type: "number", placeholder: "pl. 25" },
+      {
+        key: "nedvesseg",
+        label: "Nedvességtartalom",
+        unit: "%",
+        type: "number",
+        placeholder: "pl. 12",
+      },
+      { key: "atmero", label: "Pelletátmérő", unit: "mm", type: "number", placeholder: "pl. 8" },
+      {
+        key: "tapertek",
+        label: "Egyéb tápérték",
+        type: "textarea",
+        placeholder: "pl. nyerszsír, hamu, ásványi anyagok…",
+      },
+      { key: "felhasznalas", label: "Felhasználási terület", type: "textarea" },
+      {
+        key: "kiszereles",
+        label: "Kiszerelés, csomagolás",
+        type: "text",
+        placeholder: "pl. 25 kg/zsák",
+      },
     ],
     sections: [
       {
@@ -208,14 +257,30 @@ export const areas: Record<AreaKey, Area> = {
     title: "Fűtési megoldások – pellet kályhák, kazánok, kiegészítők",
     intro:
       "Pellet tüzelésű kályhák és kazánok, lakossági és ipari biomassza-kazánok, valamint füstcsövek, hamuporszívók és alkatrészek.",
+    quoteUnits: ["db", "m", "csomag"],
     specFields: [
-      { key: "gyarto", label: "Gyártó", type: "text", placeholder: "pl. a gyártó neve" },
+      { key: "tipus", label: "Pontos típus", type: "text", placeholder: "pl. Onyx Air 10" },
       {
         key: "teljesitmeny",
         label: "Teljesítmény",
         unit: "kW",
         type: "number",
-        placeholder: "pl. 9",
+        placeholder: "pl. 10",
+      },
+      { key: "hatasfok", label: "Hatásfok", unit: "%", type: "number", placeholder: "pl. 91" },
+      {
+        key: "fogyasztas",
+        label: "Tüzelőanyag-fogyasztás",
+        unit: "kg/óra",
+        type: "text",
+        placeholder: "pl. 0,6–2,2",
+      },
+      {
+        key: "tartaly",
+        label: "Tartálykapacitás",
+        unit: "kg",
+        type: "number",
+        placeholder: "pl. 20",
       },
       {
         key: "legkobmeter",
@@ -224,8 +289,29 @@ export const areas: Record<AreaKey, Area> = {
         type: "number",
         placeholder: "pl. 230",
       },
-      { key: "uzemanyag", label: "Üzemanyag típusa", type: "text", placeholder: "pl. fapellet" },
-      { key: "hatasfok", label: "Hatásfok", unit: "%", type: "number" },
+      { key: "uzemanyag", label: "Tüzelőanyag", type: "text", placeholder: "pl. fapellet (6 mm)" },
+      {
+        key: "meretek",
+        label: "Méretek (Sz × M × Mé)",
+        unit: "mm",
+        type: "text",
+        placeholder: "pl. 470 × 990 × 520",
+      },
+      { key: "tomeg", label: "Tömeg", unit: "kg", type: "number", placeholder: "pl. 98" },
+      {
+        key: "fustcso",
+        label: "Füstcső-csatlakozás",
+        unit: "mm",
+        type: "text",
+        placeholder: "pl. Ø 80",
+      },
+      {
+        key: "vezerles",
+        label: "Vezérlés és funkciók",
+        type: "textarea",
+        placeholder: "pl. digitális kijelző, heti programozás, Wi-Fi",
+      },
+      { key: "garancia", label: "Garancia", type: "text", placeholder: "pl. 2 év" },
       { key: "meret", label: "Méret / átmérő", type: "text", placeholder: "pl. Ø 80 mm, 1 m" },
       { key: "anyag", label: "Anyag", type: "text", placeholder: "pl. saválló acél" },
       {
@@ -236,9 +322,9 @@ export const areas: Record<AreaKey, Area> = {
       },
       {
         key: "muszaki",
-        label: "Műszaki adatok",
+        label: "Egyéb műszaki adatok",
         type: "textarea",
-        placeholder: "Méretek, tömeg, füstcső-csatlakozás, tartály mérete…",
+        placeholder: "Egyéb adatok, tartozékok…",
       },
     ],
     sections: [
@@ -559,3 +645,25 @@ export function searchSite(query: string): SearchHit[] {
   }
   return hits.filter((h) => norm(`${h.title} ${h.text}`).includes(q));
 }
+
+/**
+ * Cross-selling on product pages ("Kapcsolódó termékek"): for products of a section,
+ * products of these categories are also offered (e.g. pellet stove → flue pipes, A1 pellet).
+ */
+export const relatedCategories: Record<string, string[]> = {
+  "pellet-kalyhak": ["fustcsovek", "hamu-porszivok", "a1-fapellet", "alkatreszek"],
+  "pellet-kazanok": ["fustcsovek", "hamu-porszivok", "a1-fapellet", "ipari-pellet"],
+  "biomassza-kazanok": ["fustcsovek", "ipari-pellet", "szalma-pellet", "brikett"],
+  kiegeszitok: ["levegos-pellet-kalyhak", "vizteres-pellet-kalyhak", "pellet-kazanok-gyartok"],
+  "futo-pelletek": ["levegos-pellet-kalyhak", "vizteres-pellet-kalyhak", "hamu-porszivok"],
+  brikettek: ["a1-fapellet", "fustcsovek"],
+  "takarmany-pelletek": ["lo-muzli"],
+  "lo-muzlik": ["lucerna-pellet", "szena-pellet"],
+};
+
+/** Sections whose quote form asks whether installation / commissioning is needed. */
+export const installationSections = ["pellet-kalyhak", "pellet-kazanok", "biomassza-kazanok"];
+
+/** Section slug of a product's category. */
+export const sectionOf = (area: string, category: string) =>
+  isAreaKey(area) ? findCategory(area, category)?.section : undefined;

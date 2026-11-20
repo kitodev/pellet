@@ -4,13 +4,15 @@ import { listReviews } from "@/lib/db/queries/reviews";
 import { listPosts } from "@/lib/db/queries/posts";
 import { listTexts } from "@/lib/db/queries/texts";
 import { listSlides } from "@/lib/db/queries/slides";
+import { listQuoteRequests } from "@/lib/db/queries/quotes";
 import { AdminTabs } from "@/components/features/dashboard/AdminTabs";
 
 export default async function DashboardPage() {
   const { isAdmin } = await requireUser();
   if (!isAdmin) return null;
-  const [products, slides, reviews, posts, texts] = await Promise.all([
+  const [products, quotes, slides, reviews, posts, texts] = await Promise.all([
     listProducts(),
+    listQuoteRequests().catch(() => []),
     // slides table: migration 005 (pnpm db:migrate) – until then the tab is just empty
     listSlides().catch(() => []),
     listReviews(),
@@ -18,6 +20,13 @@ export default async function DashboardPage() {
     listTexts(),
   ]);
   return (
-    <AdminTabs products={products} slides={slides} reviews={reviews} posts={posts} texts={texts} />
+    <AdminTabs
+      products={products}
+      quotes={quotes}
+      slides={slides}
+      reviews={reviews}
+      posts={posts}
+      texts={texts}
+    />
   );
 }

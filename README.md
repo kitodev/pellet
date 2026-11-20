@@ -80,3 +80,20 @@ src/
 ```
 
 Dependency direction: `routes → components → lib`. `lib/` never imports from `components/` or `routes/`.
+
+
+## Product pages & Árajánlatkérés (2026-11)
+
+- Product page (`ProductDetail.tsx`): zoomable gallery, brand, short text, key features (highlights),
+  packaging, availability, price by price mode (public gross price / „Árért érdeklődjön” / quantity-based),
+  ÁRAJÁNLATOT KÉREK pop-up form, phone/e-mail, description, technical data (per area: `specFields` in
+  `catalog.ts`), delivery & pickup, documents (datasheet + certificates, manuals…), related products
+  (`lib/utils/related.ts`, cross-selling rules: `relatedCategories`). SEO title / meta description /
+  keywords / image alt are set per product in the admin.
+- Quote requests (`lib/actions/quote.functions.ts`): validated on the server, saved to `quote_requests`
+  (admin → *Ajánlatkérések*), e-mailed to `QUOTE_TO` (default pelletcentrumkft@gmail.com) with the
+  customer as Reply-To, plus an automatic confirmation to the customer. Needs `SMTP_*` in `.env`
+  (on Vercel: Project → Settings → Environment Variables). Without SMTP the requests are only saved.
+- Privacy notice: `/adatkezeles` (texts editable in the admin – have them checked).
+- Migrations: `007_product_page.sql` (new columns, documents, quote requests),
+  `008_sample_enplus_product.mjs` (hidden sample product „ENplus A1 fapellet – 6 mm, 15 kg”).

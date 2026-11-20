@@ -28,6 +28,7 @@ export const Route = createFileRoute("/sitemap.xml")({
             "/kapcsolat",
             "/arajanlat",
             "/kalkulator",
+            "/adatkezeles",
           ].map((loc) => ({ loc })),
           ...Object.values(areas).flatMap((a) => [
             { loc: `/${a.key}` },
