@@ -74,9 +74,12 @@ export function parseProductForm(form: FormData) {
     const v = form.get(k);
     return typeof v === "string" ? v : "";
   };
+  // A file, or the URL of a file the browser already uploaded to Vercel Blob
+  const isUpload = (v: unknown): v is File | string =>
+    (v instanceof File && v.size > 0) || (typeof v === "string" && v.startsWith("https://"));
   const file = (k: string) => {
     const v = form.get(k);
-    return v instanceof File && v.size > 0 ? v : null;
+    return isUpload(v) ? v : null;
   };
   const area = str("area");
   const specKeys = isAreaKey(area) ? areas[area].specFields.map((f) => f.key) : [];
@@ -120,13 +123,16 @@ export function parseProductForm(form: FormData) {
   const documents = (["certificate", "manual", "other"] as const).flatMap((kind) =>
     form
       .getAll(`doc.${kind}`)
-      .filter((v): v is File => v instanceof File && v.size > 0)
+      .filter(isUpload)
       .map((file) => ({
         kind,
         file,
-        title: (str(`doc_title.${kind}`).trim() || file.name.replace(/\.pdf$/i, "")).slice(0, 200),
+        title: (
+          str(`doc_title.${kind}`).trim() ||
+          (typeof file === "string" ? "" : file.name.replace(/\.pdf$/i, ""))
+        ).slice(0, 200),
       })),
   );
-  const gallery = form.getAll("gallery").filter((v): v is File => v instanceof File && v.size > 0);
+  const gallery = form.getAll("gallery").filter(isUpload);
   return { product, image: file("image"), gallery, datasheet: file("datasheet"), documents };
 }

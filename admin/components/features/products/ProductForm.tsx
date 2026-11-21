@@ -4,6 +4,7 @@ import { FileText, Save, Trash2, X } from "lucide-react";
 import { Button, Field, Section } from "@/components/ui";
 import { areas, areaKeys, groupedCategories, type AreaKey } from "@/lib/content/menu";
 import { slugify } from "@/lib/utils/slug";
+import { fileUrl } from "@/lib/utils/file-url";
 import { ALLOWED_IMAGE_TYPES, MAX_GALLERY } from "@/lib/validations/product";
 import type { Product } from "@/types";
 
@@ -40,7 +41,7 @@ export const emptyProduct = (area: AreaKey = "futoanyagok"): ProductDraft => ({
   sort_order: 0,
 });
 
-const preview = (folder: string, name: string) => `/uploads/${folder}/${encodeURIComponent(name)}`;
+const preview = fileUrl;
 const DOC_KINDS = {
   certificate: "Minőségi tanúsítvány",
   manual: "Használati útmutató",

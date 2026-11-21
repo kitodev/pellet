@@ -33,5 +33,8 @@ export function parsePostForm(form: FormData) {
     status: str("status") === "published" ? "published" : "draft",
     cover_path: str("cover_path"),
   });
-  return { post, cover: cover instanceof File && cover.size > 0 ? cover : null };
+  const uploaded =
+    (cover instanceof File && cover.size > 0) ||
+    (typeof cover === "string" && cover.startsWith("https://"));
+  return { post, cover: uploaded ? (cover as File | string) : null };
 }

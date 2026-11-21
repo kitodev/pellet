@@ -1,4 +1,5 @@
 "use client";
+import { fileUrl } from "@/lib/utils/file-url";
 import { useState } from "react";
 import { EyeOff, ExternalLink, Pencil, Star, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui";
@@ -29,7 +30,7 @@ export function ProductList({ products, busy, onEdit, onDelete }: Props) {
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 className="admin-thumb"
-                src={`/uploads/products/${encodeURIComponent(p.image_path)}`}
+                src={fileUrl("products", p.image_path)}
                 alt=""
                 width={72}
                 height={72}

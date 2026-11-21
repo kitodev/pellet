@@ -97,3 +97,15 @@ Dependency direction: `routes → components → lib`. `lib/` never imports from
 - Privacy notice: `/adatkezeles` (texts editable in the admin – have them checked).
 - Migrations: `007_product_page.sql` (new columns, documents, quote requests),
   `008_sample_enplus_product.mjs` (hidden sample product „ENplus A1 fapellet – 6 mm, 15 kg”).
+
+## Admin online (Vercel) + file storage (Vercel Blob)
+
+The admin (`admin/`) is a second Vercel project from the same GitHub repository:
+Vercel → Add New → Project → this repo → **Root Directory: `admin`** (Next.js; `admin/vercel.json`).
+Environment variables: `DATABASE_URL` (same as the website) and `BLOB_READ_WRITE_TOKEN`.
+
+Uploaded photos / PDFs: Vercel does not keep files written to disk, so online they go to **Vercel Blob**
+(Vercel → Storage → Create → Blob, then *Connect* it to both projects – this adds `BLOB_READ_WRITE_TOKEN`).
+The admin uploads files straight from the browser to Blob (`app/api/blob-upload`, no 4.5 MB request limit);
+the database then stores the full Blob URL. Without the token (local run) files are stored in `UPLOADS_DIR`
+as before. `uploadUrl()` / `fileUrl()` handle both.

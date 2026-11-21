@@ -4,6 +4,7 @@ import { Plus, Search } from "lucide-react";
 import { Button, StatusMessage } from "@/components/ui";
 import { useAsyncAction } from "@/hooks/useAsyncAction";
 import { saveProduct, deleteProduct } from "@/lib/actions/products";
+import { uploadFormFiles } from "@/lib/storage/client-upload";
 import { areas, areaKeys, type AreaKey } from "@/lib/content/menu";
 import type { Product } from "@/types";
 import { ProductForm, emptyProduct, type ProductDraft } from "./ProductForm";
@@ -31,6 +32,14 @@ export function ProductsPanel({ products }: { products: Product[] }) {
 
   async function save(form: FormData) {
     const ok = await run(async () => {
+      await uploadFormFiles(form, [
+        { name: "image", folder: "products" },
+        { name: "gallery", folder: "products" },
+        { name: "datasheet", folder: "datasheets" },
+        { name: "doc.certificate", folder: "datasheets" },
+        { name: "doc.manual", folder: "datasheets" },
+        { name: "doc.other", folder: "datasheets" },
+      ]);
       const result = await saveProduct(form);
       if (!result.success) throw new Error(result.message);
     });

@@ -38,5 +38,8 @@ export function parseSlideForm(form: FormData) {
     published: str("published") === "on" || str("published") === "true",
     sort_order: Number(str("sort_order")) || 0,
   });
-  return { slide, image: image instanceof File && image.size > 0 ? image : null };
+  const uploaded =
+    (image instanceof File && image.size > 0) ||
+    (typeof image === "string" && image.startsWith("https://"));
+  return { slide, image: uploaded ? (image as File | string) : null };
 }

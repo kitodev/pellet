@@ -4,6 +4,8 @@ import { ExternalLink, FileText, Pencil, Plus, Save, Trash2, X } from "lucide-re
 import { Button, Field, Section, StatusMessage } from "@/components/ui";
 import { useAsyncAction } from "@/hooks/useAsyncAction";
 import { deletePost, savePost } from "@/lib/actions/posts";
+import { uploadFormFiles } from "@/lib/storage/client-upload";
+import { fileUrl } from "@/lib/utils/file-url";
 import { formatDate } from "@/lib/utils/format";
 import { siteUrl } from "@/lib/utils/site";
 import { slugify } from "@/lib/utils/slug";
@@ -46,6 +48,7 @@ export function BlogPanel({ posts }: { posts: BlogPost[] }) {
     if (editing.id) form.set("id", editing.id);
     form.set("cover_path", removeCover ? "" : editing.cover_path);
     const ok = await run(async () => {
+      await uploadFormFiles(form, [{ name: "cover", folder: "blog" }]);
       const r = await savePost(form);
       if (!r.success) throw new Error(r.message);
     });
@@ -135,12 +138,7 @@ export function BlogPanel({ posts }: { posts: BlogPost[] }) {
               {editing.cover_path && !removeCover && (
                 <span className="file-current">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`/uploads/blog/${encodeURIComponent(editing.cover_path)}`}
-                    alt=""
-                    width={96}
-                    height={54}
-                  />
+                  <img src={fileUrl("blog", editing.cover_path)} alt="" width={96} height={54} />
                   <Button variant="outline" onClick={() => setRemoveCover(true)}>
                     <Trash2 size={14} /> Eltávolítás
                   </Button>

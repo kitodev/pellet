@@ -5,6 +5,8 @@ import { Button, Field, Section, StatusMessage } from "@/components/ui";
 import { useAsyncAction } from "@/hooks/useAsyncAction";
 import { deleteSlide, saveSlide } from "@/lib/actions/slides";
 import { saveText } from "@/lib/actions/texts";
+import { uploadFormFiles } from "@/lib/storage/client-upload";
+import { fileUrl } from "@/lib/utils/file-url";
 import { ALLOWED_IMAGE_TYPES } from "@/lib/validations/product";
 import type { Slide } from "@/types";
 
@@ -23,7 +25,7 @@ const empty: Slide = {
   published: true,
   sort_order: 0,
 };
-const preview = (name: string) => `/uploads/slides/${encodeURIComponent(name)}`;
+const preview = (name: string) => fileUrl("slides", name);
 
 /** Slide-ok: the image carousel of the home page and the Termékek page. */
 export function SlidesPanel({ slides, hideHero }: { slides: Slide[]; hideHero: boolean }) {
@@ -44,6 +46,7 @@ export function SlidesPanel({ slides, hideHero }: { slides: Slide[]; hideHero: b
     form.set("image_path", editing.image_path);
     form.set("published", editing.published ? "true" : "false");
     const ok = await run(async () => {
+      await uploadFormFiles(form, [{ name: "image", folder: "slides" }]);
       const r = await saveSlide(form);
       if (!r.success) throw new Error(r.message);
     });

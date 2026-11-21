@@ -1,3 +1,4 @@
+import { del, put } from "@vercel/blob";
 import { randomUUID } from "node:crypto";
 import { mkdir, readFile, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -36,12 +37,25 @@ export async function saveProductImage(file: File): Promise<string> {
     throw new Error("JPG, PNG vagy WebP képet válasszon.");
   if (file.size > MAX_IMAGE_BYTES) throw new Error("A kép legfeljebb 5 MB lehet.");
   const name = `${randomUUID()}.${EXT[file.type]}`;
+  // Online (Vercel): Vercel Blob – the database then stores the full URL.
+  if (process.env["BLOB_READ_WRITE_TOKEN"]) {
+    const blob = await put(`products/${name}`, file, {
+      access: "public",
+      contentType: file.type,
+      addRandomSuffix: false,
+    });
+    return blob.url;
+  }
   await mkdir(dir("products"), { recursive: true });
   await writeFile(path.join(dir("products"), name), Buffer.from(await file.arrayBuffer()));
   return name;
 }
 
 export async function deleteUpload(folder: UploadFolder, name: string | null | undefined) {
+  if (name && /^https:\/\/[a-z0-9-]+\.public\.blob\.vercel-storage\.com\//i.test(name)) {
+    if (process.env["BLOB_READ_WRITE_TOKEN"]) await del(name).catch(() => undefined);
+    return;
+  }
   const safe = name ? safeName(folder, name) : null;
   if (safe) await unlink(path.join(dir(folder), safe)).catch(() => undefined);
 }
