@@ -1,6 +1,6 @@
 // 008: brand from the old "gyarto" field + sample full product page – "ENplus A1 fapellet – 6 mm, 15 kg" (Tüzelőanyagok › A1 fapellet).
-// Saved as HIDDEN (published = 0): check / complete it in the admin (manufacturer, certificate ID,
-// photos, price), then tick "Látható a weboldalon". The values are the ENplus A1 limit values.
+// Published right away so the new product page can be seen; complete it in the admin
+// (manufacturer, certificate ID, photos, price). The values are the ENplus A1 limit values.
 import { randomUUID } from "node:crypto";
 
 export default async function up(db) {
@@ -37,7 +37,7 @@ export default async function up(db) {
     `INSERT INTO products (id, slug, area, category, name, brand, short_description, description, price, sale_price, price_unit,
        specs, image_path, datasheet_path, featured, published, sort_order, packaging, highlights, stock_status, price_mode,
        price_note, seo_title, meta_description, keywords, image_alt)
-     VALUES (?, ?, 'futoanyagok', 'a1-fapellet', ?, '', ?, ?, NULL, NULL, 'Ft/zsák', ?, '', '', 1, 0, 0, ?, ?, 'in_stock', 'quantity', ?, ?, ?, ?, ?)`,
+     VALUES (?, ?, 'futoanyagok', 'a1-fapellet', ?, '', ?, ?, NULL, NULL, 'Ft/zsák', ?, '', '', 1, 1, 0, ?, ?, 'in_stock', 'quantity', ?, ?, ?, ?, ?)`,
     [
       randomUUID(),
       slug,
@@ -68,5 +68,5 @@ export default async function up(db) {
       "ENplus A1 fapellet 15 kg-os zsákban",
     ],
   );
-  return "mintatermék létrehozva (rejtett)";
+  return "mintatermék létrehozva (látható)";
 }

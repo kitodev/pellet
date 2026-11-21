@@ -2,6 +2,7 @@
 // Usage:  pnpm db:create-admin <email> <password>
 import { randomUUID } from "node:crypto";
 import mysql from "mysql2/promise";
+import { sslFor } from "./ssl.mjs";
 import bcrypt from "bcryptjs";
 
 const DATABASE_URL = process.env.DATABASE_URL || "mysql://root:@127.0.0.1:3306/pellet";
@@ -15,7 +16,7 @@ if (password.length < 8) {
   process.exit(1);
 }
 
-const db = await mysql.createConnection(DATABASE_URL);
+const db = await mysql.createConnection({ uri: DATABASE_URL, ssl: sslFor(DATABASE_URL) });
 try {
   const hash = await bcrypt.hash(password, 12);
   const normalized = email.trim().toLowerCase();

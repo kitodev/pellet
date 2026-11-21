@@ -4,6 +4,7 @@ import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import mysql from "mysql2/promise";
+import { sslFor } from "./ssl.mjs";
 
 const DATABASE_URL = process.env.DATABASE_URL || "mysql://root:@127.0.0.1:3306/pellet";
 const dir = path.join(path.dirname(fileURLToPath(import.meta.url)), "migrations");
@@ -15,7 +16,7 @@ const server = new URL(DATABASE_URL);
 server.pathname = "/";
 // (Hosted databases often create it for you and don't allow this – then we just continue.)
 try {
-  const admin = await mysql.createConnection(server.toString());
+  const admin = await mysql.createConnection({ uri: server.toString(), ssl: sslFor(DATABASE_URL) });
   await admin.query(
     `CREATE DATABASE IF NOT EXISTS \`${dbName.replace(/`/g, "")}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`,
   );
@@ -27,6 +28,7 @@ try {
 }
 
 const db = await mysql.createConnection({
+  ssl: sslFor(DATABASE_URL),
   uri: DATABASE_URL,
   multipleStatements: true,
   charset: "utf8mb4",

@@ -7,6 +7,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import mysql from "mysql2/promise";
+import { sslFor } from "./ssl.mjs";
 
 const { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } = process.env;
 const DATABASE_URL = process.env.DATABASE_URL || "mysql://root:@127.0.0.1:3306/pellet";
@@ -46,7 +47,7 @@ async function downloadImage(file) {
 const toMysqlDate = (iso) => new Date(iso).toISOString().slice(0, 23).replace("T", " ");
 const safeName = (name) => path.basename(name).replace(/[^a-zA-Z0-9._-]/g, "_");
 
-const db = await mysql.createConnection(DATABASE_URL);
+const db = await mysql.createConnection({ uri: DATABASE_URL, ssl: sslFor(DATABASE_URL) });
 try {
   const texts = await rest("site_texts", "select=key,value");
   for (const t of texts) {
