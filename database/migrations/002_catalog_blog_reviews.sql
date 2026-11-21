@@ -12,9 +12,10 @@ ALTER TABLE products
   ADD COLUMN featured          TINYINT(1)   NOT NULL DEFAULT 0,
   ADD COLUMN published         TINYINT(1)   NOT NULL DEFAULT 1,
   ADD COLUMN sort_order        INT          NOT NULL DEFAULT 0,
-  ADD COLUMN updated_at        DATETIME(3)  NULL,
-  ADD UNIQUE KEY products_slug_unique (slug),
-  ADD KEY products_featured_idx (featured, published);
+  ADD COLUMN updated_at        DATETIME(3)  NULL;
+-- (indexes in separate statements: TiDB cannot index a column added in the same ALTER)
+ALTER TABLE products ADD UNIQUE KEY products_slug_unique (slug);
+ALTER TABLE products ADD KEY products_featured_idx (featured, published);
 
 -- Move existing products to the new menu (check them in the admin afterwards)
 UPDATE products SET area = 'futoanyagok',       category = 'fa-pellet'          WHERE area = 'biomassza' AND category = 'pellet';
