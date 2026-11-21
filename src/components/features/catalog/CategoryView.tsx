@@ -51,20 +51,6 @@ export function CategoryView({ area: key, category: slug }: { area: AreaKey; cat
       </PageHero>
       <section className="section soft-section">
         <div className="container">
-          {siblings.length > 1 && (
-            <nav className="subtabs" aria-label={`${section?.name ?? area.label} kategóriák`}>
-              {siblings.map((c) => (
-                <Link
-                  key={c.slug}
-                  to="/$terulet/$kategoria"
-                  params={{ terulet: key, kategoria: c.slug }}
-                  className={c.slug === slug ? "active" : ""}
-                >
-                  {c.name}
-                </Link>
-              ))}
-            </nav>
-          )}
           {byMaker ? (
             byMaker.map((g) => (
               <div key={g.maker || "-"} className="tile-area">
