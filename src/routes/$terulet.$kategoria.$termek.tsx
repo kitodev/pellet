@@ -3,6 +3,7 @@ import { ProductDetail } from "@/components/features/catalog/ProductDetail";
 import { productImage } from "@/components/features/catalog/images";
 import { contentOptions } from "@/lib/content/queries";
 import { pageHead } from "@/lib/utils/seo";
+import { productPath } from "@/lib/utils/urls";
 
 export const Route = createFileRoute("/$terulet/$kategoria/$termek")({
   loader: async ({ context, params }) => {
@@ -19,7 +20,7 @@ export const Route = createFileRoute("/$terulet/$kategoria/$termek")({
       ? pageHead(
           p.seo_title || `${p.name}${p.brand ? ` – ${p.brand}` : ""}`,
           p.meta_description || p.short_description || p.description.slice(0, 160) || p.name,
-          { image: productImage(p), type: "product", keywords: p.keywords },
+          { image: productImage(p), type: "product", keywords: p.keywords, path: productPath(p) },
         )
       : {},
   component: Page,
