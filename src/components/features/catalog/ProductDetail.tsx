@@ -98,6 +98,9 @@ export function ProductDetail({ product }: { product: Product }) {
   const [quantity, setQuantity] = useState("1");
   const [unit, setUnit] = useState(units[0] ?? "db");
   const [tab, setTab] = useState<string>("leiras");
+  // the block chosen in the tab bar is highlighted until another one is chosen
+  const [focus, setFocus] = useState<string | null>(null);
+  const hl = (id: string) => (focus === id ? " pd-focus" : "");
   const category = area.categories.find((c) => c.slug === product.category);
   const section = category && area.sections.find((s) => s.slug === category.section);
   const installation = !!category && installationSections.includes(category.section);
@@ -175,6 +178,7 @@ export function ProductDetail({ product }: { product: Product }) {
 
   const goTab = (id: string) => {
     setTab(id);
+    setFocus(id);
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
@@ -331,7 +335,7 @@ export function ProductDetail({ product }: { product: Product }) {
 
           {/* ---- description | technical data ---- */}
           <div className="pd-info">
-            <section id="leiras" className="pd-col">
+            <section id="leiras" className={`pd-col${hl("leiras")}`}>
               <h2>
                 <Leaf />
                 <Text id="product.description">{"Termékleírás"}</Text>
@@ -342,7 +346,7 @@ export function ProductDetail({ product }: { product: Product }) {
                 <p className="pd-text">{product.short_description}</p>
               )}
             </section>
-            <section id="muszaki-adatok" className="pd-col">
+            <section id="muszaki-adatok" className={`pd-col${hl("muszaki-adatok")}`}>
               <h2>
                 <Settings />
                 <Text id="product.specs">{"Műszaki adatok"}</Text>
@@ -386,7 +390,7 @@ export function ProductDetail({ product }: { product: Product }) {
 
           {/* ---- delivery | documents | related ---- */}
           <div className="pd-cards">
-            <section id="szallitas" className="pd-card">
+            <section id="szallitas" className={`pd-card${hl("szallitas")}`}>
               <h2>
                 <Truck />
                 <Text id="product.delivery.title">{"Szállítás és átvétel"}</Text>
@@ -423,7 +427,7 @@ export function ProductDetail({ product }: { product: Product }) {
               </ul>
             </section>
 
-            <section id="dokumentumok" className="pd-card">
+            <section id="dokumentumok" className={`pd-card${hl("dokumentumok")}`}>
               <h2>
                 <FileText />
                 <Text id="product.documents">{"Dokumentumok"}</Text>

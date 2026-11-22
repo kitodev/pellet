@@ -1,12 +1,30 @@
-import { useAreas } from "@/hooks/useContent";
+import { Text } from "@/components/features/content/ContentProvider";
+import { Link } from "@tanstack/react-router";
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useAreas, useProducts } from "@/hooks/useContent";
 import { Breadcrumbs, PageHero } from "@/components/layouts/SiteChrome";
 import { subgroupsOf, type AreaKey } from "@/lib/content/catalog";
-import { CategoryTiles } from "./CategoryTiles";
+import { ProductGrid } from "./ProductCard";
 
-/** /futoanyagok/futo-pelletek – the categories of one section as tiles (grouped by subgroup). */
+/**
+ * /futoanyagok/futo-pelletek – every product of the section at once (A1, ipari, szalma…),
+ * one block per category, so visitors reach the products in one click.
+ */
 export function SectionView({ area: key, section: slug }: { area: AreaKey; section: string }) {
   const area = useAreas()[key];
   const section = area.sections.find((s) => s.slug === slug)!;
+  const products = useProducts({ area: key });
+  const groups = subgroupsOf(area, slug)
+    .flatMap((g) =>
+      g.categories.map((c) => ({
+        category: c,
+        title: g.subgroup && g.subgroup !== c.name ? `${g.subgroup} – ${c.name}` : c.name,
+        items: products.filter((p) => p.category === c.slug),
+      })),
+    )
+    .filter((g) => g.items.length);
+
   return (
     <>
       <PageHero id={null} eyebrow={area.label} title={section.name} text={section.description}>
@@ -20,16 +38,36 @@ export function SectionView({ area: key, section: slug }: { area: AreaKey; secti
       </PageHero>
       <section className="section soft-section">
         <div className="container">
-          {subgroupsOf(area, slug).map((g) => (
-            <div key={g.subgroup || slug} className="tile-area">
-              {g.subgroup && (
+          {groups.length ? (
+            groups.map((g) => (
+              <div key={g.category.slug} id={g.category.slug} className="tile-area">
                 <div className="tile-area-head">
-                  <h2>{g.subgroup}</h2>
+                  <h2>{g.title}</h2>
+                  <span className="tile-area-count">{g.items.length} termék</span>
                 </div>
-              )}
-              <CategoryTiles area={key} categories={g.categories} />
+                <ProductGrid products={g.items} />
+              </div>
+            ))
+          ) : (
+            <div className="empty-state">
+              <h2>
+                <Text id="catalog.empty.title">{"Ebben a kategóriában kérésre szállítunk"}</Text>
+              </h2>
+              <p>
+                <Text id="catalog.empty.text">
+                  {
+                    "A termékek feltöltése folyamatban van. Írja meg, mire van szüksége, és személyre szabott ajánlatot küldünk."
+                  }
+                </Text>
+              </p>
+              <Button asChild>
+                <Link to="/arajanlat" search={{ targy: `${section.name} (${area.label})` }}>
+                  <Text id="AreaPages.text.5">{"Ajánlatot kérek"}</Text>
+                  <ArrowRight />
+                </Link>
+              </Button>
             </div>
-          ))}
+          )}
         </div>
       </section>
     </>
