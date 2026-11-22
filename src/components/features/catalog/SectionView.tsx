@@ -9,21 +9,17 @@ import { ProductGrid } from "./ProductCard";
 
 /**
  * /futoanyagok/futo-pelletek – every product of the section at once (A1, ipari, szalma…),
- * one block per category, so visitors reach the products in one click.
+ * side by side in one grid, so visitors reach the products in one click.
  */
 export function SectionView({ area: key, section: slug }: { area: AreaKey; section: string }) {
   const area = useAreas()[key];
   const section = area.sections.find((s) => s.slug === slug)!;
   const products = useProducts({ area: key });
-  const groups = subgroupsOf(area, slug)
-    .flatMap((g) =>
-      g.categories.map((c) => ({
-        category: c,
-        title: g.subgroup && g.subgroup !== c.name ? `${g.subgroup} – ${c.name}` : c.name,
-        items: products.filter((p) => p.category === c.slug),
-      })),
-    )
-    .filter((g) => g.items.length);
+  // all products of the section side by side, in category order (A1, ipari, szalma…)
+  const order = subgroupsOf(area, slug).flatMap((g) => g.categories.map((c) => c.slug));
+  const items = products
+    .filter((p) => order.includes(p.category))
+    .sort((x, y) => order.indexOf(x.category) - order.indexOf(y.category));
 
   return (
     <>
@@ -38,16 +34,8 @@ export function SectionView({ area: key, section: slug }: { area: AreaKey; secti
       </PageHero>
       <section className="section soft-section">
         <div className="container">
-          {groups.length ? (
-            groups.map((g) => (
-              <div key={g.category.slug} id={g.category.slug} className="tile-area">
-                <div className="tile-area-head">
-                  <h2>{g.title}</h2>
-                  <span className="tile-area-count">{g.items.length} termék</span>
-                </div>
-                <ProductGrid products={g.items} />
-              </div>
-            ))
+          {items.length ? (
+            <ProductGrid products={items} />
           ) : (
             <div className="empty-state">
               <h2>
