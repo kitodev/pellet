@@ -185,7 +185,7 @@ export function ProductDetail({ product }: { product: Product }) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
-      <section className="product-page pd">
+      <article className="product-page pd">
         <div className="container">
           <Breadcrumbs
             items={[
@@ -317,20 +317,24 @@ export function ProductDetail({ product }: { product: Product }) {
           </div>
 
           {/* ---- tab bar ---- */}
-          <nav className="pd-tabs" aria-label="A termékoldal részei">
-            {TABS.map((t) => (
-              <a
-                key={t.id}
-                href={`#${t.id}`}
-                className={tab === t.id ? "active" : ""}
-                onClick={(e) => {
-                  e.preventDefault();
-                  goTab(t.id);
-                }}
-              >
-                {t.label}
-              </a>
-            ))}
+          <nav aria-label="A termékoldal részei">
+            <ul className="pd-tabs">
+              {TABS.map((t) => (
+                <li key={t.id}>
+                  <a
+                    href={`#${t.id}`}
+                    className={tab === t.id ? "active" : ""}
+                    aria-current={tab === t.id ? "location" : undefined}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      goTab(t.id);
+                    }}
+                  >
+                    {t.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </nav>
 
           {/* ---- description | technical data ---- */}
@@ -352,6 +356,7 @@ export function ProductDetail({ product }: { product: Product }) {
                 <Text id="product.specs">{"Műszaki adatok"}</Text>
               </h2>
               <table className="pd-specs">
+                <caption className="sr-only">{`${product.name} – műszaki adatok`}</caption>
                 <tbody>
                   {product.brand && (
                     <tr>
@@ -418,7 +423,11 @@ export function ProductDetail({ product }: { product: Product }) {
                       <Text id="product.delivery.installLine">
                         {"Telepítés és beüzemelés szakembereinkkel"}
                       </Text>{" "}
-                      <Link to="/szolgaltatasok" className="pd-more">
+                      <Link
+                        to="/szolgaltatasok"
+                        className="pd-more"
+                        aria-label="Telepítés és beüzemelés – részletek"
+                      >
                         <ChevronRight size={14} />
                       </Link>
                     </span>
@@ -476,34 +485,34 @@ export function ProductDetail({ product }: { product: Product }) {
                 <Text id="product.related">{"Kapcsolódó termékek"}</Text>
               </h2>
               {related.length ? (
-                <div className="pd-related">
+                <ul className="pd-related">
                   {related.map((p) => (
-                    <a key={p.id} href={productPath(p)}>
-                      <img src={productImage(p)} alt="" loading="lazy" />
-                      <span>{p.name}</span>
-                      <ChevronRight size={16} />
-                    </a>
+                    <li key={p.id}>
+                      <a href={productPath(p)}>
+                        <img src={productImage(p)} alt="" loading="lazy" />
+                        <span>{p.name}</span>
+                        <ChevronRight size={16} aria-hidden />
+                      </a>
+                    </li>
                   ))}
-                </div>
+                </ul>
               ) : (
-                <div className="pd-related">
+                <ul className="pd-related">
                   {relatedCats.map(({ area: a, cat }) => (
-                    <Link
-                      key={cat.slug}
-                      to="/$terulet/$kategoria"
-                      params={{ terulet: a, kategoria: cat.slug }}
-                    >
-                      <img src={areaImage[a]} alt="" loading="lazy" />
-                      <span>{cat.name}</span>
-                      <ChevronRight size={16} />
-                    </Link>
+                    <li key={cat.slug}>
+                      <Link to="/$terulet/$kategoria" params={{ terulet: a, kategoria: cat.slug }}>
+                        <img src={areaImage[a]} alt="" loading="lazy" />
+                        <span>{cat.name}</span>
+                        <ChevronRight size={16} aria-hidden />
+                      </Link>
+                    </li>
                   ))}
-                </div>
+                </ul>
               )}
             </section>
           </div>
         </div>
-      </section>
+      </article>
 
       <Dialog open={quoteOpen} onOpenChange={setQuoteOpen}>
         <DialogContent className="quote-dialog max-h-[94vh] max-w-2xl overflow-y-auto">

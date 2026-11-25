@@ -57,22 +57,23 @@ export function SectionTiles({
 }) {
   const products = useProducts({ area });
   return (
-    <div className="tile-grid">
+    <ul className="tile-grid">
       {sections.map((s) => {
         const slugs = categories.filter((c) => c.section === s.slug).map((c) => c.slug);
         const items = products.filter((p) => slugs.includes(p.category));
         return (
-          <Tile
-            key={s.slug}
-            area={area}
-            slug={sectionTarget({ categories }, s.slug)}
-            name={s.name}
-            count={items.length}
-            image={tileImage(area, items)}
-          />
+          <li key={s.slug}>
+            <Tile
+              area={area}
+              slug={sectionTarget({ categories }, s.slug)}
+              name={s.name}
+              count={items.length}
+              image={tileImage(area, items)}
+            />
+          </li>
         );
       })}
-    </div>
+    </ul>
   );
 }
 
@@ -80,20 +81,21 @@ export function SectionTiles({
 export function CategoryTiles({ area, categories }: { area: AreaKey; categories: Category[] }) {
   const products = useProducts({ area });
   return (
-    <div className="tile-grid">
+    <ul className="tile-grid">
       {categories.map((c) => {
         const items = products.filter((p) => p.category === c.slug);
         return (
-          <Tile
-            key={c.slug}
-            area={area}
-            slug={c.slug}
-            name={c.name}
-            count={items.length}
-            image={tileImage(area, items)}
-          />
+          <li key={c.slug}>
+            <Tile
+              area={area}
+              slug={c.slug}
+              name={c.name}
+              count={items.length}
+              image={tileImage(area, items)}
+            />
+          </li>
         );
       })}
-    </div>
+    </ul>
   );
 }

@@ -14,7 +14,8 @@ export function ProductCard({ product }: { product: Product }) {
         to="/$terulet/$kategoria/$termek"
         params={{ terulet: product.area, kategoria: product.category, termek: product.slug }}
         className="product-card-link"
-        aria-label={product.name}
+        tabIndex={-1}
+        aria-hidden="true"
       >
         <div className="product-img-wrap">
           <img
@@ -61,12 +62,18 @@ export function ProductCard({ product }: { product: Product }) {
   );
 }
 
-export function ProductGrid({ products }: { products: Product[] }) {
+/** Product cards as a list; `heading` adds a visually hidden h2 when the page has none above the grid. */
+export function ProductGrid({ products, heading }: { products: Product[]; heading?: string }) {
   return (
-    <div className="product-grid">
-      {products.map((p) => (
-        <ProductCard key={p.id} product={p} />
-      ))}
-    </div>
+    <>
+      {heading && <h2 className="sr-only">{heading}</h2>}
+      <ul className="product-grid">
+        {products.map((p) => (
+          <li key={p.id}>
+            <ProductCard product={p} />
+          </li>
+        ))}
+      </ul>
+    </>
   );
 }

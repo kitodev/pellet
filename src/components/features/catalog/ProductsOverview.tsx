@@ -27,12 +27,14 @@ export function ProductsOverview() {
       </PageHero>
       <section className="section soft-section">
         <div className="container">
-          <nav className="area-jump" aria-label="Termékcsoportok">
-            {productAreas.map((key) => (
-              <a key={key} href={`#${key}`}>
-                {areas[key].label}
-              </a>
-            ))}
+          <nav aria-label="Termékcsoportok">
+            <ul className="area-jump">
+              {productAreas.map((key) => (
+                <li key={key}>
+                  <a href={`#${key}`}>{areas[key].label}</a>
+                </li>
+              ))}
+            </ul>
           </nav>
           {productAreas.map((key) => {
             const area = areas[key];

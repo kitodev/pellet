@@ -29,11 +29,11 @@ export function ContactDetails() {
     ...(c.hours ? { openingHours: c.hours.split("\n").filter(Boolean) } : {}),
   };
   return (
-    <div className="contact-points">
+    <address className="contact-points">
       {rows.length ? (
         rows.map((r) => (
           <div key={r.label}>
-            <r.icon />
+            <r.icon aria-hidden />
             <div>
               <strong>{r.label}</strong>
               <span>{r.value}</span>
@@ -48,7 +48,7 @@ export function ContactDetails() {
         </p>
       )}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
-    </div>
+    </address>
   );
 }
 

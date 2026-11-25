@@ -26,14 +26,19 @@ function Page() {
       >
         <Breadcrumbs items={[{ label: "Tudástár" }]} />
       </PageHero>
-      <section className="section soft-section">
+      <section className="section soft-section" aria-labelledby="post-list-title">
         <div className="container">
+          <h2 id="post-list-title" className="sr-only">
+            Cikkek
+          </h2>
           {posts.length ? (
-            <div className="post-grid">
+            <ul className="post-grid">
               {posts.map((p) => (
-                <PostCard key={p.id} post={p} />
+                <li key={p.id}>
+                  <PostCard post={p} />
+                </li>
               ))}
-            </div>
+            </ul>
           ) : (
             <p className="section-copy">
               <Text id="blog.empty">{"Hamarosan új cikkekkel jelentkezünk."}</Text>

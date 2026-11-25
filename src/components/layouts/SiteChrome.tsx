@@ -29,12 +29,12 @@ export function Brand() {
         height={768}
         alt="Pellet Centrum Kft. logó"
       />
-      <div className="brand-name">
+      <span className="brand-name">
         <Text id="SiteChrome.text.1">{"PELLET CENTRUM"}</Text>
         <small>
           <Text id="SiteChrome.text.2">{"KFT. · TERMÉSZETES ENERGIA"}</Text>
         </small>
-      </div>
+      </span>
     </Link>
   );
 }
@@ -104,6 +104,7 @@ export function SiteHeader() {
               size="icon"
               aria-label={menu ? "Menü bezárása" : "Menü megnyitása"}
               aria-expanded={menu}
+              aria-controls="mobile-nav"
               onClick={() => setMenu(!menu)}
             >
               {menu ? <X /> : <Menu />}
@@ -112,100 +113,143 @@ export function SiteHeader() {
         </div>
         <nav className="main-nav" aria-label="Fő navigáció">
           <div className="container">
-            <Link to="/" activeOptions={{ exact: true }} activeProps={active}>
-              <Text id="nav.home">{"Kezdőlap"}</Text>
-            </Link>
-            <div className="nav-dropdown products-dropdown">
-              <Link to="/termekek" activeProps={active} className={isProductPath ? "active" : ""}>
-                <Text id="nav.products">{"Termékek"}</Text> <ChevronDown size={12} />
-              </Link>
-              <div className="mega-menu products-mega">
-                {productAreas.map((key) => {
-                  const a = areas[key];
-                  return (
-                    <div key={key} className="mega-col">
-                      <Link className="dropdown-title" to="/$terulet" params={{ terulet: key }}>
-                        {a.label}
-                      </Link>
-                      {a.sections.map((sec) => (
-                        <Link
-                          key={sec.slug}
-                          to="/$terulet/$kategoria"
-                          params={{ terulet: key, kategoria: sectionTarget(a, sec.slug) }}
-                        >
-                          {sec.name}
-                        </Link>
-                      ))}
-                    </div>
-                  );
-                })}
-                <Link className="mega-all" to="/termekek">
-                  <Text id="nav.allProducts">{"Összes termékkategória"}</Text>{" "}
-                  <ArrowRight size={13} />
+            <ul className="nav-list">
+              <li>
+                <Link to="/" activeOptions={{ exact: true }} activeProps={active}>
+                  <Text id="nav.home">{"Kezdőlap"}</Text>
                 </Link>
-              </div>
-            </div>
-            <div className="nav-dropdown">
-              <Link to="/szolgaltatasok" activeProps={active}>
-                <Text id="nav.services">{"Szolgáltatások"}</Text> <ChevronDown size={12} />
-              </Link>
-              <div className="mega-menu services-mega">
-                <div className="mega-col">
-                  {serviceLinks.map((l) => (
-                    <Link key={l.id} to="/szolgaltatasok" hash={l.id}>
-                      {l.label}
-                    </Link>
-                  ))}
+              </li>
+              <li className="nav-dropdown products-dropdown">
+                <Link
+                  to="/termekek"
+                  activeProps={active}
+                  className={isProductPath ? "active" : ""}
+                  aria-haspopup="true"
+                >
+                  <Text id="nav.products">{"Termékek"}</Text> <ChevronDown size={12} aria-hidden />
+                </Link>
+                <div className="mega-menu products-mega">
+                  {productAreas.map((key) => {
+                    const a = areas[key];
+                    return (
+                      <ul key={key} className="mega-col">
+                        <li>
+                          <Link className="dropdown-title" to="/$terulet" params={{ terulet: key }}>
+                            {a.label}
+                          </Link>
+                        </li>
+                        {a.sections.map((sec) => (
+                          <li key={sec.slug}>
+                            <Link
+                              to="/$terulet/$kategoria"
+                              params={{ terulet: key, kategoria: sectionTarget(a, sec.slug) }}
+                            >
+                              {sec.name}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    );
+                  })}
+                  <Link className="mega-all" to="/termekek">
+                    <Text id="nav.allProducts">{"Összes termékkategória"}</Text>{" "}
+                    <ArrowRight size={13} aria-hidden />
+                  </Link>
                 </div>
-              </div>
-            </div>
-            {pagesAfter.map((l) => (
-              <Link key={l.to} to={l.to} activeProps={active}>
-                {l.label}
-              </Link>
-            ))}
+              </li>
+              <li className="nav-dropdown">
+                <Link to="/szolgaltatasok" activeProps={active} aria-haspopup="true">
+                  <Text id="nav.services">{"Szolgáltatások"}</Text>{" "}
+                  <ChevronDown size={12} aria-hidden />
+                </Link>
+                <div className="mega-menu services-mega">
+                  <ul className="mega-col">
+                    {serviceLinks.map((l) => (
+                      <li key={l.id}>
+                        <Link to="/szolgaltatasok" hash={l.id}>
+                          {l.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+              {pagesAfter.map((l) => (
+                <li key={l.to}>
+                  <Link to={l.to} activeProps={active}>
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
         </nav>
         {menu && (
-          <nav className="mobile-nav" aria-label="Mobil navigáció">
-            <Link to="/">Kezdőlap</Link>
-            <div className="mobile-group">
-              <div className="mobile-group-head">
-                <Link to="/termekek">Termékek</Link>
-                <button
-                  type="button"
-                  aria-expanded={open === "products"}
-                  aria-label="Termékek almenü"
-                  onClick={() => setOpen(open === "products" ? null : "products")}
-                >
-                  <ChevronDown size={18} className={open === "products" ? "rotate-180" : ""} />
-                </button>
-              </div>
-              {open === "products" &&
-                productAreas.map((key) => (
-                  <div key={key} className="mobile-sub-group">
-                    <Link className="dropdown-title" to="/$terulet" params={{ terulet: key }}>
-                      {areas[key].label}
-                    </Link>
-                    {areas[key].sections.map((sec) => (
-                      <Link
-                        key={sec.slug}
-                        className="mobile-sub"
-                        to="/$terulet/$kategoria"
-                        params={{ terulet: key, kategoria: sectionTarget(areas[key], sec.slug) }}
-                      >
-                        {sec.name}
-                      </Link>
+          <nav className="mobile-nav" id="mobile-nav" aria-label="Mobil navigáció">
+            <ul className="mobile-list">
+              <li>
+                <Link to="/">Kezdőlap</Link>
+              </li>
+              <li className="mobile-group">
+                <div className="mobile-group-head">
+                  <Link to="/termekek">Termékek</Link>
+                  <button
+                    type="button"
+                    aria-expanded={open === "products"}
+                    aria-controls="mobile-products"
+                    aria-label="Termékek almenü"
+                    onClick={() => setOpen(open === "products" ? null : "products")}
+                  >
+                    <ChevronDown
+                      size={18}
+                      aria-hidden
+                      className={open === "products" ? "rotate-180" : ""}
+                    />
+                  </button>
+                </div>
+                {open === "products" && (
+                  <ul id="mobile-products" className="mobile-list">
+                    {productAreas.map((key) => (
+                      <li key={key}>
+                        <ul className="mobile-sub-group">
+                          <li>
+                            <Link
+                              className="dropdown-title"
+                              to="/$terulet"
+                              params={{ terulet: key }}
+                            >
+                              {areas[key].label}
+                            </Link>
+                          </li>
+                          {areas[key].sections.map((sec) => (
+                            <li key={sec.slug}>
+                              <Link
+                                className="mobile-sub"
+                                to="/$terulet/$kategoria"
+                                params={{
+                                  terulet: key,
+                                  kategoria: sectionTarget(areas[key], sec.slug),
+                                }}
+                              >
+                                {sec.name}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </li>
                     ))}
-                  </div>
-                ))}
-            </div>
-            <Link to="/szolgaltatasok">Szolgáltatások</Link>
-            {pagesAfter.map((l) => (
-              <Link key={l.to} to={l.to}>
-                {l.label}
-              </Link>
-            ))}
+                  </ul>
+                )}
+              </li>
+              <li>
+                <Link to="/szolgaltatasok">Szolgáltatások</Link>
+              </li>
+              {pagesAfter.map((l) => (
+                <li key={l.to}>
+                  <Link to={l.to}>{l.label}</Link>
+                </li>
+              ))}
+            </ul>
           </nav>
         )}
       </header>
@@ -220,7 +264,7 @@ export function SiteHeader() {
 export function FloatingActions() {
   const path = useLocation().pathname.replace(/\/$/, "");
   return (
-    <div className="floating-actions" role="complementary" aria-label="Gyors elérés">
+    <aside className="floating-actions" aria-label="Gyors elérés">
       <Link to="/arajanlat" className={path === "/arajanlat" ? "fa-quote current" : "fa-quote"}>
         <Mail size={18} />
         <span>
@@ -233,7 +277,7 @@ export function FloatingActions() {
           <Text id="floating.calc">{"Kazánkalkulátor"}</Text>
         </span>
       </Link>
-    </div>
+    </aside>
   );
 }
 
@@ -259,64 +303,90 @@ export function SiteFooter() {
             </Text>
           </p>
         </div>
-        <div>
-          <h3>
+        <nav aria-labelledby="footer-products">
+          <h2 id="footer-products">
             <Text id="footer.products">{"Termékek"}</Text>
-          </h3>
-          <Link to="/termekek">
-            <Text id="footer.allProducts">{"Összes termék"}</Text>
-          </Link>
-          {productAreas.map((k) => (
-            <Link key={k} to="/$terulet" params={{ terulet: k }}>
-              {areas[k].label}
-            </Link>
-          ))}
-        </div>
-        <div>
-          <h3>
+          </h2>
+          <ul className="footer-links">
+            <li>
+              <Link to="/termekek">
+                <Text id="footer.allProducts">{"Összes termék"}</Text>
+              </Link>
+            </li>
+            {productAreas.map((k) => (
+              <li key={k}>
+                <Link to="/$terulet" params={{ terulet: k }}>
+                  {areas[k].label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <nav aria-labelledby="footer-info">
+          <h2 id="footer-info">
             <Text id="footer.info">{"Információ"}</Text>
-          </h3>
-          <Link to="/szolgaltatasok">Szolgáltatások</Link>
-          <Link to="/biomassza">Biomassza</Link>
-          <Link to="/blog">Tudástár</Link>
-          <Link to="/rolunk">Rólunk</Link>
-          <Link to="/kalkulator">Kazánkalkulátor</Link>
-          <Link to="/kereso">Keresés</Link>
-          <Link to="/adatkezeles">Adatkezelési tájékoztató</Link>
-        </div>
-        <div>
-          <h3>
+          </h2>
+          <ul className="footer-links">
+            <li>
+              <Link to="/szolgaltatasok">Szolgáltatások</Link>
+            </li>
+            <li>
+              <Link to="/biomassza">Biomassza</Link>
+            </li>
+            <li>
+              <Link to="/blog">Tudástár</Link>
+            </li>
+            <li>
+              <Link to="/rolunk">Rólunk</Link>
+            </li>
+            <li>
+              <Link to="/kalkulator">Kazánkalkulátor</Link>
+            </li>
+            <li>
+              <Link to="/kereso">Keresés</Link>
+            </li>
+            <li>
+              <Link to="/adatkezeles">Adatkezelési tájékoztató</Link>
+            </li>
+          </ul>
+        </nav>
+        <section aria-labelledby="footer-contact">
+          <h2 id="footer-contact">
             <Text id="footer.contact">{"Kapcsolat"}</Text>
-          </h3>
-          {phone && (
-            <a href={href}>
-              <Phone size={13} />
-              {phone}
-            </a>
-          )}
-          {email && (
-            <a href={`mailto:${email}`}>
-              <Mail size={13} />
-              {email}
-            </a>
-          )}
-          {address && (
-            <span>
-              <MapPin size={13} />
-              {address}
-            </span>
-          )}
-          {hours && <span className="whitespace-pre-line">{hours}</span>}
+          </h2>
+          <address className="footer-links">
+            {phone && (
+              <a href={href}>
+                <Phone size={13} aria-hidden />
+                {phone}
+              </a>
+            )}
+            {email && (
+              <a href={`mailto:${email}`}>
+                <Mail size={13} aria-hidden />
+                {email}
+              </a>
+            )}
+            {address && (
+              <span>
+                <MapPin size={13} aria-hidden />
+                {address}
+              </span>
+            )}
+            {hours && <span className="whitespace-pre-line">{hours}</span>}
+          </address>
           <Link to="/kapcsolat" className="footer-more">
             <Text id="footer.contactLink">{"Elérhetőségek és térkép"}</Text>{" "}
-            <ChevronRight size={13} />
+            <ChevronRight size={13} aria-hidden />
           </Link>
-        </div>
+        </section>
       </div>
-      <div className="container footer-bottom">
-        © {new Date().getFullYear()} Pellet Centrum Kft. ·{" "}
-        <Text id="footer.slogan">{"Természetes energia. Megbízható meleg."}</Text>
-      </div>
+      <p className="container footer-bottom">
+        <small>
+          © {new Date().getFullYear()} Pellet Centrum Kft. ·{" "}
+          <Text id="footer.slogan">{"Természetes energia. Megbízható meleg."}</Text>
+        </small>
+      </p>
     </footer>
   );
 }
@@ -345,7 +415,7 @@ export function PageHero({
     <section className="page-hero">
       <div className="container">
         {children}
-        <div className="eyebrow">{label}</div>
+        <p className="eyebrow">{label}</p>
         <h1>{heading}</h1>
         {description && <p>{description}</p>}
       </div>

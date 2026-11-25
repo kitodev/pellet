@@ -164,6 +164,7 @@ export function QuoteForm({
             <Text id="quote.quantity">{"Kért mennyiség"}</Text>
           </label>
           <input
+            type="text"
             id="q-quantity"
             name="quantity"
             inputMode="decimal"
@@ -229,6 +230,7 @@ export function QuoteForm({
               <Text id="quote.zip">{"Irányítószám *"}</Text>
             </label>
             <input
+              type="text"
               id="q-zip"
               name="zip"
               inputMode="numeric"
@@ -243,6 +245,7 @@ export function QuoteForm({
               <Text id="quote.city">{"Település *"}</Text>
             </label>
             <input
+              type="text"
               id="q-city"
               name="city"
               maxLength={120}
@@ -280,6 +283,7 @@ export function QuoteForm({
             <Text id="QuoteForm.text.1">{"Név *"}</Text>
           </label>
           <input
+            type="text"
             id="q-name"
             name="name"
             autoComplete="name"
@@ -292,7 +296,13 @@ export function QuoteForm({
           <label htmlFor="q-company">
             <Text id="quote.company">{"Cégnév"}</Text>
           </label>
-          <input id="q-company" name="company" autoComplete="organization" maxLength={160} />
+          <input
+            type="text"
+            id="q-company"
+            name="company"
+            autoComplete="organization"
+            maxLength={160}
+          />
         </div>
       </div>
       <div className="form-row">

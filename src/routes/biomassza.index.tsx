@@ -92,21 +92,24 @@ function Page() {
           </div>
         </div>
       </section>
-      <section className="section soft-section">
+      <section className="section soft-section" aria-labelledby="biomass-points">
         <div className="container">
-          <div className="reason-grid four">
+          <h2 id="biomass-points" className="sr-only">
+            A biomassza előnyei
+          </h2>
+          <ul className="reason-grid four">
             {points.map((p) => (
-              <article key={p.k} className="reason-card">
-                <p.icon />
+              <li key={p.k} className="reason-card">
+                <p.icon aria-hidden />
                 <h3>
                   <Text id={`${p.k}.title`}>{p.t}</Text>
                 </h3>
                 <p>
                   <Text id={`${p.k}.text`}>{p.d}</Text>
                 </p>
-              </article>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </section>
     </>

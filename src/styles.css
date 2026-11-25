@@ -426,7 +426,8 @@ h3 {
   font-size: 11px;
   font-weight: 600;
 }
-.check-list span {
+.check-list span,
+.check-list li {
   display: flex;
   gap: 7px;
   align-items: center;
@@ -971,7 +972,7 @@ input[type="range"] {
   margin: 0;
   font-weight: 800;
 }
-.page-hero p {
+.page-hero p:not(.eyebrow) {
   color: var(--on-dark-muted);
   max-width: 620px;
   margin-top: 16px;
@@ -1962,14 +1963,14 @@ input[type="range"] {
   gap: 36px;
   align-items: start;
 }
-.footer h3 {
+.footer h2 {
   font-size: 12px;
   text-transform: uppercase;
   font-weight: 800;
   color: var(--highlight);
   margin: 0 0 12px;
 }
-.footer-grid > div {
+.footer-grid > :is(div, nav, section) {
   display: grid;
   gap: 8px;
   align-content: start;
@@ -2145,7 +2146,7 @@ h3,
 
 /* Text: 18px paragraphs, 16px in cards */
 .section-copy,
-.page-hero p,
+.page-hero p:not(.eyebrow),
 .product-info .lead,
 .article-header .lead,
 .prose-article,
@@ -2190,10 +2191,10 @@ h3,
 .footer .footer-bottom {
   font-size: 13px;
 }
-.footer-grid > div {
+.footer-grid > :is(div, nav, section) {
   font-size: 15px;
 }
-.footer h3 {
+.footer h2 {
   font-family: "Dosis", sans-serif;
   font-size: 18px;
   font-weight: 700;
@@ -2282,7 +2283,7 @@ h3,
     font-size: 36px;
   }
   .section-copy,
-  .page-hero p,
+  .page-hero p:not(.eyebrow),
   .product-info .lead,
   .prose-article,
   .about-block p,
@@ -2495,7 +2496,7 @@ body {
   color: var(--foreground);
   position: relative;
 }
-.main-nav > .container > a.active::after,
+.main-nav .nav-list > li > a.active::after,
 .main-nav .nav-dropdown > a.active::after {
   content: "";
   position: absolute;
@@ -2566,7 +2567,7 @@ body {
 .page-hero .eyebrow {
   color: var(--primary);
 }
-.page-hero p,
+.page-hero p:not(.eyebrow),
 .page-hero .breadcrumbs ol {
   color: var(--muted-foreground);
 }
@@ -2639,7 +2640,8 @@ body {
   border-radius: 4px;
 }
 .slide-panel h1,
-.slide-panel h2 {
+.slide-panel h2,
+.slide-panel .slide-title {
   margin: 0 0 10px;
   font-size: 42px;
   line-height: 1.05;
@@ -2890,7 +2892,8 @@ body {
     grid-template-columns: repeat(3, 1fr);
   }
   .slide-panel h1,
-  .slide-panel h2 {
+  .slide-panel h2,
+  .slide-panel .slide-title {
     font-size: 32px;
   }
 }
@@ -2913,7 +2916,8 @@ body {
     padding: 18px 20px;
   }
   .slide-panel h1,
-  .slide-panel h2 {
+  .slide-panel h2,
+  .slide-panel .slide-title {
     font-size: 26px;
   }
   .slide-arrow {
@@ -3012,7 +3016,8 @@ body {
   max-width: 620px;
 }
 .slide-graphic .slide-panel h1,
-.slide-graphic .slide-panel h2 {
+.slide-graphic .slide-panel h2,
+.slide-graphic .slide-panel .slide-title {
   font-size: clamp(30px, 3.6vw, 52px);
 }
 .slide-graphic.green .slide-button {
@@ -3243,6 +3248,7 @@ body {
 .slide-graphic.green,
 .slide-graphic.green .slide-panel h1,
 .slide-graphic.green .slide-panel h2,
+.slide-graphic.green .slide-panel .slide-title,
 .slide-graphic.green .slide-panel p {
   color: #2b2b2b;
 }
@@ -4146,7 +4152,13 @@ html {
   color: #2b2b2b;
   border-left: 1px solid #d9ddd1;
 }
-.pd-tabs a:first-child {
+.pd-tabs > li {
+  display: flex;
+}
+.pd-tabs > li > a {
+  flex: 1;
+}
+.pd-tabs > li:first-child > a {
   border-left: 0;
 }
 .pd-tabs a.active {
@@ -4425,4 +4437,60 @@ html {
   .pd-col + .pd-col {
     padding: 16px 16px 18px;
   }
+}
+
+/* ---- semantic lists (menus, footer, tabs) – same look as the former plain links ---- */
+.nav-list {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 100%;
+}
+.nav-list > li,
+.mega-col > li {
+  display: flex;
+}
+.mobile-list {
+  display: grid;
+  gap: inherit;
+}
+.mobile-group > .mobile-list {
+  gap: 9px;
+}
+.footer-links {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  font-style: normal;
+}
+.footer-more {
+  margin-top: 4px;
+}
+.footer .footer-bottom small {
+  font-size: inherit;
+}
+
+.product-grid > li,
+.tile-grid > li,
+.post-grid > li,
+.area-tiles > li,
+.review-grid > li {
+  display: flex;
+  min-width: 0;
+}
+.product-grid > li > *,
+.tile-grid > li > *,
+.post-grid > li > *,
+.area-tiles > li > *,
+.review-grid > li > * {
+  flex: 1;
+  min-width: 0;
+}
+
+address.contact-points {
+  font-style: normal;
+}
+.brand .brand-name,
+.footer-grid .brand-name {
+  display: block;
 }

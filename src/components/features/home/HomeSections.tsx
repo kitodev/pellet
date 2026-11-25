@@ -48,29 +48,31 @@ export function IntroSection() {
             </Text>
           </p>
         </div>
-        <div className="area-tiles">
+        <ul className="area-tiles">
           {productAreas.map((k) => {
             const a = areas[k];
             const count = products.filter((p) => p.area === k).length;
             return (
-              <Link key={k} to="/$terulet" params={{ terulet: k }} className="area-tile">
-                <img src={areaImage[k]} alt="" width={1024} height={768} loading="lazy" />
-                <div>
-                  <h3>{a.label}</h3>
-                  <ul>
-                    {a.sections.map((s) => (
-                      <li key={s.slug}>{s.name}</li>
-                    ))}
-                  </ul>
-                  <span className="choice-cta">
-                    {count ? `${count} termék` : <Text id="home.tiles.cta">{"Megnézem"}</Text>}{" "}
-                    <ArrowRight size={14} />
-                  </span>
-                </div>
-              </Link>
+              <li key={k}>
+                <Link to="/$terulet" params={{ terulet: k }} className="area-tile">
+                  <img src={areaImage[k]} alt="" width={1024} height={768} loading="lazy" />
+                  <div>
+                    <h3>{a.label}</h3>
+                    <ul>
+                      {a.sections.map((s) => (
+                        <li key={s.slug}>{s.name}</li>
+                      ))}
+                    </ul>
+                    <span className="choice-cta">
+                      {count ? `${count} termék` : <Text id="home.tiles.cta">{"Megnézem"}</Text>}{" "}
+                      <ArrowRight size={14} />
+                    </span>
+                  </div>
+                </Link>
+              </li>
             );
           })}
-        </div>
+        </ul>
       </div>
     </section>
   );
@@ -174,19 +176,19 @@ export function ReasonsSection() {
             </h2>
           </div>
         </div>
-        <div className="reason-grid">
+        <ul className="reason-grid">
           {reasons.map((r, i) => (
-            <div className="reason-card" key={r.t}>
-              <r.icon />
+            <li className="reason-card" key={r.t}>
+              <r.icon aria-hidden />
               <h3>
                 <Text id={`miert-minket.reason.${i}.t`}>{r.t}</Text>
               </h3>
               <p>
                 <Text id={`miert-minket.reason.${i}.d`}>{r.d}</Text>
               </p>
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   );
@@ -217,23 +219,23 @@ export function DeliverySection() {
             </Link>
           </Button>
         </div>
-        <div className="trust-grid">
+        <ul className="trust-grid">
           {[
             { icon: Package, k: "home.delivery.p1", t: "Zsákos és raklapos tételek" },
             { icon: Truck, k: "home.delivery.p2", t: "Házhoz szállítás" },
             { icon: Clock, k: "home.delivery.p3", t: "Egyeztetett időpontban" },
             { icon: Wrench, k: "home.delivery.p4", t: "Kályháknál telepítéssel" },
           ].map((x) => (
-            <div className="trust-item" key={x.k}>
-              <x.icon />
+            <li className="trust-item" key={x.k}>
+              <x.icon aria-hidden />
               <div>
                 <strong>
                   <Text id={x.k}>{x.t}</Text>
                 </strong>
               </div>
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   );
@@ -255,23 +257,25 @@ export function ReviewsSection() {
             </h2>
           </div>
         </div>
-        <div className="review-grid">
+        <ul className="review-grid">
           {reviews.slice(0, 6).map((r) => (
-            <figure className="review-card" key={r.id}>
-              <div className="stars" aria-label={`${r.rating} / 5 csillag`}>
-                {Array.from({ length: 5 }, (_, i) => (
-                  <Star key={i} size={15} className={i < r.rating ? "on" : ""} />
-                ))}
-              </div>
-              <Quote className="review-quote" size={22} />
-              <blockquote>{r.body}</blockquote>
-              <figcaption>
-                <strong>{r.author}</strong>
-                {[r.location, r.source, formatDate(r.review_date)].filter(Boolean).join(" · ")}
-              </figcaption>
-            </figure>
+            <li key={r.id}>
+              <figure className="review-card">
+                <div className="stars" role="img" aria-label={`${r.rating} / 5 csillag`}>
+                  {Array.from({ length: 5 }, (_, i) => (
+                    <Star key={i} size={15} className={i < r.rating ? "on" : ""} />
+                  ))}
+                </div>
+                <Quote className="review-quote" size={22} />
+                <blockquote>{r.body}</blockquote>
+                <figcaption>
+                  <strong>{r.author}</strong>
+                  {[r.location, r.source, formatDate(r.review_date)].filter(Boolean).join(" · ")}
+                </figcaption>
+              </figure>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   );

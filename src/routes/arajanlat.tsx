@@ -21,8 +21,11 @@ function Page() {
         title="Árajánlatkérés"
         text="Adja meg, mire van szüksége és milyen mennyiségben."
       />
-      <section className="section soft-section">
+      <section className="section soft-section" aria-labelledby="quote-form-title">
         <div className="container narrow">
+          <h2 id="quote-form-title" className="sr-only">
+            Árajánlatkérő űrlap
+          </h2>
           <QuoteForm key={targy} {...(targy ? { initialSubject: targy } : {})} />
         </div>
       </section>

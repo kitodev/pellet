@@ -41,16 +41,16 @@ function Page() {
                   }
                 </Text>
               </p>
-              <div className="check-list">
-                <span>
-                  <CheckCircle2 />
+              <ul className="check-list">
+                <li>
+                  <CheckCircle2 aria-hidden />
                   <Text id="kalkulator.text.4">{"Személyre szabott becslés"}</Text>
-                </span>
-                <span>
-                  <CheckCircle2 />
+                </li>
+                <li>
+                  <CheckCircle2 aria-hidden />
                   <Text id="kalkulator.text.5">{"Egyszerű tervezés"}</Text>
-                </span>
-              </div>
+                </li>
+              </ul>
             </div>
           </div>
           <div className="calc-stage">

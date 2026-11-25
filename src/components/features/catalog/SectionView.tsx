@@ -35,7 +35,7 @@ export function SectionView({ area: key, section: slug }: { area: AreaKey; secti
       <section className="section soft-section">
         <div className="container">
           {items.length ? (
-            <ProductGrid products={items} />
+            <ProductGrid products={items} heading={`${section.name} – termékek`} />
           ) : (
             <div className="empty-state">
               <h2>

@@ -32,29 +32,44 @@ function Page() {
   return (
     <>
       <PageHero eyebrow="Keresés" title="Mit keres?" />
-      <section className="section">
+      <section className="section" aria-labelledby="search-title">
         <div className="container narrow">
-          <label className="search-box">
-            <Search />
-            <input
-              aria-label="Keresés"
-              autoFocus
-              value={q}
-              placeholder="pl. pellet, lótáp, kályha, füstcső…"
-              onChange={(e) =>
-                navigate({ search: e.target.value ? { q: e.target.value } : {}, replace: true })
-              }
-            />
-          </label>
-          {q && <p className="section-copy">{hits.length} találat</p>}
-          <div className="search-results">
+          <h2 id="search-title" className="sr-only">
+            Keresés a termékek és cikkek között
+          </h2>
+          <form role="search" onSubmit={(e) => e.preventDefault()}>
+            <label className="search-box">
+              <Search aria-hidden />
+              <input
+                type="search"
+                aria-label="Keresés"
+                autoFocus
+                value={q}
+                placeholder="pl. pellet, lótáp, kályha, füstcső…"
+                onChange={(e) =>
+                  navigate({ search: e.target.value ? { q: e.target.value } : {}, replace: true })
+                }
+              />
+            </label>
+            <button type="submit" className="sr-only">
+              Keresés
+            </button>
+          </form>
+          {q && (
+            <p className="section-copy" role="status">
+              {hits.length} találat
+            </p>
+          )}
+          <ul className="search-results">
             {hits.map((h) => (
-              <Link key={`${h.to}${h.title}`} to={h.to} params={h.params ?? {}}>
-                <strong>{h.title}</strong>
-                <span>{h.text}</span>
-              </Link>
+              <li key={`${h.to}${h.title}`}>
+                <Link to={h.to} params={h.params ?? {}}>
+                  <strong>{h.title}</strong>
+                  <span>{h.text}</span>
+                </Link>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </section>
     </>

@@ -61,7 +61,7 @@ export function CategoryView({ area: key, category: slug }: { area: AreaKey; cat
               </div>
             ))
           ) : products.length ? (
-            <ProductGrid products={products} />
+            <ProductGrid products={products} heading={`${category.name} – termékek`} />
           ) : (
             <div className="empty-state">
               <h2>

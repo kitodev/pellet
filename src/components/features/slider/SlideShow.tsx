@@ -135,7 +135,14 @@ export function SlideShow({
                   <div className="container slide-content">
                     <div className="slide-panel">
                       {s.title &&
-                        (i === 0 && page === "home" ? <h1>{s.title}</h1> : <h2>{s.title}</h2>)}
+                        (page !== "home" ? (
+                          // above the page's own <h1>: not a heading, so the outline stays in order
+                          <p className="slide-title">{s.title}</p>
+                        ) : i === 0 ? (
+                          <h1>{s.title}</h1>
+                        ) : (
+                          <h2>{s.title}</h2>
+                        ))}
                       {s.subtitle && <p>{s.subtitle}</p>}
                       {s.button_label && s.link_url && (
                         <SlideLink slide={s}>

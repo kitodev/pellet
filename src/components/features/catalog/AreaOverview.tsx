@@ -15,8 +15,9 @@ export function AreaOverview({ area: key }: { area: AreaKey }) {
       <PageHero id={null} eyebrow="Termékek" title={area.label} text={area.intro}>
         <Breadcrumbs items={[{ label: "Termékek", to: "/termekek" }, { label: area.label }]} />
       </PageHero>
-      <section className="section soft-section">
+      <section className="section soft-section" aria-labelledby="area-groups">
         <div className="container">
+          <h2 id="area-groups" className="sr-only">{`${area.label} – termékcsoportok`}</h2>
           <SectionTiles area={key} sections={area.sections} categories={area.categories} />
         </div>
       </section>
